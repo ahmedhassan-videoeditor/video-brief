@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="استمارة طلب فيديو: احكي لنا عن الفيديو اللي محتاجه في ٥ دقايق. Video request form.">
+<meta property="og:title" content="بريف الفيديو | Video Brief">
+<meta property="og:description" content="احكي لنا عن الفيديو اللي محتاجه في ٥ دقايق.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Video Brief</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a production slate — step rail on the side, one question card at a time, a brief sheet at the end. */
+:root{
+  --bg:#F6F7F9; --surface:#FFFFFF; --ink:#0D0F14; --muted:#5C6270; --line:#DADFE8;
+  --accent:#2B50C8; --accent-soft:#E8EDFB; --accent-ink:#FFFFFF; --mark:#3D63E0;
+  --warn:#9A5B00; --warn-soft:#FFF3DF; --ok:#2E7D32; --ok-soft:#E6F4E7;
+  --slate:#0D0F14; --slate-ink:#F3F5F9; --lime:#9DB4FF;
+  --f-lat:"Instrument Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --f-ar:"IBM Plex Sans Arabic", "Geeza Pro", Tahoma, system-ui, sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0A0D0E; --surface:#121819; --ink:#EDF2F2; --muted:#95A3A5; --line:#253134;
+  --accent:#9DB4FF; --accent-soft:#18203A; --accent-ink:#0A0D14; --mark:#6F8FF5;
+  --warn:#F2B35B; --warn-soft:#2B2210; --ok:#7BC77F; --ok-soft:#13241A;
+  --slate:#000000; --slate-ink:#F3F6F6; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0A0D0E; --surface:#121819; --ink:#EDF2F2; --muted:#95A3A5; --line:#253134;
+  --accent:#9DB4FF; --accent-soft:#18203A; --accent-ink:#0A0D14; --mark:#6F8FF5;
+  --warn:#F2B35B; --warn-soft:#2B2210; --ok:#7BC77F; --ok-soft:#13241A;
+  --slate:#000000; --slate-ink:#F3F6F6; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-lat);font-size:15px;line-height:1.55;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 48px}
+html[dir="rtl"] body{font-family:var(--f-ar)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto}
+
+/* Top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand b{font-weight:700;font-size:20px;letter-spacing:-.01em}
+.brand span{color:var(--muted);font-size:13px}
+.tools{display:flex;gap:8px;align-items:center}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface)}
+.lang button{border:0;background:transparent;padding:5px 12px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.lang button:nth-child(1){font-family:var(--f-ar)} .lang button:nth-child(2){font-family:var(--f-lat)}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto}
+.tabs button{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs .count{display:inline-block;min-width:20px;padding:0 6px;margin-inline-start:6px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:12px;text-align:center}
+
+/* Intro slate */
+.slate{background:var(--slate);color:var(--slate-ink);border-radius:14px;padding:22px 24px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;margin-bottom:22px}
+.slate h1{margin:0 0 6px;font-size:clamp(22px,3.4vw,30px);line-height:1.2;text-wrap:balance;font-weight:700}
+.slate p{margin:0;color:#B9C4C5;max-width:62ch}
+.slate .clap{display:grid;grid-template-columns:repeat(3,auto);gap:4px 16px;font-size:12px;color:#9FB0B2;font-family:var(--f-lat);font-variant-numeric:tabular-nums;border-inline-start:1px solid #2A3538;padding-inline-start:18px}
+.slate .clap b{display:block;color:var(--lime);font-size:18px;font-weight:600}
+@media (max-width:640px){.slate{grid-template-columns:1fr}.slate .clap{border:0;padding:0}}
+
+/* Wizard */
+.wiz{display:grid;grid-template-columns:230px minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:820px){.wiz{grid-template-columns:minmax(0,1fr)}}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:2px}
+.rail button{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:center;text-align:start;border:0;background:none;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--muted)}
+.rail button .n{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-family:var(--f-lat);font-variant-numeric:tabular-nums;background:var(--surface)}
+.rail button.done .n{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.rail button[aria-current="step"]{background:var(--surface);color:var(--ink);font-weight:600}
+.rail button[aria-current="step"] .n{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+@media (max-width:820px){
+  .rail{position:static;flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
+  .rail button{grid-template-columns:26px;padding:4px}
+  .rail button .lbl{display:none}
+}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px clamp(18px,3vw,32px);min-width:0}
+.step-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap}
+.step-h h2{margin:0;font-size:22px;line-height:1.25;text-wrap:balance}
+.step-h .of{color:var(--muted);font-size:13px;font-family:var(--f-lat);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.step-sub{color:var(--muted);margin:0 0 22px;max-width:65ch}
+
+.q{display:flex;flex-direction:column;gap:10px;padding-block:18px;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;padding-top:4px}
+.q label.ql,.q .ql{font-weight:600;font-size:15px}
+.q .hint{color:var(--muted);font-size:13px;margin-top:-6px}
+.req{color:var(--accent);margin-inline-start:4px}
+input[type=text],input[type=date],textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:11px 13px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);background:var(--surface)}
+textarea{min-height:96px;resize:vertical}
+.other-in{margin-top:2px}
+.multi-tag{color:var(--accent);font-weight:600}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;margin-inline-start:8px;vertical-align:2px;line-height:1.6}
+.tag.req{background:var(--warn-soft);color:var(--warn)}
+.tag.opt{color:var(--muted);border:1px solid var(--line)}
+.q.invalid input,.q.invalid textarea{border-color:var(--warn)}
+.q .err{color:var(--warn);font-size:13px;font-weight:600}
+.item.focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.mailbox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mailbox .addr{font-family:var(--f-lat);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px;user-select:all;direction:ltr}
+.three{display:grid;gap:8px}
+.three div{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:center}
+.three span{font-family:var(--f-lat);color:var(--muted);font-variant-numeric:tabular-nums;text-align:center}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:999px;cursor:pointer;transition:border-color .15s,background .15s}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.chip .tick{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none}
+.chip[aria-pressed="true"] .tick{background:var(--accent);border-color:var(--accent)}
+.chip[aria-pressed="true"] .tick::after{content:"";width:6px;height:3px;border:2px solid var(--accent-ink);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.chip.unsure{border-style:dashed}
+.chip .shape{display:inline-block;border:1.5px solid currentColor;border-radius:2px;opacity:.75}
+.chip .bar{display:inline-block;height:6px;border-radius:3px;background:currentColor;opacity:.45}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.ocard{display:flex;flex-direction:column;gap:6px;text-align:start;border:1px solid var(--line);background:var(--surface);padding:12px;border-radius:12px;cursor:pointer;position:relative}
+.ocard:hover{border-color:var(--muted)}
+.ocard[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.ocard svg{width:100%;height:auto;aspect-ratio:5/3;border-radius:8px;background:var(--bg);color:var(--muted)}
+.ocard[aria-pressed="true"] svg{color:var(--ink)}
+.ocard svg .ac{fill:var(--mark)} .ocard svg .acs{stroke:var(--mark)}
+.ocard b{font-size:14px} .ocard small{color:var(--muted);font-size:12.5px;line-height:1.45}
+.ocard .tick{position:absolute;top:10px;inset-inline-end:10px;width:20px;height:20px;border-radius:50%;background:var(--accent);display:none;place-items:center}
+.ocard[aria-pressed="true"] .tick{display:grid}
+.ocard .tick::after{content:"";width:8px;height:4px;border:2px solid var(--accent-ink);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+
+.scale{display:grid;grid-template-columns:minmax(70px,1fr) auto minmax(70px,1fr) auto;gap:12px;align-items:center}
+.scale .end{font-size:13px;color:var(--muted)} .scale .end:nth-child(3){text-align:end}
+.dots{display:flex;gap:6px}
+.dots button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center}
+.dots button::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.dots button[aria-pressed="true"]::after{background:var(--accent);width:12px;height:12px}
+.scale .na{font-size:12.5px;padding:6px 10px}
+@media (max-width:560px){.scale{grid-template-columns:1fr 1fr}.scale .dots{grid-column:1/-1;order:3;justify-content:center}.scale .na{grid-column:1/-1;order:4;justify-self:center}}
+
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);padding:10px 18px;border-radius:999px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.go{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.small{padding:6px 12px;font-size:13px}
+.arr{display:inline-block} html[dir="rtl"] .arr{transform:scaleX(-1)}
+.saved{font-size:12.5px;color:var(--muted);align-self:center}
+
+/* Brief sheet (review) */
+.sheet{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sheet .sec{display:grid;grid-template-columns:170px minmax(0,1fr);gap:4px 18px;padding:14px 16px;border-top:1px solid var(--line)}
+.sheet .sec:first-child{border-top:0}
+.sheet .sec h4{margin:0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+html[dir="rtl"] .sheet .sec h4{letter-spacing:0;text-transform:none;font-size:13px}
+.sheet dl{margin:0;display:grid;grid-template-columns:minmax(110px,max-content) minmax(0,1fr);gap:6px 14px}
+.sheet dt{color:var(--muted);font-size:13.5px}
+.sheet dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.sheet .empty{color:var(--muted);font-style:italic}
+.sheet .edit{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:0;justify-self:start;font-weight:600}
+@media (max-width:620px){.sheet .sec{grid-template-columns:1fr}.sheet dl{grid-template-columns:1fr}.sheet dt{font-weight:600}}
+.frames{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.frames .fr{border:1.5px solid var(--ink);border-radius:3px;display:grid;place-items:center;font-size:11px;font-family:var(--f-lat);color:var(--muted)}
+
+.note{border-radius:10px;padding:12px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.note.warn{background:var(--warn-soft);color:var(--warn)}
+.note.ok{background:var(--ok-soft);color:var(--ok)}
+.note.info{background:var(--accent-soft);color:var(--ink)}
+.note ul{margin:4px 0 0;padding-inline-start:18px}
+.mb{margin-bottom:16px}
+
+/* Lists of briefs */
+.list{display:flex;flex-direction:column;gap:12px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.item-h{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.item-h h3{margin:0;font-size:17px}
+.meta{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.pill.s-new::before{background:var(--mark)} .pill.s-reading::before{background:var(--mark)}
+.pill.s-questions::before,.pill.s-changes::before{background:var(--warn)}
+.pill.s-treatment{border-color:var(--accent);background:var(--accent-soft)} .pill.s-treatment::before{background:var(--accent)}
+.pill.s-approved::before,.pill.s-production::before,.pill.s-delivered::before{background:var(--ok)}
+.reply{margin-top:14px;border-inline-start:3px solid var(--accent);padding:4px 0 4px 14px;display:flex;flex-direction:column;gap:10px}
+html[dir="rtl"] .reply{padding:4px 14px 4px 0}
+.reply h4{margin:0;font-size:13px;color:var(--muted);font-weight:600}
+.reply .body{white-space:pre-wrap;overflow-wrap:anywhere}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+details.more{margin-top:12px} details.more summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14px}
+details.more .sheet{margin-top:12px}
+.emptybox{border:1px dashed var(--line);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
+.success{text-align:center;padding:30px 10px}
+.success h2{margin:0 0 8px}
+.success .big{width:56px;height:56px;border-radius:50%;background:var(--ok-soft);display:grid;place-items:center;margin:0 auto 14px}
+.success .big::after{content:"";width:20px;height:10px;border:3px solid var(--ok);border-top:0;border-right:0;transform:rotate(-45deg) translate(2px,-2px)}
+select.status{width:auto;padding:6px 10px;font-size:13px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><b id="t-brand"></b><span id="t-team"></span></div>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" id="lang-ar" aria-pressed="true">عربي</button>
+        <button type="button" id="lang-en" aria-pressed="false">English</button>
+      </div>
+    </div>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="view"></main>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- copy ---------- */
+const T = {
+ ar:{
+  brand:"بريف الفيديو", team:"لأي نوع فيديو",
+  tabNew:"طلب فيديو جديد", tabMine:"طلباتي", tabAll:"كل الطلبات",
+  heroTitle:"احكي لنا عن الفيديو اللي محتاجه",
+  heroText:"مش لازم تكون فاهم في الفيديو. جاوب بكلامك واختار من الأمثلة، واللي مش متأكد منه سيبه لنا.",
+  clapSteps:"خطوات", clapMins:"دقايق تقريبًا", clapReq:"أسئلة إجبارية",
+  stepOf:(a,b)=>`خطوة ${a} من ${b}`,
+  back:"رجوع", next:"التالي", review:"راجع الطلب", send:"ابعت الطلب", sending:"بيتبعت…",
+  draftSaved:"المسودة محفوظة على جهازك",
+  required:"لازم", unsure:"مش عارف، قرّروا إنتو", noPref:"مش فارقة",
+  reviewTitle:"راجع الطلب قبل ما تبعته", reviewSub:"ده ملخص كل اللي كتبته. لو في حاجة ناقصة أو محتاجة تتعدل، دوس «عدّل» جنبها.",
+  missingReq:"لازم تكمل دول قبل الإرسال:", missingSoft:"دول مش إجباريين، بس لو جاوبت عليهم هيوفروا علينا أسئلة كتير بعدين:",
+  edit:"عدّل", empty:"ما اتكتبش",
+  copyText:"انسخ الطلب كنص", copied:"اتنسخ", copyFail:"النسخ ما اشتغلش، حدّد النص وانسخه بإيدك",
+  sentTitle:"الطلب وصل", sentText:"فريق الفيديو هيقرا الطلب ويرد عليك بفكرة مبدئية وسكريبت قبل ما يبدأ التنفيذ. هتلاقي الرد في «طلباتي».",
+  goMine:"روح لطلباتي", newOne:"طلب جديد",
+  noDb:"الحفظ مش شغال في الفتحة دي. افتح اللينك وانت داخل بحساب الشركة على Claude. ولحد ما ده يتظبط، تقدر تنسخ الطلب كنص وتبعته بالإيميل.",
+  saveErr:"الطلب ما اتبعتش. جرّب تاني بعد شوية، أو انسخه كنص وابعته.", quotaErr:"المساحة المتاحة للطلبات خلصت. كلّم فريق الفيديو.",
+  readOnly:"معاك صلاحية مشاهدة بس، فمش هتقدر تبعت طلب. اطلب من فريق الفيديو صلاحية Contributor.",
+  mineEmpty:"لسه ما بعتّش أي طلب. أول ما تبعت طلب هيظهر هنا، ومعاه رد فريق الفيديو.",
+  allEmpty:"لسه مفيش طلبات. ابعت اللينك للشركة، وأول طلب يوصل هيظهر هنا.",
+  loading:"بيحمّل…", slow:"البيانات اتأخرت. ممكن تكون مشكلة في النت، وهتظهر أول ما الاتصال يرجع.",
+  sentOn:"اتبعت", by:"من", answers:"تفاصيل الطلب",
+  replyTitle:"رد فريق الفيديو", rIdea:"الفكرة", rScript:"السكريبت المبدئي", rQuestions:"أسئلة محتاجين إجابتها", rNotes:"ملاحظات", rFrames:"شكل المشاهد",
+  approve:"موافق، ابدأوا", askChanges:"عايز تعديل", changesPh:"اكتب إيه اللي عايز يتغير…", sendChanges:"ابعت التعديل", cancel:"إلغاء",
+  yourDecision:"ردّك", approvedAt:"وافقت", changesAt:"طلبت تعديل",
+  refresh:"حدّث", statusLbl:"الحالة",
+  status:{new:"جديد",treatment:"الفكرة جاهزة لموافقتك",changes:"طلب تعديل",production:"في التنفيذ",delivered:"اتسلّم"},
+  secs:{about:"عنك وعن الطلب",goal:"الفكرة والهدف",audience:"الجمهور",message:"الرسالة",format:"النشر والمقاس",look:"الشكل والإحساس",sound:"الصوت",materials:"المواد",timing:"المواعيد والموافقة"},
+  langNote:"اللغة اللي اتكتب بيها الطلب",
+  waNotify:"بلّغ فريق الفيديو بالإيميل", waHint:"خطوة أخيرة: دوس الزرار ده عشان تبعت إيميل قصير لفريق الفيديو إن طلبك وصل. لو برنامج الإيميل ما فتحش، انسخ العنوان وابعت من إيميلك.",
+  waMsg:(ti,n)=>`أهلًا، بعتّ طلب فيديو جديد في صفحة البريف.\nالطلب: ${ti}\nمن: ${n}`, waFull:"ابعت الطلب بالإيميل",
+  otherLabel:"حاجة تانية", otherPh:"اكتب اللي في دماغك…", multiTag:"تقدر تختار أكتر من واحد",
+  waMode:"طلبك هيتبعت بالإيميل. دوس «ابعت الطلب بالإيميل» وبرنامج الإيميل هيفتح والطلب مكتوب، وإنت تدوس إرسال. لو ما فتحش: دوس «انسخ الطلب كنص» وابعته على الإيميل اللي تحت.",
+  mineWa:"الطلبات اللي بتتبعت بالإيميل ما بتظهرش هنا. فريق الفيديو هيرد عليك بالإيميل.",
+  oldAnswers:"إجابات من نسخة قديمة من الاستمارة", tagReq:"إجباري", tagOpt:"اختياري", reqErr:"لازم تكتب ده قبل ما تكمل", reqLegend:"الأسئلة اللي عليها «إجباري» لازم تتجاوب. الباقي اختياري، جاوب اللي تعرفه.", openReq:"افتح الطلب من هنا:", notFound:"الطلب ده مش موجود، أو اتمسح.",
+  mailSubject:ti=>`طلب فيديو جديد: ${ti}`, mailTo:"إيميل فريق الفيديو:", copyEmail:"انسخ الإيميل",
+  pasteHere:"(الطلب طويل على الإيميل التلقائي. ارجع للصفحة، دوس «انسخ الطلب كنص»، والصقه هنا.)"
+ },
+ en:{
+  brand:"Video Brief", team:"For any kind of video",
+  tabNew:"New video request", tabMine:"My requests", tabAll:"All requests",
+  heroTitle:"Tell us about the video you need",
+  heroText:"No video know-how needed. Answer in your own words, pick from the examples, and leave anything you're unsure about to us.",
+  clapSteps:"steps", clapMins:"minutes, roughly", clapReq:"required questions",
+  stepOf:(a,b)=>`Step ${a} of ${b}`,
+  back:"Back", next:"Next", review:"Review request", send:"Send request", sending:"Sending…",
+  draftSaved:"Draft saved on this device",
+  required:"required", unsure:"Not sure, your call", noPref:"No preference",
+  reviewTitle:"Review before you send", reviewSub:"This is everything you wrote. If something is missing or wrong, press “Edit” next to it.",
+  missingReq:"Please complete these before sending:", missingSoft:"These are optional, but answering them now saves a lot of back and forth later:",
+  edit:"Edit", empty:"Not answered",
+  copyText:"Copy request as text", copied:"Copied", copyFail:"Copy didn't work. Select the text and copy it manually.",
+  sentTitle:"Request received", sentText:"The video team will read it and reply with a first idea and draft script before production starts. You'll find the reply under “My requests”.",
+  goMine:"Go to my requests", newOne:"New request",
+  noDb:"Saving isn't available in this view. Open the link while signed in to Claude with your company account. Meanwhile you can copy the request as text and send it by email.",
+  saveErr:"The request wasn't sent. Try again in a moment, or copy it as text and send it.", quotaErr:"Request storage is full. Please contact the video team.",
+  readOnly:"You have view-only access, so you can't send a request. Ask the video team for Contributor access.",
+  mineEmpty:"You haven't sent any requests yet. Once you do, they'll appear here with the video team's reply.",
+  allEmpty:"No requests yet. Share the link with the company; the first one will show up here.",
+  loading:"Loading…", slow:"Data is taking a while. It may be the connection; it will appear once it's back.",
+  sentOn:"Sent", by:"From", answers:"Request details",
+  replyTitle:"Video team reply", rIdea:"The idea", rScript:"Draft script", rQuestions:"Questions for you", rNotes:"Notes", rFrames:"Scene outline",
+  approve:"Approve, go ahead", askChanges:"Request changes", changesPh:"Write what should change…", sendChanges:"Send changes", cancel:"Cancel",
+  yourDecision:"Your response", approvedAt:"You approved", changesAt:"You asked for changes",
+  refresh:"Refresh", statusLbl:"Status",
+  status:{new:"New",treatment:"Idea ready for your approval",changes:"Changes requested",production:"In production",delivered:"Delivered"},
+  secs:{about:"About you and the request",goal:"Idea and goal",audience:"Audience",message:"Message",format:"Where and what size",look:"Look and feel",sound:"Sound",materials:"Materials",timing:"Deadline and approval"},
+  langNote:"Language the request was written in",
+  waNotify:"Notify the video team by email", waHint:"Last step: press this to send the video team a short email saying your request arrived. If your email app doesn't open, copy the address and email from your own account.",
+  waMsg:(ti,n)=>`Hi, I just sent a new video request on the brief page.\nRequest: ${ti}\nFrom: ${n}`, waFull:"Send request by email",
+  otherLabel:"Other", otherPh:"Write your own…", multiTag:"Pick as many as you like",
+  waMode:"Your request will be sent by email. Press “Send request by email”; your email app opens with the request written in, and you press send. If it doesn't open, press “Copy request as text” and email it to the address below.",
+  mineWa:"Requests sent by email don't appear here. The video team will reply to you by email.",
+  oldAnswers:"Answers from an older version of the form", tagReq:"Required", tagOpt:"Optional", reqErr:"Please fill this in before continuing", reqLegend:"Questions marked “Required” must be answered. The rest are optional; answer what you know.", openReq:"Open the request here:", notFound:"This request doesn't exist, or was deleted.",
+  mailSubject:ti=>`New video request: ${ti}`, mailTo:"Video team email:", copyEmail:"Copy email",
+  pasteHere:"(The request is too long for an automatic email. Go back to the page, press “Copy request as text”, and paste it here.)"
+ }
+};
+
+/* ---------- mini illustrations for style cards ---------- */
+const SVG = {
+ ui_cursor:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="14" y="10" width="72" height="42" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="20" y="17" width="20" height="4" rx="2" fill="currentColor" opacity=".5"/><rect x="20" y="26" width="28" height="20" rx="2" fill="currentColor" opacity=".18"/><rect x="52" y="26" width="28" height="9" rx="2" class="ac"/><rect x="52" y="38" width="28" height="8" rx="2" fill="currentColor" opacity=".18"/><path d="M62 30 L62 44 L65.5 40.5 L68.5 47 L71 46 L68 39.5 L73 39.5 Z" fill="currentColor"/></svg>',
+ kinetic:'<svg viewBox="0 0 100 60" aria-hidden="true"><text x="50" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="currentColor" font-family="Instrument Sans, sans-serif">BIG</text><text x="50" y="47" text-anchor="middle" font-size="12" font-weight="700" class="ac" font-family="Instrument Sans, sans-serif">IDEA.</text><rect x="22" y="12" width="12" height="2" fill="currentColor" opacity=".35"/><rect x="66" y="51" width="12" height="2" fill="currentColor" opacity=".35"/></svg>',
+ abstract3d:'<svg viewBox="0 0 100 60" aria-hidden="true"><path d="M40 18 L54 11 L68 18 L68 34 L54 41 L40 34 Z" fill="currentColor" opacity=".18"/><path d="M40 18 L54 25 L68 18 M54 25 L54 41" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M40 18 L54 11 L68 18 L68 34 L54 41 L40 34 Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="28" cy="40" r="7" class="ac"/><circle cx="76" cy="44" r="4" fill="currentColor" opacity=".45"/></svg>',
+ live_ui:'<svg viewBox="0 0 100 60" aria-hidden="true"><circle cx="38" cy="26" r="9" fill="currentColor" opacity=".45"/><path d="M20 56 C22 42 30 38 38 38 C46 38 54 42 56 56 Z" fill="currentColor" opacity=".45"/><rect x="58" y="12" width="30" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="62" y="17" width="14" height="3" rx="1.5" class="ac"/><rect x="62" y="22" width="20" height="2" rx="1" fill="currentColor" opacity=".4"/><rect x="62" y="33" width="24" height="12" rx="3" class="ac" opacity=".85"/></svg>',
+ illustration:'<svg viewBox="0 0 100 60" aria-hidden="true"><circle cx="40" cy="26" r="12" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="36" cy="24" r="1.6" fill="currentColor"/><circle cx="44" cy="24" r="1.6" fill="currentColor"/><path d="M35 30 Q40 34 45 30" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M26 56 Q40 40 54 56" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M64 18 L80 18 L80 30 L70 30 L65 35 L66 30 L64 30 Z" class="ac"/></svg>',
+ motion2d:'<svg viewBox="0 0 100 60" aria-hidden="true"><circle cx="30" cy="34" r="10" class="ac"/><rect x="46" y="22" width="18" height="18" rx="3" fill="currentColor" opacity=".45" transform="rotate(15 55 31)"/><path d="M70 42 L80 22 L90 42 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14 48 Q30 40 46 48 T78 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="2 3"/></svg>',
+ photos:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="22" y="14" width="40" height="30" rx="2" fill="currentColor" opacity=".2" transform="rotate(-8 42 29)"/><rect x="38" y="16" width="42" height="32" rx="2" style="fill:var(--surface)" stroke="currentColor" stroke-width="1.3"/><path d="M42 44 L54 32 L62 40 L68 35 L76 44 Z" fill="currentColor" opacity=".45"/><circle cx="70" cy="24" r="3" class="ac"/></svg>',
+ footage:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="18" y="12" width="64" height="38" rx="3" fill="currentColor" opacity=".18"/><path d="M18 40 L36 26 L50 36 L62 28 L82 42 L82 50 L18 50 Z" fill="currentColor" opacity=".35"/><circle cx="70" cy="22" r="4" class="ac"/><rect x="18" y="12" width="64" height="38" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
+ talking:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="18" y="10" width="64" height="42" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="50" cy="27" r="8" fill="currentColor" opacity=".45"/><path d="M34 52 C36 41 43 38 50 38 C57 38 64 41 66 52 Z" fill="currentColor" opacity=".45"/><rect x="22" y="44" width="22" height="5" rx="1" class="ac"/></svg>',
+ other:'<svg viewBox="0 0 100 60" aria-hidden="true"><path d="M34 44 L36 36 L62 10 L70 18 L44 44 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M58 14 L66 22" stroke="currentColor" stroke-width="1.5"/><rect x="30" y="48" width="40" height="2" rx="1" class="ac"/></svg>',
+ unsure:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="22" y="10" width="56" height="40" rx="6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="3 3"/><text x="50" y="38" text-anchor="middle" font-size="22" font-weight="700" class="ac" font-family="Instrument Sans, sans-serif">?</text></svg>'
+};
+
+/* ---------- questions ---------- */
+// option: [key, ar, en, descAr, descEn]
+const U = ["unsure","مش عارف، قرّروا إنتو","Not sure, your call"];
+const STEPS = [
+ {id:"about", ar:{t:"عنك",s:"عشان نعرف نرجع لك لو عندنا سؤال."}, en:{t:"About you",s:"So we know who to come back to."},
+  q:[
+   {id:"name",type:"text",req:1,ar:"اسمك",en:"Your name"},
+   {id:"company",type:"text",ar:"الشركة أو البراند",en:"Company or brand"},
+   {id:"title",type:"text",req:1,ar:"اسم قصير للطلب",en:"A short name for this request",phAr:"مثلًا: إعلان افتتاح الفرع الجديد",phEn:"e.g. New branch opening ad"}
+  ]},
+ {id:"idea", ar:{t:"الفكرة",s:"احكيها بكلامك، زي ما بتحكيها لزميلك."}, en:{t:"The idea",s:"In your own words, like telling a colleague."},
+  q:[
+   {id:"type",type:"cards",multi:1,other:1,ar:"نوع الفيديو",en:"Type of video",opts:[
+     ["ad","إعلان","Ad","لمنتج أو خدمة أو عرض","For a product, service or offer"],
+     ["social","سوشيال","Social","ريلز وفيديوهات قصيرة","Reels and short videos"],
+     ["feature","شرح منتج أو خدمة","Explainer","بيعمل إيه وبيفيد في إيه","What it does and why it matters"],
+     ["corporate","تعريف بالشركة","Company profile","مين إحنا وبنعمل إيه","Who we are and what we do"],
+     ["launch","إطلاق أو تيزر","Launch / teaser","حاجة جديدة، أو تشويق قبلها","Something new, or the build-up"],
+     ["event","تغطية فعالية","Event recap","معرض أو مؤتمر أو حفلة","Expo, conference or party"],
+     ["testimonial","مقابلة أو رأي عميل","Interview","حد بيتكلم عن تجربته","Someone shares their experience"],
+     ["tutorial","شرح خطوة بخطوة","How-to","إزاي تعمل حاجة","How to do something"],
+     ["logo","لوجو متحرك","Logo animation","أو فاصل ومقدمة قصيرة","Or a short intro / bumper"],
+     ["occasion","مناسبة أو تهنئة","Occasion","رمضان، العيد، اليوم الوطني…","Ramadan, Eid, national day…"]]},
+   {id:"idea",type:"textarea",req:1,ar:"الفكرة",en:"The idea",hintAr:"الفيديو عن إيه؟ وليه دلوقتي؟",hintEn:"What is it about? Why now?"},
+   {id:"oneline",type:"text",soft:1,ar:"لو المشاهد هيفتكر جملة واحدة، تبقى إيه؟",en:"If viewers remember one sentence, what is it?",phAr:"مثلًا: أسرع توصيل في المدينة",phEn:"e.g. The fastest delivery in town"},
+   {id:"action",type:"multi",other:1,ar:"بعد ما يتفرج، المفروض يعمل إيه؟",en:"After watching, what should they do?",opts:[
+     ["buy","يشتري أو يطلب","Buy or order"],["contact","يكلّمنا","Get in touch"],["visit","يزورنا أو يدخل الموقع","Visit us or the website"],
+     ["understand","يفهم الفكرة","Understand it"],["remember","يفتكر الاسم","Remember the name"],["share","يشيّر الفيديو","Share the video"],U]},
+   {id:"must",type:"textarea",ar:"حاجات لازم تظهر، أو ممنوع تظهر",en:"Anything that must, or must not, appear",hintAr:"أرقام، لينك، عرض، أسماء ممنوع تتذكر…",hintEn:"Numbers, a link, an offer, names to avoid…"}
+  ]},
+ {id:"audience", ar:{t:"لمين وفين",s:"مين هيتفرج، وهيتنشر فين."}, en:{t:"Who and where",s:"Who will watch, and where it goes."},
+  q:[
+   {id:"who",type:"multi",other:1,ar:"مين هيتفرج؟",en:"Who will watch?",opts:[
+     ["public","الناس عمومًا","General public"],["new","عملاء جدد","New customers"],["current","عملاء حاليين","Current customers"],["partners","شركاء أو مستثمرين","Partners or investors"],["internal","فريق الشركة","Our own team"],U]},
+   {id:"market",type:"multi",other:1,ar:"في أنهي بلد؟",en:"Which country?",opts:[
+     ["eg","مصر","Egypt"],["gulf","الخليج","Gulf"],["arab","الوطن العربي","Arab region"],["west","أمريكا وأوروبا","US and Europe"],["global","عالمي","Global"],U]},
+   {id:"vlang",type:"multi",other:1,ar:"لغة الفيديو",en:"Video language",opts:[["ar","عربي","Arabic"],["en","إنجليزي","English"],U]},
+   {id:"platforms",type:"multi",other:1,soft:1,ar:"هيتنشر فين؟",en:"Where will it be published?",hintAr:"على أساسها هنختار المقاس.",hintEn:"We'll pick the frame size from this.",opts:[
+     ["reels","إنستجرام وتيك توك","Instagram / TikTok"],["facebook","فيسبوك","Facebook"],["youtube","يوتيوب","YouTube"],["linkedin","لينكدإن","LinkedIn"],["website","الموقع","Website"],
+     ["ads","إعلانات مدفوعة","Paid ads"],["tv","تليفزيون","TV"],["screen","شاشة في معرض أو محل","Screen at an event or store"],["whatsapp","واتساب","WhatsApp"],U]},
+   {id:"duration",type:"chips",kind:"duration",ar:"الطول",en:"Length",opts:[
+     ["6-15","أقل من ١٥ ثانية","Under 15 sec"],["15-30","١٥ لـ ٣٠ ثانية","15–30 sec"],["30-60","لحد دقيقة","Up to 1 min"],["60-90","دقيقة لدقيقة ونص","1–1.5 min"],["90+","أطول","Longer"],U]}
+  ]},
+ {id:"look", ar:{t:"الشكل والصوت",s:"اختار الأقرب للي في خيالك."}, en:{t:"Look and sound",s:"Pick what's closest to what you imagine."},
+  q:[
+   {id:"style",type:"cards",multi:1,svg:1,other:1,ar:"الستايل",en:"Style",opts:[
+     ["footage","تصوير ومونتاج","Filmed","مشاهد حقيقية","Real scenes"],
+     ["live_ui","تصوير وجرافيك","Footage + graphics","مشاهد وفوقها كلام وأشكال متحركة","Scenes with animated text and shapes"],
+     ["talking","حد بيتكلم","Talking to camera","مقدّم أو موظف أو عميل","A presenter, employee or customer"],
+     ["motion2d","موشن جرافيك","Motion graphics","أشكال وأيقونات بتتحرك","Animated shapes and icons"],
+     ["kinetic","كلام متحرك","Kinetic text","الكلام نفسه هو البطل","The words are the hero"],
+     ["illustration","رسوم وشخصيات","Characters","شخصيات مرسومة بتحكي","Drawn characters tell it"],
+     ["abstract3d","3D","3D","مجسمات وإحساس فخم","3D objects, premium feel"],
+     ["ui_cursor","شاشات تطبيق أو موقع","App screens","للتطبيقات والمواقع","For apps and websites"],
+     ["photos","صور متحركة","Animated photos","صور بحركة كاميرا","Photos with camera moves"],
+     ["unsure","مش عارف، قرّروا إنتو","Not sure, your call","هنقترح الأنسب","We'll suggest what fits"]]},
+   {id:"mood",type:"multi",other:1,ar:"الإحساس",en:"Feel",opts:[
+     ["calm","هادي","Calm"],["energetic","سريع وفيه طاقة","Fast, energetic"],["premium","فخم","Premium"],["fun","مرح","Fun"],["serious","جاد","Serious"],["emotional","مؤثر","Emotional"],U]},
+   {id:"vo",type:"chips",ar:"فيه حد بيتكلم في الفيديو (تعليق صوتي)؟",en:"Voice-over?",opts:[["yes","أيوه","Yes"],["no","لأ، موسيقى بس","No, music only"],U]},
+   {id:"voice",type:"multi",other:1,ar:"لو أيوه: صوت مين؟",en:"If yes: what voice?",opts:[
+     ["male","راجل","Male"],["female","ست","Female"],["egy","مصري","Egyptian"],["gulf","خليجي","Gulf"],["msa","فصحى","Classical Arabic"],["english","إنجليزي","English"]]},
+   {id:"refs",type:"textarea",ar:"لينكات فيديوهات عاجباك",en:"Links to videos you like",hintAr:"حط اللينك، واكتب جنبه إيه اللي عاجبك فيه.",hintEn:"Paste the link and note what you like about it.",phAr:"مثلًا: youtube.com/… عاجبني السرعة والألوان",phEn:"e.g. youtube.com/… I like the pace and colours"},
+   {id:"dislike",type:"textarea",ar:"لينكات فيديوهات مش عاجباك",en:"Links to videos you don't like",hintAr:"حط اللينك، واكتب جنبه إيه اللي مضايقك فيه، عشان نبعد عنه.",hintEn:"Paste the link and note what bothers you, so we avoid it.",phAr:"مثلًا: instagram.com/… الموسيقى عالية والكلام كتير",phEn:"e.g. instagram.com/… music too loud, too much text"}
+  ]},
+ {id:"delivery", ar:{t:"المواد والمعاد",s:"اللي عندك، ومحتاجه إمتى."}, en:{t:"Materials and deadline",s:"What you have, and when you need it."},
+  q:[
+   {id:"shoot",type:"chips",ar:"محتاج تصوير؟",en:"Does it need filming?",opts:[
+     ["need","أيوه، محتاجين نصوّر","Yes, it needs a shoot"],["have","المادة متصورة وجاهزة","Footage is ready"],["nofilm","لأ، جرافيك أو صور بس","No, graphics or photos only"],U]},
+   {id:"have",type:"multi",other:1,ar:"عندك إيه يساعدنا؟",en:"What do you have?",opts:[
+     ["logo","اللوجو","Logo"],["brand_guide","ألوان وخطوط البراند","Brand colours and fonts"],["footage","فيديوهات","Footage"],["photos","صور","Photos"],["script","سكريبت جاهز","A ready script"],["music","موسيقى معينة","Specific music"],["none","مفيش حاجة","Nothing yet"]]},
+   {id:"links",type:"textarea",ar:"لينكات المواد",en:"Links to materials",hintAr:"جوجل درايف، وان درايف، فيجما… واتأكد إن اللينك مفتوح.",hintEn:"Google Drive, OneDrive, Figma… make sure we can open it."},
+   {id:"deadline",type:"date",soft:1,ar:"محتاجه إمتى؟",en:"When do you need it?"},
+   {id:"event",type:"text",ar:"مرتبط بحدث أو مناسبة؟",en:"Tied to an event or occasion?",phAr:"مثلًا: معرض، افتتاح، رمضان",phEn:"e.g. an expo, an opening, Ramadan"},
+   {id:"approver",type:"text",soft:1,ar:"مين هيوافق في الآخر؟",en:"Who gives final approval?",hintAr:"شخص واحد لو أمكن.",hintEn:"One person if possible."},
+   {id:"notes",type:"textarea",ar:"أي حاجة تانية",en:"Anything else"}
+  ]}
+];
+const REVIEW = STEPS.length; // index of review step
+const QIDX = {}; STEPS.forEach((s,si)=>s.q.forEach(q=>QIDX[q.id]={q,si}));
+
+/* ---------- state ---------- */
+const store = {
+ get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+ set(k,v){try{localStorage.setItem(k,v)}catch(e){}},
+ del(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+let lang = store.get("vbrief-lang")==="en"?"en":"ar";
+let A = {}; try{A = JSON.parse(store.get("vbrief-draft")||"{}")||{}}catch(e){A={}}
+let step = 0, tab = "new", justSent = false;
+let db = null, user = null, uid = null, isEditor = false, capReady = false, readOnly = false;
+let mine = [], mineState = "idle", mineUnsub = null, mineTimer = null;
+let all = [], allState = "idle";
+const t = k => T[lang][k];
+const L = o => lang==="ar"?o.ar:o.en;
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $ = s => document.querySelector(s);
+const EMAIL = "ahmed.hassan@sherkety.net";
+const mailLink = (subject, body) => "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+const mailBrief = ans => { const sub = t("mailSubject")(ans.title || ""); const u = mailLink(sub, briefShort(ans, lang)); return u.length > 1900 ? mailLink(sub, t("pasteHere")) : u; };
+const emailBox = () => `<div class="mailbox"><span>${t("mailTo")}</span><code class="addr">${EMAIL}</code><button type="button" class="btn small" data-act="copyEmail">${t("copyEmail")}</button></div>`;
+let lastSent = {title:"", name:"", id:""};
+const PAGE_URL = "https://claude.ai/artifact/HnzGqPbFCsME4Wzuxqn5Kf";
+let focusId = "", scrolledFor = "";
+let saveTimer=null;
+function saveDraft(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>store.set("vbrief-draft",JSON.stringify(A)),300)}
+
+/* ---------- language ---------- */
+function applyLang(){
+ const h=document.documentElement; h.lang=lang; h.dir=lang==="ar"?"rtl":"ltr";
+ $("#lang-ar").setAttribute("aria-pressed",lang==="ar"); $("#lang-en").setAttribute("aria-pressed",lang==="en");
+ $("#t-team").textContent=t("team"); $("#t-brand").textContent=t("brand");
+ renderTabs(); render();
+}
+$("#lang-ar").onclick=()=>{lang="ar";store.set("vbrief-lang","ar");applyLang()};
+$("#lang-en").onclick=()=>{lang="en";store.set("vbrief-lang","en");applyLang()};
+
+/* ---------- tabs ---------- */
+function renderTabs(){
+ const nav=$("#tabs");
+ if(capReady&&!canSave()&&!isEditor){nav.hidden=true;nav.innerHTML="";return}
+ nav.hidden=false;
+ const items=[["new",t("tabNew")],["mine",t("tabMine"),mine.length]];
+ if(isEditor) items.push(["all",t("tabAll"),all.length||""]);
+ $("#tabs").innerHTML=items.map(([k,l,c])=>`<button role="tab" type="button" data-tab="${k}" aria-selected="${tab===k}">${esc(l)}${c?`<span class="count">${c}</span>`:""}</button>`).join("");
+}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;focusId="";if(tab==="new")justSent=false;if(tab==="all")loadAll();renderTabs();render();window.scrollTo(0,0)});
+
+/* ---------- labels ---------- */
+function optLabel(q,key){const o=(q.opts||[]).find(o=>o[0]===key);if(!o)return key;return lang==="ar"?o[1]:o[2]}
+function valueText(q,v,langOverride,ans){
+ const lg=langOverride||lang; ans=ans||A;
+ const ol=k=>{if(k==="other"){const x=ans[q.id+"_other"];return T[lg].otherLabel+(x?": "+x:"")}const o=(q.opts||[]).find(o=>o[0]===k);return o?(lg==="ar"?o[1]:o[2]):k};
+ if(v==null||v===""||(Array.isArray(v)&&!v.filter(Boolean).length))return "";
+ if(q.type==="multi"||(q.type==="cards"&&q.multi))return (Array.isArray(v)?v:[v]).map(ol).join(lg==="ar"?"، ":", ");
+ if(q.type==="chips"||q.type==="cards")return Array.isArray(v)?v.map(ol).join(lg==="ar"?"، ":", "):ol(v);
+ if(q.type==="three")return v.filter(Boolean).map((x,i)=>`${i+1}. ${x}`).join("\n");
+ if(q.type==="scale"){if(!v)return "";const l=lg==="ar"?q.l[0]:q.l[1],r=lg==="ar"?q.r[0]:q.r[1];return `${v}/5  (1 = ${l}, 5 = ${r})`}
+ if(q.type==="date"){try{return new Date(v+"T00:00:00").toLocaleDateString(lg==="ar"?"ar-EG":"en-AU",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}catch(e){return v}}
+ return String(v);
+}
+function isEmpty(v){return v==null||v===""||(Array.isArray(v)&&!v.filter(Boolean).length)}
+
+/* ---------- field renderers ---------- */
+function withOther(q){
+ if(!q.other) return q.opts||[];
+ const o=q.type==="cards"?["other","حاجة تانية","Something else","اكتبها بنفسك","Write your own"]:["other","حاجة تانية…","Other…"];
+ const list=q.opts.slice(); const ui=list.findIndex(x=>x[0]==="unsure");
+ if(ui>=0) list.splice(ui,0,o); else list.push(o);
+ return list;
+}
+function fieldHTML(q){
+ const lab=lang==="ar"?q.ar:q.en, hint=lang==="ar"?q.hintAr:q.hintEn, ph=lang==="ar"?q.phAr:q.phEn;
+ const v=A[q.id];
+ const isMulti=q.type==="multi"||(q.type==="cards"&&q.multi);
+ const opts=withOther(q);
+ const otherOn=Array.isArray(v)?v.includes("other"):v==="other";
+ const otherIn=q.other?`<input type="text" class="other-in" id="f-${q.id}_other" data-f="${q.id}_other" value="${esc(A[q.id+"_other"]||"")}" placeholder="${esc(t("otherPh"))}" aria-label="${esc(lab)}: ${esc(t("otherLabel"))}" ${otherOn?"":"hidden"}>`:"";
+ const head=`<${q.type==="text"||q.type==="textarea"||q.type==="date"?`label class="ql" for="f-${q.id}"`:'div class="ql"'}>${esc(lab)}<span class="tag ${q.req?"req":"opt"}">${q.req?t("tagReq"):t("tagOpt")}</span></${q.type==="text"||q.type==="textarea"||q.type==="date"?"label":"div"}>${isMulti?`<div class="hint multi-tag">${t("multiTag")}</div>`:""}${hint?`<div class="hint">${esc(hint)}</div>`:""}`;
+ let body="";
+ if(q.type==="text") body=`<input type="text" id="f-${q.id}" data-f="${q.id}" value="${esc(v||"")}" placeholder="${esc(ph||"")}" autocomplete="off">`;
+ else if(q.type==="textarea") body=`<textarea id="f-${q.id}" data-f="${q.id}" placeholder="${esc(ph||"")}">${esc(v||"")}</textarea>`;
+ else if(q.type==="date") body=`<input type="date" id="f-${q.id}" data-f="${q.id}" value="${esc(v||"")}" style="max-width:260px">`;
+ else if(q.type==="three"){const a=Array.isArray(v)?v:["","",""];body=`<div class="three">${[0,1,2].map(i=>`<div><span>${i+1}</span><input type="text" id="f-${q.id}-${i}" data-f="${q.id}" data-i="${i}" value="${esc(a[i]||"")}" aria-label="${esc(lab)} ${i+1}"></div>`).join("")}</div>`}
+ else if(q.type==="chips"||q.type==="multi"){
+  const multi=q.type==="multi";
+  body=`<div class="chips" role="group" aria-label="${esc(lab)}">${opts.map(o=>{
+   const on=multi?(Array.isArray(v)&&v.includes(o[0])):v===o[0];
+   let deco="";
+   if(q.kind==="aspect"&&o[0]!=="unsure"){const [w,h]=o[0].split("x").map(Number);const s=16/Math.max(w,h);deco=`<span class="shape" style="width:${Math.round(w*s)}px;height:${Math.round(h*s)}px"></span>`}
+   if(q.kind==="duration"&&o[0]!=="unsure"){const sec={"6-15":15,"15-30":30,"30-60":60,"60-90":90,"90+":120}[o[0]];deco=`<span class="bar" style="width:${Math.round(sec/120*44)+6}px"></span>`}
+   return `<button type="button" class="chip${o[0]==="unsure"?" unsure":""}" data-opt="${q.id}" data-k="${o[0]}" data-m="${multi?1:0}" aria-pressed="${on}"><span class="tick"></span>${deco}${esc(lang==="ar"?o[1]:o[2])}</button>`}).join("")}</div>${otherIn}`;
+ }
+ else if(q.type==="cards"){
+  const multi=!!q.multi;
+  body=`<div class="cards" role="group" aria-label="${esc(lab)}">${opts.map(o=>{
+   const on=multi?(Array.isArray(v)&&v.includes(o[0])):v===o[0];
+   return `<button type="button" class="ocard" data-opt="${q.id}" data-k="${o[0]}" data-m="${multi?1:0}" aria-pressed="${on}"><span class="tick"></span>${q.svg?SVG[o[0]]||"":""}<b>${esc(lang==="ar"?o[1]:o[2])}</b><small>${esc(lang==="ar"?o[3]:o[4])}</small></button>`}).join("")}</div>${otherIn}`;
+ }
+ else if(q.type==="scale"){
+  body=`<div class="scale"><span class="end">${esc(lang==="ar"?q.l[0]:q.l[1])}</span><div class="dots" role="group" aria-label="${esc(lab)}">${[1,2,3,4,5].map(n=>`<button type="button" data-scale="${q.id}" data-n="${n}" aria-pressed="${v===n}" aria-label="${n} / 5"></button>`).join("")}</div><span class="end">${esc(lang==="ar"?q.r[0]:q.r[1])}</span><button type="button" class="chip na" data-scale="${q.id}" data-n="0" aria-pressed="${!v}"><span class="tick"></span>${t("noPref")}</button></div>`;
+ }
+ return `<div class="q" data-q="${q.id}">${head}${body}${q.req?`<div class="err" hidden>${t("reqErr")}</div>`:""}</div>`;
+}
+
+/* ---------- views ---------- */
+function render(){
+ const v=$("#view");
+ if(tab==="mine"||tab==="all"){v.innerHTML=tab==="mine"?mineHTML():allHTML();if(focusId){const f=document.querySelector(`.item[data-id="${focusId}"]`);if(f&&scrolledFor!==focusId){scrolledFor=focusId;f.scrollIntoView({block:"start"})}}return}
+ if(justSent){v.innerHTML=`<div class="card success"><div class="big"></div><h2>${t("sentTitle")}</h2><p class="step-sub" style="margin-inline:auto">${t("sentText")}</p><div class="note info" style="max-width:520px;margin:0 auto 6px;text-align:start">${t("waHint")}</div><div style="display:flex;justify-content:center;margin-bottom:6px">${emailBox()}</div><div class="row" style="justify-content:center"><a class="btn go" href="${esc(notifyMail())}" target="_blank" rel="noopener">${t("waNotify")}</a><button type="button" class="btn primary" data-act="goMine">${t("goMine")}</button><button type="button" class="btn" data-act="newOne">${t("newOne")}</button></div></div>`;return}
+ v.innerHTML=heroHTML()+`<div class="wiz">${railHTML()}<section class="card" aria-live="polite">${step===REVIEW?reviewHTML():stepHTML()}</section></div>`;
+}
+function heroHTML(){
+ const reqCount=STEPS.reduce((n,s)=>n+s.q.filter(q=>q.req).length,0);
+ return `<section class="slate"><div><h1>${t("heroTitle")}</h1><p>${t("heroText")}</p></div><div class="clap"><div><b>${STEPS.length}</b>${t("clapSteps")}</div><div><b>5</b>${t("clapMins")}</div><div><b>${reqCount}</b>${t("clapReq")}</div></div></section>`;
+}
+function stepDone(s){return s.q.some(q=>!isEmpty(A[q.id]))}
+function railHTML(){
+ return `<nav class="rail" aria-label="Steps">${STEPS.map((s,i)=>`<button type="button" data-step="${i}" class="${stepDone(s)?"done":""}" ${i===step?'aria-current="step"':""}><span class="n">${i+1}</span><span class="lbl">${esc(L(s).t)}</span></button>`).join("")}<button type="button" data-step="${REVIEW}" ${step===REVIEW?'aria-current="step"':""}><span class="n">✓</span><span class="lbl">${t("review")}</span></button></nav>`;
+}
+function stepHTML(){
+ const s=STEPS[step];
+ return `<div class="step-h"><h2>${esc(L(s).t)}</h2><span class="of">${t("stepOf")(step+1,STEPS.length)}</span></div><p class="step-sub">${esc(L(s).s)}</p>${s.q.some(q=>q.req)?`<div class="note info mb">${t("reqLegend")}</div>`:""}${s.q.map(fieldHTML).join("")}
+ <div class="nav"><button type="button" class="btn" data-act="back" ${step===0?"disabled":""}><span class="arr">←</span>${t("back")}</button><span class="saved" id="saved"></span><button type="button" class="btn primary" data-act="next">${step===STEPS.length-1?t("review"):t("next")}<span class="arr">→</span></button></div>`;
+}
+function missing(){
+ const req=[],soft=[];
+ STEPS.forEach((s,si)=>s.q.forEach(q=>{if(isEmpty(A[q.id])){if(q.req)req.push([q,si]);else if(q.soft)soft.push([q,si])}}));
+ return {req,soft};
+}
+function sheetHTML(ans,withEdit){
+ const known=new Set();STEPS.forEach(s=>s.q.forEach(q=>{known.add(q.id);known.add(q.id+"_other")}));
+ const extra=Object.keys(ans||{}).filter(k=>!known.has(k)&&!isEmpty(ans[k]));
+ const extraHTML=extra.length?`<div class="sec"><div><h4>${t("oldAnswers")}</h4></div><dl>${extra.map(k=>`<dt>${esc(k)}</dt><dd>${esc(Array.isArray(ans[k])?ans[k].filter(Boolean).join(", "):String(ans[k]))}</dd>`).join("")}</dl></div>`:"";
+ return `<div class="sheet">${STEPS.map((s,si)=>{
+  const rows=s.q.map(q=>{const txt=valueText(q,ans[q.id],null,ans);return `<dt>${esc(lang==="ar"?q.ar:q.en)}</dt><dd>${txt?esc(txt):`<span class="empty">${t("empty")}</span>`}</dd>`}).join("");
+  let extra="";
+  if(s.id==="format"&&Array.isArray(ans.aspect)){const fr=ans.aspect.filter(k=>k!=="unsure");if(fr.length)extra=`<dt></dt><dd><div class="frames">${fr.map(k=>{const [w,h]=k.split("x").map(Number);const sc=54/Math.max(w,h);return `<div class="fr" style="width:${Math.round(w*sc)}px;height:${Math.round(h*sc)}px">${w}:${h}</div>`}).join("")}</div></dd>`}
+  return `<div class="sec"><div><h4>${esc(L(s).t)}</h4>${withEdit?`<button type="button" class="edit" data-step="${si}">${t("edit")}</button>`:""}</div><dl>${rows}${extra}</dl></div>`}).join("")}${extraHTML}</div>`;
+}
+function reviewHTML(){
+ const m=missing();
+ const lst=arr=>`<ul>${arr.map(([q,si])=>`<li><button type="button" class="edit" style="color:inherit;text-decoration:underline" data-step="${si}">${esc(lang==="ar"?q.ar:q.en)}</button></li>`).join("")}</ul>`;
+ let notes="";
+ const waMode=capReady&&!canSave();
+ if(waMode) notes+=`<div class="note info mb" style="flex-direction:column">${t("waMode")}${emailBox()}</div>`;
+ if(m.req.length) notes+=`<div class="note warn mb"><div>${t("missingReq")}${lst(m.req)}</div></div>`;
+ if(m.soft.length) notes+=`<div class="note info mb"><div>${t("missingSoft")}${lst(m.soft)}</div></div>`;
+ const ready=!m.req.length;
+ let sendBtn;
+ if(waMode) sendBtn=ready?`<a class="btn go" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a>`:`<button type="button" class="btn go" disabled>${t("waFull")}</button>`;
+ else sendBtn=`<button type="button" class="btn go" data-act="send" ${ready&&canSave()?"":"disabled"}>${t("send")}</button>`;
+ return `<div class="step-h"><h2>${t("reviewTitle")}</h2></div><p class="step-sub">${t("reviewSub")}</p>${notes}${sheetHTML(A,true)}
+ <div id="send-err"></div>
+ <div class="nav"><button type="button" class="btn" data-act="back"><span class="arr">←</span>${t("back")}</button><div class="row" style="margin:0"><button type="button" class="btn" data-act="copy">${t("copyText")}</button>${sendBtn}</div></div>`;
+}
+
+/* ---------- plain-text export ---------- */
+function briefText(ans,lg){
+ const TT=T[lg]; const out=[];
+ out.push((lg==="ar"?"طلب فيديو: ":"Video request: ")+(ans.title||""));
+ STEPS.forEach(s=>{out.push("");out.push("— "+(lg==="ar"?s.ar.t:s.en.t)+" —");s.q.forEach(q=>{const v=valueText(q,ans[q.id],lg,ans);out.push((lg==="ar"?q.ar:q.en)+": "+(v||TT.empty))})});
+ return out.join("\n");
+}
+// Compact version for email: only answered questions.
+function briefShort(ans,lg){
+ const out=[(lg==="ar"?"طلب فيديو جديد: ":"New video request: ")+(ans.title||"")];
+ STEPS.forEach(s=>{
+  const rows=s.q.filter(q=>q.id!=="title").map(q=>{const v=valueText(q,ans[q.id],lg,ans);return v?`• ${lg==="ar"?q.ar:q.en}: ${v}`:""}).filter(Boolean);
+  if(rows.length){out.push("");out.push("■ "+(lg==="ar"?s.ar.t:s.en.t));out.push(...rows)}
+ });
+ return out.join("\n");
+}
+// Alert email after saving: notice + link to the request + the whole request (short notice + link if too long).
+function notifyMail(){
+ const sub=t("mailSubject")(lastSent.title);
+ const head=t("waMsg")(lastSent.title,lastSent.name)+(lastSent.id?"\n\n"+t("openReq")+"\n"+PAGE_URL+"#req-"+lastSent.id:"");
+ const u=mailLink(sub,head+"\n\n"+briefShort(lastSent.ans||{},lang));
+ return u.length>1900?mailLink(sub,head):u;
+}
+function canSave(){return !!(db&&uid&&!readOnly)}
+async function copyText(txt,btn){
+ try{await navigator.clipboard.writeText(txt);const o=btn.textContent;btn.textContent=t("copied");setTimeout(()=>{btn.textContent=o},1600)}
+ catch(e){const ta=document.createElement("textarea");ta.value=txt;ta.style.minHeight="240px";ta.readOnly=true;btn.closest(".nav,.row,.item")?.after(ta);ta.select();const n=document.createElement("div");n.className="note warn";n.style.marginTop="8px";n.textContent=t("copyFail");ta.after(n)}
+}
+
+/* ---------- my requests ---------- */
+function fmtDate(iso){try{return new Date(iso).toLocaleString(lang==="ar"?"ar-EG":"en-AU",{year:"numeric",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}catch(e){return iso||""}}
+function pill(s){s=s||"new";return `<span class="pill s-${esc(s)}">${esc((t("status")[s])||s)}</span>`}
+function replyHTML(r){
+ if(!r)return "";
+ const parts=[["idea",t("rIdea")],["frames",t("rFrames")],["script",t("rScript")],["questions",t("rQuestions")],["notes",t("rNotes")]]
+  .filter(([k])=>r[k]).map(([k,l])=>`<div><h4>${esc(l)}</h4><div class="body">${esc(r[k])}</div></div>`).join("");
+ if(!parts)return "";
+ return `<div class="reply"><h4 style="color:var(--accent)">${t("replyTitle")}${r.at?` · <span class="meta">${esc(fmtDate(r.at))}</span>`:""}</h4>${parts}</div>`;
+}
+function decisionHTML(d){
+ if(!d||!d.state)return "";
+ return `<div class="note ${d.state==="approved"?"ok":"warn"}" style="margin-top:12px"><div><b>${d.state==="approved"?t("approvedAt"):t("changesAt")}</b> · <span class="meta">${esc(fmtDate(d.at))}</span>${d.note?`<div style="white-space:pre-wrap;margin-top:4px">${esc(d.note)}</div>`:""}</div></div>`;
+}
+function mineHTML(){
+ if(capReady&&!canSave()) return `<div class="emptybox">${t("mineWa")}</div>`;
+ if(mineState==="loading"||!capReady) return `<div class="emptybox">${t("loading")}</div>`;
+ let head=mineState==="slow"?`<div class="note warn mb">${t("slow")}</div>`:"";
+ if(!mine.length) return head+`<div class="emptybox">${t("mineEmpty")}</div>`;
+ return head+`<div class="list">${mine.map(it=>{
+  const d=it.data, a=d.answers||{};
+  const canDecide=d.reply&&(d.status==="treatment"||d.status==="questions");
+  return `<article class="item${it.id===focusId?" focus":""}" data-id="${esc(it.id)}"><div class="item-h"><div><h3>${esc(a.title||"—")}</h3><div class="meta">${t("sentOn")} ${esc(fmtDate(d.createdAt))}</div></div>${pill(d.status)}</div>
+  ${replyHTML(d.reply)}${decisionHTML(d.decision)}
+  ${canDecide?`<div class="row" data-decide="${esc(it.id)}"><button type="button" class="btn go small" data-act="approve">${t("approve")}</button><button type="button" class="btn small" data-act="changes">${t("askChanges")}</button></div>`:""}
+  <details class="more" ${it.id===focusId?"open":""}><summary>${t("answers")}</summary>${sheetHTML(a,false)}<div class="row"><button type="button" class="btn small" data-act="copyItem" data-src="mine">${t("copyText")}</button></div></details></article>`}).join("")}</div>`;
+}
+
+/* ---------- all requests (editors) ---------- */
+function allHTML(){
+ if(!isEditor) return "";
+ if(allState==="loading") return `<div class="emptybox">${t("loading")}</div>`;
+ const head=`<div class="row mb" style="justify-content:flex-end;margin-top:0"><button type="button" class="btn small" data-act="refreshAll">${t("refresh")}</button></div>`;
+ if(allState==="error") return head+`<div class="note warn">${t("slow")}</div>`;
+ const nf=focusId&&!all.some(x=>x.id===focusId)?`<div class="note warn mb">${t("notFound")}</div>`:"";
+ if(!all.length) return head+nf+`<div class="emptybox">${t("allEmpty")}</div>`;
+ const sts=Object.keys(T.ar.status);
+ return head+nf+`<div class="list">${all.map(it=>{
+  const d=it.data,a=d.answers||{};
+  return `<article class="item${it.id===focusId?" focus":""}" data-id="${esc(it.id)}" data-owner="${esc(it.owner)}"><div class="item-h"><div><h3>${esc(a.title||"—")}</h3><div class="meta">${t("by")} ${esc(a.name||"—")}${a.team?" · "+esc(a.team):""} · ${esc(fmtDate(d.createdAt))}</div></div>
+  <label class="meta">${t("statusLbl")} <select class="status" data-status="${esc(it.id)}">${sts.map(s=>`<option value="${s}" ${d.status===s?"selected":""}>${esc(t("status")[s])}</option>`).join("")}</select></label></div>
+  ${replyHTML(d.reply)}${decisionHTML(d.decision)}
+  <details class="more" ${it.id===focusId?"open":""}><summary>${t("answers")}</summary><p class="meta">${t("langNote")}: ${d.lang==="en"?"English":"عربي"}</p>${sheetHTML(a,false)}<div class="row"><button type="button" class="btn small" data-act="copyItem" data-src="all">${t("copyText")}</button></div></details></article>`}).join("")}</div>`;
+}
+async function loadAll(){
+ if(!db||!isEditor)return;
+ allState="loading"; if(tab==="all")render();
+ try{
+  const parents=await db.collection("briefs").get();
+  const lists=await Promise.all(parents.docs.map(p=>db.collection(`briefs/${p.id}/items`).get().then(s=>s.docs.map(d=>({id:d.id,owner:p.id,data:d.data()})))));
+  all=lists.flat().sort((x,y)=>String(y.data.createdAt).localeCompare(String(x.data.createdAt)));
+  allState="ready";
+ }catch(e){allState="error"}
+ renderTabs(); if(tab==="all")render();
+}
+
+/* ---------- events ---------- */
+document.addEventListener("input",e=>{
+ const el=e.target.closest("[data-f]"); if(!el)return;
+ const id=el.dataset.f;
+ if(el.dataset.i!=null){const a=Array.isArray(A[id])?A[id].slice():["","",""];a[+el.dataset.i]=el.value;A[id]=a}
+ else A[id]=el.value;
+ const qb=el.closest(".q.invalid"); if(qb&&el.value.trim()){qb.classList.remove("invalid");const er=qb.querySelector(".err");if(er)er.hidden=true}
+ saveDraft(); const s=$("#saved"); if(s) s.textContent=t("draftSaved");
+ const rb=document.querySelector(`.rail [data-step="${step}"]`); if(rb) rb.classList.toggle("done",stepDone(STEPS[step]));
+});
+document.addEventListener("click",async e=>{
+ const opt=e.target.closest("[data-opt]");
+ if(opt){
+  const id=opt.dataset.opt,k=opt.dataset.k,multi=opt.dataset.m==="1";
+  const group=opt.parentElement;
+  if(multi){
+   let a=Array.isArray(A[id])?A[id].slice():[];
+   const exclusive=k==="unsure"||k==="none";
+   if(a.includes(k))a=a.filter(x=>x!==k);
+   else{ if(exclusive)a=[k]; else a=a.filter(x=>x!=="unsure"&&x!=="none").concat(k); }
+   A[id]=a;
+   group.querySelectorAll("[data-opt]").forEach(b=>b.setAttribute("aria-pressed",a.includes(b.dataset.k)));
+  }else{
+   A[id]=A[id]===k?"":k;
+   group.querySelectorAll("[data-opt]").forEach(b=>b.setAttribute("aria-pressed",A[id]===b.dataset.k));
+  }
+  const oi=document.getElementById("f-"+id+"_other");
+  if(oi){const on=Array.isArray(A[id])?A[id].includes("other"):A[id]==="other";oi.hidden=!on;if(on&&k==="other")oi.focus()}
+  saveDraft(); const s=$("#saved"); if(s) s.textContent=t("draftSaved");
+  const rb=document.querySelector(`.rail [data-step="${step}"]`); if(rb) rb.classList.toggle("done",stepDone(STEPS[step]));
+  return;
+ }
+ const sc=e.target.closest("[data-scale]");
+ if(sc){
+  const id=sc.dataset.scale,n=+sc.dataset.n; A[id]=(n===0||A[id]===n)?0:n;
+  sc.closest(".scale").querySelectorAll("[data-scale]").forEach(b=>{const bn=+b.dataset.n;b.setAttribute("aria-pressed",bn===0?!A[id]:A[id]===bn)});
+  saveDraft(); return;
+ }
+ const st=e.target.closest("[data-step]");
+ if(st){step=+st.dataset.step;render();$(".card")?.scrollIntoView({block:"start",behavior:"smooth"});return}
+ const act=e.target.closest("[data-act]"); if(!act)return;
+ const a=act.dataset.act;
+ if(a==="next"){
+  const miss=(STEPS[step]?.q||[]).filter(q=>q.req&&isEmpty(A[q.id]));
+  if(miss.length){miss.forEach(q=>{const box=document.querySelector(`.q[data-q="${q.id}"]`);if(box){box.classList.add("invalid");const er=box.querySelector(".err");if(er)er.hidden=false}});document.getElementById("f-"+miss[0].id)?.focus();return}
+  step=Math.min(REVIEW,step+1);render();$(".card")?.scrollIntoView({block:"start",behavior:"smooth"})}
+ else if(a==="back"){step=Math.max(0,step-1);render();$(".card")?.scrollIntoView({block:"start",behavior:"smooth"})}
+ else if(a==="copy") copyText(briefText(A,lang),act);
+ else if(a==="copyEmail") copyText(EMAIL,act);
+ else if(a==="send") send(act);
+ else if(a==="goMine"){tab="mine";justSent=false;renderTabs();render()}
+ else if(a==="newOne"){justSent=false;step=0;render()}
+ else if(a==="refreshAll") loadAll();
+ else if(a==="copyItem"){const item=act.closest(".item");const src=act.dataset.src==="all"?all:mine;const it=src.find(x=>x.id===item.dataset.id);if(it)copyText(briefText(it.data.answers||{},lang),act)}
+ else if(a==="approve") decide(act.closest("[data-decide]").dataset.decide,"approved","");
+ else if(a==="changes"){
+  const row=act.closest("[data-decide]");
+  row.innerHTML=`<div style="width:100%;display:flex;flex-direction:column;gap:8px"><textarea id="chg-${esc(row.dataset.decide)}" placeholder="${esc(t("changesPh"))}"></textarea><div class="row" style="margin:0"><button type="button" class="btn primary small" data-act="sendChanges">${t("sendChanges")}</button><button type="button" class="btn small" data-act="cancelChanges">${t("cancel")}</button></div></div>`;
+  row.querySelector("textarea").focus();
+ }
+ else if(a==="cancelChanges") render();
+ else if(a==="sendChanges"){const row=act.closest("[data-decide]");const note=row.querySelector("textarea").value.trim();if(!note){row.querySelector("textarea").focus();return}decide(row.dataset.decide,"changes",note)}
+});
+document.addEventListener("change",async e=>{
+ const sel=e.target.closest("[data-status]"); if(!sel||!db)return;
+ const item=sel.closest(".item"); const it=all.find(x=>x.id===item.dataset.id); if(!it)return;
+ sel.disabled=true;
+ try{await db.doc(`briefs/${it.owner}/items/${it.id}`).update({status:sel.value,updatedAt:new Date().toISOString()});it.data={...it.data,status:sel.value}}catch(err){sel.value=it.data.status}
+ sel.disabled=false;
+});
+
+/* ---------- writes ---------- */
+async function send(btn){
+ if(!db||!uid)return;
+ btn.disabled=true; btn.textContent=t("sending");
+ const now=new Date().toISOString();
+ const answers=JSON.parse(JSON.stringify(A));
+ try{
+  await db.doc(`briefs/${uid}`).set({name:answers.name||"",team:answers.team||"",lastAt:now});
+  const newId="r"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  await db.collection(`briefs/${uid}/items`).doc(newId).set({createdAt:now,updatedAt:now,lang,status:"new",answers});
+  lastSent={title:answers.title||"",name:answers.name||"",id:newId,ans:answers};
+  A={}; store.del("vbrief-draft"); step=0; justSent=true; render(); window.scrollTo(0,0);
+ }catch(err){
+  btn.disabled=false; btn.textContent=t("send");
+  const box=$("#send-err"); if(box) box.innerHTML=`<div class="note warn" style="margin-top:14px;flex-wrap:wrap"><span>${err&&err.code==="quota_exceeded"?t("quotaErr"):t("saveErr")}</span><a class="btn go small" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a></div>`;
+ }
+}
+async function decide(id,state,note){
+ if(!db||!uid)return;
+ const now=new Date().toISOString();
+ try{await db.doc(`briefs/${uid}/items/${id}`).update({decision:{state,note,at:now},status:state==="approved"?"production":"changes",updatedAt:now})}
+ catch(err){const row=document.querySelector(`[data-decide="${id}"]`);if(row)row.insertAdjacentHTML("afterend",`<div class="note warn" style="margin-top:8px">${t("saveErr")}</div>`)}
+}
+
+/* ---------- capabilities ---------- */
+async function boot(){
+ applyLang();
+ if(!window.claude||typeof window.claude.use!=="function"){capReady=true;renderTabs();render();return}
+ try{[db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")])}catch(e){db=null;user=null}
+ if(user){try{uid=await user.id()}catch(e){uid=null}try{isEditor=!!(await user.canEdit())}catch(e){isEditor=false}try{readOnly=(await user.can("data.write"))===false}catch(e){readOnly=false}}
+ capReady=true;
+ if(db&&uid){
+  mineState="loading";
+  mineTimer=setTimeout(()=>{if(mineState==="loading"){mineState="slow";if(tab==="mine")render()}},10000);
+  mineUnsub=db.collection(`briefs/${uid}/items`).orderBy("createdAt","desc").onSnapshot(snap=>{
+   mine=snap.docs.map(d=>({id:d.id,data:d.data()}));
+   if(!snap.metadata.fromCache){clearTimeout(mineTimer);mineState="ready"}else if(mineState==="loading")mineState="ready";
+   renderTabs(); if(tab==="mine")render();
+  },()=>{clearTimeout(mineTimer);mineState="slow";if(tab==="mine")render()});
+ }
+ if(isEditor&&db) loadAll();
+ routeHash();
+ renderTabs(); render();
+}
+function routeHash(){
+ const h=(location.hash||"").slice(1);
+ if(!h.startsWith("req-")) return;
+ focusId=h.slice(4); justSent=false;
+ tab=isEditor?"all":"mine";
+ renderTabs(); render();
+}
+window.addEventListener("hashchange",routeHash);
+boot();
+})();
+</script>
+
+</body>
+</html>

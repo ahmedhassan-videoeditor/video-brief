@@ -259,6 +259,7 @@ const T = {
   otherLabel:"حاجة تانية", otherPh:"اكتب اللي في دماغك…", multiTag:"تقدر تختار أكتر من واحد",
   waMode:"طلبك هيتبعت بالإيميل. دوس «ابعت الطلب بالإيميل» وبرنامج الإيميل هيفتح والطلب مكتوب، وإنت تدوس إرسال. لو ما فتحش: دوس «انسخ الطلب كنص» وابعته على الإيميل اللي تحت.",
   mineWa:"الطلبات اللي بتتبعت بالإيميل ما بتظهرش هنا. فريق الفيديو هيرد عليك بالإيميل.",
+  formMode:"لما تدوس «ابعت الطلب»، طلبك هيوصل لفريق الفيديو على طول.", formErr:"الطلب ما اتبعتش، ممكن تكون مشكلة في النت. جرّب تاني بعد شوية، أو ابعته بالإيميل:", sentTextForm:"وصلنا طلبك. فريق الفيديو هيراجعه ويرد عليك على الإيميل أو الرقم اللي كتبته.",
   oldAnswers:"إجابات من نسخة قديمة من الاستمارة", tagReq:"إجباري", tagOpt:"اختياري", reqErr:"لازم تكتب ده قبل ما تكمل", reqLegend:"الأسئلة اللي عليها «إجباري» لازم تتجاوب. الباقي اختياري، جاوب اللي تعرفه.", openReq:"افتح الطلب من هنا:", notFound:"الطلب ده مش موجود، أو اتمسح.",
   mailSubject:ti=>`طلب فيديو جديد: ${ti}`, mailTo:"إيميل فريق الفيديو:", copyEmail:"انسخ الإيميل",
   pasteHere:"(الطلب طويل على الإيميل التلقائي. ارجع للصفحة، دوس «انسخ الطلب كنص»، والصقه هنا.)"
@@ -298,6 +299,7 @@ const T = {
   otherLabel:"Other", otherPh:"Write your own…", multiTag:"Pick as many as you like",
   waMode:"Your request will be sent by email. Press “Send request by email”; your email app opens with the request written in, and you press send. If it doesn't open, press “Copy request as text” and email it to the address below.",
   mineWa:"Requests sent by email don't appear here. The video team will reply to you by email.",
+  formMode:"When you press “Send request”, your request goes straight to the video team.", formErr:"The request wasn't sent; it may be a connection problem. Try again in a moment, or send it by email:", sentTextForm:"We got your request. The video team will review it and reply to the email or number you gave.",
   oldAnswers:"Answers from an older version of the form", tagReq:"Required", tagOpt:"Optional", reqErr:"Please fill this in before continuing", reqLegend:"Questions marked “Required” must be answered. The rest are optional; answer what you know.", openReq:"Open the request here:", notFound:"This request doesn't exist, or was deleted.",
   mailSubject:ti=>`New video request: ${ti}`, mailTo:"Video team email:", copyEmail:"Copy email",
   pasteHere:"(The request is too long for an automatic email. Go back to the page, press “Copy request as text”, and paste it here.)"
@@ -326,6 +328,7 @@ const STEPS = [
  {id:"about", ar:{t:"عنك",s:"عشان نعرف نرجع لك لو عندنا سؤال."}, en:{t:"About you",s:"So we know who to come back to."},
   q:[
    {id:"name",type:"text",req:1,ar:"اسمك",en:"Your name"},
+   {id:"contact",type:"text",soft:1,ar:"إيميلك أو رقمك",en:"Your email or phone",hintAr:"عشان نرد عليك.",hintEn:"So we can reply to you."},
    {id:"company",type:"text",ar:"الشركة أو البراند",en:"Company or brand"},
    {id:"title",type:"text",req:1,ar:"اسم قصير للطلب",en:"A short name for this request",phAr:"مثلًا: إعلان افتتاح الفرع الجديد",phEn:"e.g. New branch opening ad"}
   ]},
@@ -421,6 +424,10 @@ const mailBrief = ans => { const sub = t("mailSubject")(ans.title || ""); const 
 const emailBox = () => `<div class="mailbox"><span>${t("mailTo")}</span><code class="addr">${EMAIL}</code><button type="button" class="btn small" data-act="copyEmail">${t("copyEmail")}</button></div>`;
 let lastSent = {title:"", name:"", id:""};
 const PAGE_URL = "https://claude.ai/artifact/HnzGqPbFCsME4Wzuxqn5Kf";
+// Outside Claude (the public GitHub page) requests go straight to FormSubmit, which emails them.
+const STANDALONE = !(window.claude && typeof window.claude.use === "function");
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + EMAIL;
+let sentMode = "";
 let focusId = "", scrolledFor = "";
 let saveTimer=null;
 function saveDraft(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>store.set("vbrief-draft",JSON.stringify(A)),300)}
@@ -507,6 +514,7 @@ function fieldHTML(q){
 function render(){
  const v=$("#view");
  if(tab==="mine"||tab==="all"){v.innerHTML=tab==="mine"?mineHTML():allHTML();if(focusId){const f=document.querySelector(`.item[data-id="${focusId}"]`);if(f&&scrolledFor!==focusId){scrolledFor=focusId;f.scrollIntoView({block:"start"})}}return}
+ if(justSent&&sentMode==="form"){v.innerHTML=`<div class="card success"><div class="big"></div><h2>${t("sentTitle")}</h2><p class="step-sub" style="margin-inline:auto">${t("sentTextForm")}</p><div class="row" style="justify-content:center"><button type="button" class="btn" data-act="newOne">${t("newOne")}</button></div></div>`;return}
  if(justSent){v.innerHTML=`<div class="card success"><div class="big"></div><h2>${t("sentTitle")}</h2><p class="step-sub" style="margin-inline:auto">${t("sentText")}</p><div class="note info" style="max-width:520px;margin:0 auto 6px;text-align:start">${t("waHint")}</div><div style="display:flex;justify-content:center;margin-bottom:6px">${emailBox()}</div><div class="row" style="justify-content:center"><a class="btn go" href="${esc(notifyMail())}" target="_blank" rel="noopener">${t("waNotify")}</a><button type="button" class="btn primary" data-act="goMine">${t("goMine")}</button><button type="button" class="btn" data-act="newOne">${t("newOne")}</button></div></div>`;return}
  v.innerHTML=heroHTML()+`<div class="wiz">${railHTML()}<section class="card" aria-live="polite">${step===REVIEW?reviewHTML():stepHTML()}</section></div>`;
 }
@@ -543,12 +551,15 @@ function reviewHTML(){
  const lst=arr=>`<ul>${arr.map(([q,si])=>`<li><button type="button" class="edit" style="color:inherit;text-decoration:underline" data-step="${si}">${esc(lang==="ar"?q.ar:q.en)}</button></li>`).join("")}</ul>`;
  let notes="";
  const waMode=capReady&&!canSave();
- if(waMode) notes+=`<div class="note info mb" style="flex-direction:column">${t("waMode")}${emailBox()}</div>`;
+ const formMode=waMode&&STANDALONE;
+ if(formMode) notes+=`<div class="note info mb">${t("formMode")}</div>`;
+ else if(waMode) notes+=`<div class="note info mb" style="flex-direction:column">${t("waMode")}${emailBox()}</div>`;
  if(m.req.length) notes+=`<div class="note warn mb"><div>${t("missingReq")}${lst(m.req)}</div></div>`;
  if(m.soft.length) notes+=`<div class="note info mb"><div>${t("missingSoft")}${lst(m.soft)}</div></div>`;
  const ready=!m.req.length;
  let sendBtn;
- if(waMode) sendBtn=ready?`<a class="btn go" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a>`:`<button type="button" class="btn go" disabled>${t("waFull")}</button>`;
+ if(formMode) sendBtn=`<button type="button" class="btn go" data-act="sendForm" ${ready?"":"disabled"}>${t("send")}</button>`;
+ else if(waMode) sendBtn=ready?`<a class="btn go" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a>`:`<button type="button" class="btn go" disabled>${t("waFull")}</button>`;
  else sendBtn=`<button type="button" class="btn go" data-act="send" ${ready&&canSave()?"":"disabled"}>${t("send")}</button>`;
  return `<div class="step-h"><h2>${t("reviewTitle")}</h2></div><p class="step-sub">${t("reviewSub")}</p>${notes}${sheetHTML(A,true)}
  <div id="send-err"></div>
@@ -690,6 +701,7 @@ document.addEventListener("click",async e=>{
  else if(a==="copy") copyText(briefText(A,lang),act);
  else if(a==="copyEmail") copyText(EMAIL,act);
  else if(a==="send") send(act);
+ else if(a==="sendForm") sendForm(act);
  else if(a==="goMine"){tab="mine";justSent=false;renderTabs();render()}
  else if(a==="newOne"){justSent=false;step=0;render()}
  else if(a==="refreshAll") loadAll();
@@ -712,6 +724,26 @@ document.addEventListener("change",async e=>{
 });
 
 /* ---------- writes ---------- */
+async function sendForm(btn){
+ btn.disabled=true; btn.textContent=t("sending");
+ const payload={_subject:t("mailSubject")(A.title||""),_template:"table",_captcha:"false"};
+ const c=(A.contact||"").trim(); if(/^\S+@\S+\.\S+$/.test(c)) payload._replyto=c;
+ payload[lang==="ar"?"لغة الطلب":"Request language"]=lang==="ar"?"عربي":"English";
+ STEPS.forEach(s=>s.q.forEach(q=>{const v=valueText(q,A[q.id],lang,A);if(v)payload[L(s).t+" | "+(lang==="ar"?q.ar:q.en)]=v}));
+ try{
+  const r=await fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)});
+  const j=await r.json().catch(()=>({}));
+  if(r.ok&&String(j.success)==="true"){
+   lastSent={title:A.title||"",name:A.name||"",id:""}; sentMode="form";
+   A={}; store.del("vbrief-draft"); step=0; justSent=true; render(); window.scrollTo(0,0); return;
+  }
+  throw new Error(j.message||("HTTP "+r.status));
+ }catch(e){
+  console.warn("[brief] send failed:",e&&e.message);
+  btn.disabled=false; btn.textContent=t("send");
+  const box=$("#send-err"); if(box) box.innerHTML=`<div class="note warn" style="margin-top:14px;flex-direction:column;gap:10px"><span>${t("formErr")}</span>${emailBox()}<a class="btn go small" style="align-self:flex-start" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a></div>`;
+ }
+}
 async function send(btn){
  if(!db||!uid)return;
  btn.disabled=true; btn.textContent=t("sending");
@@ -721,7 +753,7 @@ async function send(btn){
   await db.doc(`briefs/${uid}`).set({name:answers.name||"",team:answers.team||"",lastAt:now});
   const newId="r"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
   await db.collection(`briefs/${uid}/items`).doc(newId).set({createdAt:now,updatedAt:now,lang,status:"new",answers});
-  lastSent={title:answers.title||"",name:answers.name||"",id:newId,ans:answers};
+  lastSent={title:answers.title||"",name:answers.name||"",id:newId,ans:answers}; sentMode="";
   A={}; store.del("vbrief-draft"); step=0; justSent=true; render(); window.scrollTo(0,0);
  }catch(err){
   btn.disabled=false; btn.textContent=t("send");

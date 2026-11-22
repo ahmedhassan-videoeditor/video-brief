@@ -424,9 +424,11 @@ const mailBrief = ans => { const sub = t("mailSubject")(ans.title || ""); const 
 const emailBox = () => `<div class="mailbox"><span>${t("mailTo")}</span><code class="addr">${EMAIL}</code><button type="button" class="btn small" data-act="copyEmail">${t("copyEmail")}</button></div>`;
 let lastSent = {title:"", name:"", id:""};
 const PAGE_URL = "https://claude.ai/artifact/HnzGqPbFCsME4Wzuxqn5Kf";
-// Outside Claude (the public GitHub page) requests go straight to FormSubmit, which emails them.
+// Outside Claude (the public GitHub page) requests go straight to Web3Forms, which emails them.
+// The access key is public by design (Web3Forms docs); it only lets this form send to the owner's inbox.
 const STANDALONE = !(window.claude && typeof window.claude.use === "function");
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/" + EMAIL;
+const FORM_ENDPOINT = "https://api.web3forms.com/submit";
+const FORM_KEY = "e4897567-6a4b-4974-9c6a-979dc0ccb9e7";
 let sentMode = "";
 let focusId = "", scrolledFor = "";
 let saveTimer=null;
@@ -726,14 +728,14 @@ document.addEventListener("change",async e=>{
 /* ---------- writes ---------- */
 async function sendForm(btn){
  btn.disabled=true; btn.textContent=t("sending");
- const payload={_subject:t("mailSubject")(A.title||""),_template:"table",_captcha:"false"};
- const c=(A.contact||"").trim(); if(/^\S+@\S+\.\S+$/.test(c)) payload._replyto=c;
+ const payload={access_key:FORM_KEY,subject:t("mailSubject")(A.title||""),from_name:lang==="ar"?"بريف الفيديو":"Video Brief"};
+ const c=(A.contact||"").trim(); if(/^\S+@\S+\.\S+$/.test(c)) payload.replyto=c;
  payload[lang==="ar"?"لغة الطلب":"Request language"]=lang==="ar"?"عربي":"English";
  STEPS.forEach(s=>s.q.forEach(q=>{const v=valueText(q,A[q.id],lang,A);if(v)payload[L(s).t+" | "+(lang==="ar"?q.ar:q.en)]=v}));
  try{
   const r=await fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)});
   const j=await r.json().catch(()=>({}));
-  if(r.ok&&String(j.success)==="true"){
+  if(r.ok&&(j.success===true||String(j.success)==="true")){
    lastSent={title:A.title||"",name:A.name||"",id:""}; sentMode="form";
    A={}; store.del("vbrief-draft"); step=0; justSent=true; render(); window.scrollTo(0,0); return;
   }

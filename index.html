@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="استمارة طلب فيديو: احكي لنا عن الفيديو اللي محتاجه في ٥ دقايق. Video request form.">
-<meta property="og:title" content="بريف الفيديو | Video Brief">
-<meta property="og:description" content="احكي لنا عن الفيديو اللي محتاجه في ٥ دقايق.">
+<meta name="description" content="احكيلنا عن فكرتك، والباقي علينا. Tell us your idea, we will take it from there.">
+<meta property="og:title" content="طلب فيديو جديد · Sherkety Motion Studio">
+<meta property="og:description" content="احكيلنا عن فكرتك، والباقي علينا.">
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>Video Brief</title>
+<title>طلب فيديو جديد</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
   --sky:#2C86E8; --sky-soft:#E3EFFD; --coral:#F2512F; --coral-soft:#FFE9E3; --mint:#0C9A6F; --mint-soft:#DDF5EB;
   --iris:#6A4FEA; --iris-soft:#ECE8FE; --rose:#DE3F86; --rose-soft:#FCE5EF; --sun:#F2A100; --sun-soft:#FFF1D2;
   --on:#FFFFFF; --on-sun:#1A1730;
-  --warn:#A94E06; --warn-soft:#FFF0DE; --ok:#0B8257; --ok-soft:#DDF5EB;
+  --warn:#A94E06; --warn-soft:#FFF0DE; --ok:#0B8257;
   --monitor:#15131F; --monitor-ink:#EFEDF8; --monitor-dim:#8E8AA8;
   --shadow:0 1px 2px rgba(26,23,48,.04),0 10px 30px -14px rgba(26,23,48,.18);
   --f-display:"Bricolage Grotesque","Alexandria","Readex Pro",system-ui,sans-serif;
@@ -37,7 +37,7 @@
   --sky:#64B0FF; --sky-soft:#13263C; --coral:#FF7253; --coral-soft:#3A1F19; --mint:#3DD3A0; --mint-soft:#0F2D24;
   --iris:#A08CFF; --iris-soft:#251F46; --rose:#FF7DB2; --rose-soft:#3A1729; --sun:#FFC23D; --sun-soft:#352A0E;
   --on:#14121D; --on-sun:#14121D;
-  --warn:#FFB066; --warn-soft:#33220F; --ok:#5CD6A6; --ok-soft:#0F2D24;
+  --warn:#FFB066; --warn-soft:#33220F; --ok:#5CD6A6;
   --monitor:#0A0910; --monitor-ink:#EFEDF8; --monitor-dim:#7F7B98;
   --shadow:0 1px 0 rgba(255,255,255,.03); --edge:#F4F2FB; --stk-shadow:0 10px 22px -8px rgba(0,0,0,.7); color-scheme:dark;
 }}
@@ -47,7 +47,7 @@
   --sky:#64B0FF; --sky-soft:#13263C; --coral:#FF7253; --coral-soft:#3A1F19; --mint:#3DD3A0; --mint-soft:#0F2D24;
   --iris:#A08CFF; --iris-soft:#251F46; --rose:#FF7DB2; --rose-soft:#3A1729; --sun:#FFC23D; --sun-soft:#352A0E;
   --on:#14121D; --on-sun:#14121D;
-  --warn:#FFB066; --warn-soft:#33220F; --ok:#5CD6A6; --ok-soft:#0F2D24;
+  --warn:#FFB066; --warn-soft:#33220F; --ok:#5CD6A6;
   --monitor:#0A0910; --monitor-ink:#EFEDF8; --monitor-dim:#7F7B98;
   --shadow:0 1px 0 rgba(255,255,255,.03); --edge:#F4F2FB; --stk-shadow:0 10px 22px -8px rgba(0,0,0,.7); color-scheme:dark;
 }
@@ -169,7 +169,7 @@ html[dir="rtl"] input.ltr{text-align:right}
 
 .help{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
 .help:empty{display:none}
-.help.warn{color:var(--warn)} .help.good{color:var(--ok)}
+.help.warn{color:var(--warn)}
 .help b{font-weight:600}
 .linkbtn{border:0;background:none;color:var(--c);font-weight:600;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
 
@@ -252,12 +252,15 @@ html[dir="rtl"] .asset{padding:8px 12px 8px 8px}
 
 /* Monitor (live preview) */
 .pv{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);min-width:0}
-.pv-toggle{display:none;width:100%;border:0;background:none;padding:12px 16px;cursor:pointer;align-items:center;gap:10px;font-weight:600;text-align:start}
+.pv-toggle{display:flex;width:100%;border:0;background:none;padding:12px 16px;cursor:default;align-items:center;gap:10px;font-weight:600;text-align:start}
+.pv-toggle b{margin-inline-start:auto;font-family:var(--f-display);font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums}
+@media (min-width:921px){.pv-toggle .mini,.pv-toggle .chev{display:none!important}}
 .pv-toggle .mini{display:flex;gap:4px;align-items:center;margin-inline-start:auto}
 .pv-toggle .mini i{display:block;border:1.5px solid var(--ink);border-radius:2px;opacity:.6}
 .pv-toggle .chev{transition:transform .2s}
 .pv.open .pv-toggle .chev{transform:rotate(180deg)}
-@media (max-width:920px){.pv{position:static}.pv-toggle{display:flex}.pv:not(.open) .pv-body{display:none}}
+@media (max-width:920px){.pv{position:static}.pv-toggle{cursor:pointer}.pv-toggle .mini,.pv-toggle .chev{display:flex}.pv-toggle b{margin-inline-start:0}.pv:not(.open) .pv-body{display:none}}
+.pv-body{border-top:1px solid var(--line)}
 .mon{background:var(--monitor);color:var(--monitor-ink);aspect-ratio:16/11;position:relative;display:grid;place-items:center;padding:30px 16px 38px;overflow:hidden}
 .mon .rec{position:absolute;top:11px;inset-inline-start:13px;font-size:11px;letter-spacing:.08em;display:flex;align-items:center;gap:6px;color:var(--monitor-dim);font-family:ui-monospace,"SF Mono",Menlo,monospace;direction:ltr}
 .mon .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand);animation:blink 1.6s steps(2) infinite}
@@ -300,7 +303,6 @@ html[dir="rtl"] .meter .fill{background:linear-gradient(-90deg,var(--sky),var(--
 
 .note{border-radius:14px;padding:12px 15px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
 .note.warn{background:var(--warn-soft);color:var(--warn)}
-.note.ok{background:var(--ok-soft);color:var(--ok)}
 .note.info{background:var(--sunk);color:var(--ink)}
 .note ul{margin:4px 0 0;padding-inline-start:18px}
 .note .linkbtn{color:inherit}
@@ -343,10 +345,9 @@ html[dir="rtl"] .sent .action{letter-spacing:0;font-size:17px}
 /* ---------- copy ---------- */
 const T = {
  ar:{
-  brand:"بريف الفيديو", team:"Sherkety Motion Studio",
+  brand:"طلب فيديو جديد", team:"Sherkety Motion Studio",
   foot:"<b>Sherkety Motion Studio</b> · فيديو، وموشن جرافيك، وأنيميشن بالذكاء الاصطناعي",
-  heroEyebrow:"طلب فيديو جديد",
-  heroTitle:"احكيلنا عن فيديوك،<br><em>والباقي علينا.</em>",
+  heroTitle:"احكيلنا عن فكرتك،<br><em>والباقي علينا.</em>",
   heroText:"مش لازم تكون فاهم في الفيديو. اختار من الأمثلة، واكتب بكلامك، واللي مش متأكد منه سيبه لنا. الأسئلة بتظهر لك على حسب اختياراتك، فمش هتشوف غير اللي يخصّك.",
   fSteps:n=>`<b>${n}</b> خطوات صغيرة`, fMins:"<b>٥</b> دقايق تقريبًا", fReq:"<b>٣</b> أسئلة بس مطلوبة",
   stepOf:(a,b)=>`خطوة ${a} من ${b}`, hello:n=>`أهلًا ${n} 👋`,
@@ -362,13 +363,13 @@ const T = {
   otherLabel:"حاجة تانية", otherPh:"اكتب اللي في دماغك…",
   newOne:"طلب جديد", waFull:"ابعت الطلب بالإيميل",
   formMode:"لما تدوس «ابعت الطلب»، طلبك هيوصل لفريق الفيديو على طول.", formErr:"الطلب ما اتبعتش، ممكن تكون مشكلة في النت. جرّب تاني بعد شوية، أو ابعته بالإيميل:",
-  oldAnswers:"إجابات من نسخة قديمة من الاستمارة", reqErr:"محتاجين ده قبل ما نكمّل",
+  reqErr:"محتاجين ده قبل ما نكمّل",
   mailSubject:ti=>`طلب فيديو جديد: ${ti}`, mailTo:"إيميل فريق الفيديو:", copyEmail:"انسخ الإيميل",
   pasteHere:"(الطلب طويل على الإيميل التلقائي. ارجع للصفحة، دوس «انسخ الطلب كنص»، والصقه هنا.)",
-  pvTitle:"فيديوك لحد دلوقتي", pvUntitled:"فيديو لسه من غير اسم", pvFrames:"المقاس هيظهر هنا أول ما تختار هيتنشر فين",
+  pvUntitled:"فيديو لسه من غير اسم", pvFrames:"المقاس هيظهر هنا أول ما تختار هيتنشر فين",
   pvType:"النوع", pvLen:"الطول", pvStyle:"الستايل", pvVoice:"الصوت", pvWhere:"فين", pvWhen:"المعاد",
   pvVo:"تعليق صوتي", pvNoVo:"من غير تعليق صوتي",
-  quips:["الكاميرا لسه بتسخّن","بداية حلوة، كمّل","الفيديو بدأ يبان","خلاص تقريبًا، فاضل لمسة"],
+  quips:["لسه بنتعرّف على فكرتك","بداية حلوة، كمّل","الفكرة بدأت تبان","فهمناك تقريبًا، فاضل لمسة"],
   pct:p=>`${p}٪`,
   suggested:"مقترح", durAuto:"اخترنا لك الطول المناسب للمنصات دي، وتقدر تغيّره.",
   scriptTime:s=>`السكريبت ده حوالي <b>${s} ثانية</b> لو اتقرا على مهل.`,
@@ -382,13 +383,12 @@ const T = {
   dateSoon:"المعاد ده قريب قوي. هنحاول، بس اكتب لنا في الملاحظات لو مستعجل.",
   datePast:"التاريخ ده عدّى. اختار تاريخ جاي.",
   hotFor:"مهم للستايل اللي اخترته",
-  pvOpen:"فيديوك لحد دلوقتي"
+  pvOpen:"فهمنا فكرتك لحد دلوقتي"
  },
  en:{
-  brand:"Video Brief", team:"Sherkety Motion Studio",
+  brand:"New video request", team:"Sherkety Motion Studio",
   foot:"<b>Sherkety Motion Studio</b> · Video, motion graphics and AI animation",
-  heroEyebrow:"New video request",
-  heroTitle:"Tell us about your video.<br><em>We'll take it from there.</em>",
+  heroTitle:"Tell us your idea.<br><em>We'll take it from there.</em>",
   heroText:"No video know-how needed. Pick from the examples, write in your own words, and leave anything you're unsure about to us. Questions appear based on your answers, so you only see what matters to you.",
   fSteps:n=>`<b>${n}</b> short steps`, fMins:"<b>5</b> minutes, roughly", fReq:"<b>3</b> required questions",
   stepOf:(a,b)=>`Step ${a} of ${b}`, hello:n=>`Hi ${n} 👋`,
@@ -404,13 +404,13 @@ const T = {
   otherLabel:"Other", otherPh:"Write your own…",
   newOne:"New request", waFull:"Send request by email",
   formMode:"When you press “Send request”, your request goes straight to the video team.", formErr:"The request wasn't sent; it may be a connection problem. Try again in a moment, or send it by email:",
-  oldAnswers:"Answers from an older version of the form", reqErr:"We need this before moving on",
+  reqErr:"We need this before moving on",
   mailSubject:ti=>`New video request: ${ti}`, mailTo:"Video team email:", copyEmail:"Copy email",
   pasteHere:"(The request is too long for an automatic email. Go back to the page, press “Copy request as text”, and paste it here.)",
-  pvTitle:"Your video so far", pvUntitled:"Untitled video", pvFrames:"Frame sizes show up here once you pick where it's published",
+  pvUntitled:"Untitled video", pvFrames:"Frame sizes show up here once you pick where it's published",
   pvType:"Type", pvLen:"Length", pvStyle:"Style", pvVoice:"Sound", pvWhere:"Where", pvWhen:"Due",
   pvVo:"Voice-over", pvNoVo:"No voice-over",
-  quips:["Camera's warming up","Nice start, keep going","The video is taking shape","Almost there, one last touch"],
+  quips:["Just getting to know your idea","Nice start, keep going","The idea is taking shape","Almost there, one last touch"],
   pct:p=>`${p}%`,
   suggested:"Suggested", durAuto:"We picked the usual length for these platforms. Change it if you like.",
   scriptTime:s=>`This script runs about <b>${s} seconds</b> read at an easy pace.`,
@@ -424,12 +424,12 @@ const T = {
   dateSoon:"That's very soon. We'll try, but tell us in the notes if it's urgent.",
   datePast:"That date has passed. Pick an upcoming one.",
   hotFor:"Useful for the style you picked",
-  pvOpen:"Your video so far"
+  pvOpen:"What we've understood so far"
  }
 };
 
 /* ---------- illustrations ---------- */
-const CLAP = (big)=>`<svg viewBox="0 0 120 100" aria-hidden="true">
+const CLAP = ()=>`<svg viewBox="0 0 120 100" aria-hidden="true">
  <rect x="12" y="38" width="98" height="56" rx="7" style="fill:var(--ink)"/>
  <g style="opacity:.9">${["sky","iris","rose","coral","sun","mint"].map((c,i)=>`<path d="M${20+i*15} 39 h10 l-6 11 h-10 z" style="fill:var(--${c})"/>`).join("")}</g>
  <rect x="22" y="60" width="44" height="5" rx="2.5" style="fill:var(--surface);opacity:.55"/>
@@ -804,7 +804,7 @@ function refresh(focusSel,popSel){
  if(focusSel){const el=document.querySelector(focusSel);if(el){el.focus({preventScroll:true});if(popSel!==false)el.classList.add("pop")}}
 }
 function heroHTML(){
- return `<section class="hero"><div><span class="eyebrow">${t("heroEyebrow")}</span><h1>${t("heroTitle")}</h1><p>${t("heroText")}</p><div class="facts"><span>${t("fSteps")(num(vSteps(A).length))}</span><span>${t("fMins")}</span><span>${t("fReq")}</span></div></div><div class="hero-art" aria-hidden="true"><div class="stickers">
+ return `<section class="hero"><div><h1>${t("heroTitle")}</h1><p>${t("heroText")}</p><div class="facts"><span>${t("fSteps")(num(vSteps(A).length))}</span><span>${t("fMins")}</span><span>${t("fReq")}</span></div></div><div class="hero-art" aria-hidden="true"><div class="stickers">
  <span class="stk ratio" data-depth="14"><i></i>9:16</span>
  <span class="stk rec" data-depth="22">REC</span>
  <span class="stk k4" data-depth="9">4K</span>
@@ -844,10 +844,10 @@ function pvInner(){
  let tot=0,done=0; vSteps(A).forEach(s=>vQs(s,A).forEach(q=>{tot++;if(answered(q,A))done++}));
  const p=tot?Math.round(done/tot*100):0; const quip=t("quips")[p<15?0:p<45?1:p<80?2:3];
  const mini=fr.slice(0,4).map(k=>{const [w,h]=k.split("x").map(Number);const sc=14/Math.max(w,h);return `<i style="width:${Math.round(w*sc)}px;height:${Math.round(h*sc)}px"></i>`}).join("");
- return `<button type="button" class="pv-toggle" data-act="pv" aria-expanded="${pvOpen}"><span>${t("pvOpen")} · ${t("pct")(num(p))}</span><span class="mini">${mini}</span><span class="chev">▾</span></button>
+ return `<button type="button" class="pv-toggle" data-act="pv" aria-expanded="${pvOpen}"><span>${t("pvOpen")}</span><b>${t("pct")(num(p))}</b><span class="mini">${mini}</span><span class="chev">▾</span></button>
  <div class="pv-body"><div class="mon"><span class="rec">REC</span><span class="tcode">${esc(A.duration&&A.duration!=="unsure"?A.duration.replace("-","–")+"s":"--:--")}</span>${frames}<div class="ttl${A.title?"":" ph"}">${esc(A.title||t("pvUntitled"))}</div></div>
  <dl>${row(t("pvType"),vt("type"))}${row(t("pvLen"),dur)}${row(t("pvStyle"),vt("style"))}${row(t("pvVoice"),esc(voice))}${row(t("pvWhere"),vt("platforms"))}${row(t("pvWhen"),when)}</dl>
- <div class="meter"><div class="track"><div class="fill" style="width:${Math.max(p,3)}%"></div></div><div class="q2"><span>${quip}</span><b>${t("pct")(num(p))}</b></div></div></div>`;
+ <div class="meter"><div class="track"><div class="fill" style="width:${Math.max(p,3)}%"></div></div><div class="q2"><span>${quip}</span></div></div></div>`;
 }
 function schedulePv(){clearTimeout(pvTimer);pvTimer=setTimeout(()=>{const pv=$("#pv");if(pv)pv.innerHTML=pvInner();const tl=$("#tl");if(tl)tl.innerHTML=timelineInner()},250)}
 
@@ -858,15 +858,12 @@ function missing(){
  return {req,soft};
 }
 function sheetHTML(ans,withEdit){
- const known=new Set(["extra","sizes","_durAuto"]);STEPS.forEach(s=>s.q.forEach(q=>{known.add(q.id);known.add(q.id+"_other")}));
- const extra=Object.keys(ans||{}).filter(k=>!known.has(k)&&!/^a[ln]_/.test(k)&&!isEmpty(ans[k]));
- const extraHTML=extra.length?`<div class="sec tone-brand"><div><h4>${t("oldAnswers")}</h4></div><dl>${extra.map(k=>`<dt>${esc(k)}</dt><dd>${esc(Array.isArray(ans[k])?ans[k].filter(Boolean).join(", "):typeof ans[k]==="object"?JSON.stringify(ans[k]):String(ans[k]))}</dd>`).join("")}</dl></div>`:"";
  return `<div class="sheet">${vSteps(ans).map(s=>{
   const rows=vQs(s,ans).filter(q=>q.id!=="sizes").map(q=>{const txt=valueText(q,ans[q.id],null,ans);if(!txt)return "";return `<dt>${esc(QL(q))}</dt><dd>${esc(txt)}</dd>`}).join("");
   let frames="";
   if(s.id==="audience"){const fr=uniqueSizes(ans);if(fr.length)frames=`<dt>${esc(QL(QIDX.sizes.q))}</dt><dd>${esc(valueText(QIDX.sizes.q,ans.sizes,null,ans))}<div class="frames" style="margin-top:8px">${fr.map(k=>{const [w,h]=k.split("x").map(Number);const sc=44/Math.max(w,h);return `<div class="fr" style="width:${Math.round(w*sc)}px;height:${Math.round(h*sc)}px">${ratio(k)}</div>`}).join("")}</div></dd>`}
   const body=rows+frames;
-  return `<div class="sec tone-${s.tone}"><div><h4>${esc(L(s).t)}</h4>${withEdit?`<button type="button" class="edit" data-step="${s.id}">${t("edit")}</button>`:""}</div>${body?`<dl>${body}</dl>`:`<div class="nothing">${t("nothing")}</div>`}</div>`}).join("")}${extraHTML}</div>`;
+  return `<div class="sec tone-${s.tone}"><div><h4>${esc(L(s).t)}</h4>${withEdit?`<button type="button" class="edit" data-step="${s.id}">${t("edit")}</button>`:""}</div>${body?`<dl>${body}</dl>`:`<div class="nothing">${t("nothing")}</div>`}</div>`}).join("")}</div>`;
 }
 function reviewHTML(){
  const m=missing();
@@ -882,7 +879,7 @@ function reviewHTML(){
  <div class="nav"><button type="button" class="btn" data-act="back"><span class="arr">←</span>${t("back")}</button><div class="row" style="margin:0"><button type="button" class="btn" data-act="copy">${t("copyText")}</button>${sendBtn}</div></div>`;
 }
 function sentHTML(){
- return `<div class="card sent">${CLAP(true)}<div class="action">${t("action")}</div><h2>${t("sentTitle")}</h2><p>${t("sentTextForm")}</p><div class="row" style="justify-content:center"><button type="button" class="btn dark" data-act="newOne">${t("newOne")}</button></div></div>`;
+ return `<div class="card sent">${CLAP()}<div class="action">${t("action")}</div><h2>${t("sentTitle")}</h2><p>${t("sentTextForm")}</p><div class="row" style="justify-content:center"><button type="button" class="btn dark" data-act="newOne">${t("newOne")}</button></div></div>`;
 }
 
 /* ---------- plain-text export ---------- */
@@ -1027,7 +1024,7 @@ document.addEventListener("click",async e=>{
 /* ---------- send (Web3Forms emails the request) ---------- */
 async function sendForm(btn){
  btn.disabled=true; btn.textContent=t("sending");
- const payload={access_key:FORM_KEY,subject:t("mailSubject")(A.title||""),from_name:lang==="ar"?"بريف الفيديو":"Video Brief"};
+ const payload={access_key:FORM_KEY,subject:t("mailSubject")(A.title||""),from_name:"Sherkety Motion Studio"};
  const c=(A.contact||"").trim(); if(/^\S+@\S+\.\S+$/.test(c)) payload.replyto=c;
  payload[lang==="ar"?"لغة الطلب":"Request language"]=lang==="ar"?"عربي":"English";
  vSteps(A).forEach(s=>vQs(s,A).forEach(q=>{const v=valueText(q,A[q.id],lang,A);if(v)payload[L(s).t+" | "+QL(q)]=v}));

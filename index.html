@@ -28,6 +28,7 @@
   --shadow:0 1px 2px rgba(26,23,48,.04),0 10px 30px -14px rgba(26,23,48,.18);
   --f-display:"Bricolage Grotesque","Alexandria","Readex Pro",system-ui,sans-serif;
   --f-body:"Readex Pro",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  --edge:#FFFFFF; --stk-shadow:0 8px 18px -8px rgba(26,23,48,.45);
   --r:14px;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
@@ -38,7 +39,7 @@
   --on:#14121D; --on-sun:#14121D;
   --warn:#FFB066; --warn-soft:#33220F; --ok:#5CD6A6; --ok-soft:#0F2D24;
   --monitor:#0A0910; --monitor-ink:#EFEDF8; --monitor-dim:#7F7B98;
-  --shadow:0 1px 0 rgba(255,255,255,.03); color-scheme:dark;
+  --shadow:0 1px 0 rgba(255,255,255,.03); --edge:#F4F2FB; --stk-shadow:0 10px 22px -8px rgba(0,0,0,.7); color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#100F18; --surface:#1A1926; --sunk:#14131E; --ink:#F1EFFA; --muted:#A29EBB; --line:#2D2B40;
@@ -48,7 +49,7 @@
   --on:#14121D; --on-sun:#14121D;
   --warn:#FFB066; --warn-soft:#33220F; --ok:#5CD6A6; --ok-soft:#0F2D24;
   --monitor:#0A0910; --monitor-ink:#EFEDF8; --monitor-dim:#7F7B98;
-  --shadow:0 1px 0 rgba(255,255,255,.03); color-scheme:dark;
+  --shadow:0 1px 0 rgba(255,255,255,.03); --edge:#F4F2FB; --stk-shadow:0 10px 22px -8px rgba(0,0,0,.7); color-scheme:dark;
 }
 .tone-sky{--c:var(--sky);--cs:var(--sky-soft);--co:var(--on)}
 .tone-coral{--c:var(--coral);--cs:var(--coral-soft);--co:var(--on)}
@@ -78,12 +79,6 @@ html[dir="rtl"] h1,html[dir="rtl"] h2,html[dir="rtl"] h3{letter-spacing:0}
 .lang button{border:0;background:none;padding:6px 14px;border-radius:999px;cursor:pointer;font-size:13.5px;color:var(--muted);font-weight:500}
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 
-/* Tabs (Claude version only) */
-.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 15px;cursor:pointer;font-weight:500;color:var(--muted);display:inline-flex;gap:8px;align-items:center}
-.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.tabs .count{font-size:12px;background:var(--brand);color:var(--brand-ink);border-radius:999px;padding:0 7px;min-width:20px;text-align:center}
-
 /* Hero */
 .hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px clamp(20px,4vw,40px);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;position:relative}
 .hero h1{font-size:clamp(28px,4.4vw,44px);line-height:1.12;margin:6px 0 10px;font-weight:800}
@@ -94,11 +89,36 @@ html[dir="rtl"] .eyebrow{letter-spacing:0;text-transform:none;font-size:13px}
 .facts{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
 .facts span{background:var(--sunk);border-radius:999px;padding:6px 13px;font-size:13.5px;color:var(--muted)}
 .facts b{color:var(--ink);font-family:var(--f-display);font-weight:800;margin-inline-end:4px}
-.hero-art svg{width:clamp(120px,16vw,170px);height:auto;display:block}
-.clap-arm{transform-origin:14px 36px;transform:rotate(-16deg);transition:transform .2s}
-.hero:hover .clap-arm{animation:clapOnce .7s ease}
-@keyframes clapOnce{0%{transform:rotate(-16deg)}45%{transform:rotate(0)}60%{transform:rotate(-5deg)}100%{transform:rotate(-16deg)}}
-@media (max-width:640px){.hero{grid-template-columns:1fr}.hero-art{display:none}}
+.clap-arm{transform-origin:14px 36px}
+
+/* Stickers: die-cut labels around the headline, like a designer's laptop. Each bobs on its own beat and
+   drifts a little with the mouse (--mx/--my). Hover lifts one; a click gives it a squish. */
+.stickers{position:relative;width:290px;height:210px;flex:none}
+.stk{position:absolute;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:var(--f-display);font-weight:800;line-height:1;
+  border:3.5px solid var(--edge);border-radius:14px;padding:10px 15px;box-shadow:var(--stk-shadow);direction:ltr;user-select:none;cursor:grab;
+  translate:var(--mx,0px) var(--my,0px);rotate:var(--r,0deg);transition:translate .5s cubic-bezier(.2,.8,.2,1),rotate .25s,scale .25s;
+  animation:bob var(--dur,4s) ease-in-out var(--dl,0s) infinite alternate}
+.stk:hover{rotate:0deg;scale:1.12;z-index:2}
+.stk.boop{animation:boop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bob{from{transform:translateY(0) rotate(-1.5deg)}to{transform:translateY(-7px) rotate(2deg)}}
+@keyframes boop{0%{transform:scale(1)}30%{transform:scale(.82,1.12)}60%{transform:scale(1.12,.9)}100%{transform:scale(1)}}
+.stk.ratio{background:var(--sky);color:var(--on);font-size:17px;top:4px;left:14px;--r:-9deg;--dur:4.2s}
+.stk.ratio i{display:block;width:11px;height:19px;border:2.5px solid currentColor;border-radius:3px}
+.stk.rec{background:var(--monitor);color:var(--monitor-ink);font-size:15px;letter-spacing:.08em;top:0;left:158px;--r:7deg;--dur:3.6s;--dl:-1s}
+.stk.rec::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--brand);animation:blink 1.6s steps(2) infinite}
+.stk.k4{background:var(--sun);color:var(--on-sun);font-size:24px;width:68px;height:68px;border-radius:50%;padding:0;top:70px;left:104px;--r:-12deg;--dur:4.8s;--dl:-2s}
+.stk.cut{background:var(--brand);color:var(--brand-ink);font-size:16px;top:138px;left:4px;--r:8deg;--dur:3.9s;--dl:-.6s}
+.stk.clapper{background:var(--iris);font-size:28px;width:60px;height:60px;padding:0;border-radius:18px;top:132px;left:196px;--r:-7deg;--dur:4.4s;--dl:-1.6s}
+.stk.tc{background:var(--mint);color:var(--on);font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:14px;font-weight:700;top:76px;left:196px;--r:5deg;--dur:5.2s;--dl:-.3s}
+.stk.tc b{font-weight:700;font-variant-numeric:tabular-nums}
+@media (max-width:640px){
+  .hero{grid-template-columns:1fr}
+  .hero-art{order:-1}
+  .stickers{width:auto;height:auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:4px}
+  .stk{position:static;font-size:13px;padding:7px 11px;border-width:3px}
+  .stk.k4{width:48px;height:48px;font-size:17px}
+  .stk.clapper{width:44px;height:44px;font-size:21px}
+}
 
 /* Timeline of steps */
 .tl{display:flex;gap:5px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:7px;margin-bottom:16px;box-shadow:var(--shadow)}
@@ -299,25 +319,6 @@ html[dir="rtl"] .sent .action{letter-spacing:0;font-size:17px}
 .sent h2{margin:4px 0 8px}
 .sent p{color:var(--muted);max-width:48ch;margin:0 auto 10px}
 
-/* Lists (Claude version) */
-.list{display:flex;flex-direction:column;gap:12px}
-.item{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;min-width:0}
-.item.focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
-.item-h{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
-.item-h h3{margin:0;font-size:17px}
-.meta{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
-.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:4px 11px;border-radius:999px;background:var(--sunk);white-space:nowrap}
-.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
-.pill.s-new::before{background:var(--sky)} .pill.s-changes::before{background:var(--warn)}
-.pill.s-treatment{background:var(--brand-soft)} .pill.s-treatment::before{background:var(--brand)}
-.pill.s-production::before,.pill.s-delivered::before{background:var(--ok)}
-.reply{margin-top:14px;border-inline-start:3px solid var(--brand);padding-block:4px;padding-inline:14px 0;display:flex;flex-direction:column;gap:10px}
-.reply h4{margin:0;font-size:13px;color:var(--muted);font-weight:600}
-.reply .body{white-space:pre-wrap;overflow-wrap:anywhere}
-details.more{margin-top:12px} details.more summary{cursor:pointer;color:var(--brand);font-weight:600;font-size:14px}
-.emptybox{border:1.5px dashed var(--line);border-radius:16px;padding:30px;text-align:center;color:var(--muted)}
-select.status{width:auto;padding:6px 10px;font-size:13px;border-radius:10px;border:1px solid var(--line);background:var(--sunk)}
-
 .foot{color:var(--muted);font-size:12.5px;text-align:center;margin-top:26px}
 .foot b{color:var(--ink);font-weight:600}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -331,7 +332,6 @@ select.status{width:auto;padding:6px 10px;font-size:13px;border-radius:10px;bord
       <button type="button" id="lang-en" aria-pressed="false">English</button>
     </div>
   </header>
-  <nav class="tabs" role="tablist" id="tabs"></nav>
   <main id="view"></main>
   <footer class="foot" id="t-foot"></footer>
 </div>
@@ -345,7 +345,6 @@ const T = {
  ar:{
   brand:"بريف الفيديو", team:"Sherkety Motion Studio",
   foot:"<b>Sherkety Motion Studio</b> · فيديو، وموشن جرافيك، وأنيميشن بالذكاء الاصطناعي",
-  tabNew:"طلب فيديو جديد", tabMine:"طلباتي", tabAll:"كل الطلبات",
   heroEyebrow:"طلب فيديو جديد",
   heroTitle:"احكيلنا عن فيديوك،<br><em>والباقي علينا.</em>",
   heroText:"مش لازم تكون فاهم في الفيديو. اختار من الأمثلة، واكتب بكلامك، واللي مش متأكد منه سيبه لنا. الأسئلة بتظهر لك على حسب اختياراتك، فمش هتشوف غير اللي يخصّك.",
@@ -358,26 +357,12 @@ const T = {
   missingReq:"فاضل دول قبل ما تبعت:", missingSoft:"دول مش مطلوبين، بس لو جاوبتهم هيوفّروا علينا أسئلة كتير بعدين:",
   edit:"عدّل", empty:"ما اتكتبش", nothing:"لسه مفيش إجابات هنا.",
   copyText:"انسخ الطلب كنص", copied:"اتنسخ ✓", copyFail:"النسخ ما اشتغلش، حدّد النص وانسخه بإيدك",
-  action:"أكشن! 🎬", sentTitle:"طلبك وصل", sentText:"فريق الفيديو هيقرا الطلب ويرد عليك بفكرة مبدئية وسكريبت قبل ما يبدأ التنفيذ. هتلاقي الرد في «طلباتي».",
+  action:"أكشن! 🎬", sentTitle:"طلبك وصل",
   sentTextForm:"وصلنا طلبك. هنراجعه ونرد عليك على الإيميل أو الرقم اللي كتبته بفكرة مبدئية قبل ما نبدأ.",
-  goMine:"روح لطلباتي", newOne:"طلب جديد",
-  saveErr:"الطلب ما اتبعتش. جرّب تاني بعد شوية، أو انسخه كنص وابعته.", quotaErr:"المساحة المتاحة للطلبات خلصت. كلّم فريق الفيديو.",
-  mineEmpty:"لسه ما بعتّش أي طلب. أول ما تبعت طلب هيظهر هنا، ومعاه رد فريق الفيديو.",
-  allEmpty:"لسه مفيش طلبات. ابعت اللينك، وأول طلب يوصل هيظهر هنا.",
-  loading:"بيحمّل…", slow:"البيانات اتأخرت. ممكن تكون مشكلة في النت، وهتظهر أول ما الاتصال يرجع.",
-  sentOn:"اتبعت", by:"من", answers:"تفاصيل الطلب",
-  replyTitle:"رد فريق الفيديو", rIdea:"الفكرة", rScript:"السكريبت المبدئي", rQuestions:"أسئلة محتاجين إجابتها", rNotes:"ملاحظات", rFrames:"شكل المشاهد",
-  approve:"موافق، ابدأوا", askChanges:"عايز تعديل", changesPh:"اكتب إيه اللي عايز يتغير…", sendChanges:"ابعت التعديل", cancel:"إلغاء",
-  approvedAt:"وافقت", changesAt:"طلبت تعديل", refresh:"حدّث", statusLbl:"الحالة",
-  status:{new:"جديد",treatment:"الفكرة جاهزة لموافقتك",changes:"طلب تعديل",production:"في التنفيذ",delivered:"اتسلّم"},
-  langNote:"اللغة اللي اتكتب بيها الطلب",
-  waNotify:"بلّغ فريق الفيديو بالإيميل", waHint:"خطوة أخيرة: دوس الزرار ده عشان تبعت إيميل قصير لفريق الفيديو إن طلبك وصل. لو برنامج الإيميل ما فتحش، انسخ العنوان وابعت من إيميلك.",
-  waMsg:(ti,n)=>`أهلًا، بعتّ طلب فيديو جديد في صفحة البريف.\nالطلب: ${ti}\nمن: ${n}`, waFull:"ابعت الطلب بالإيميل",
   otherLabel:"حاجة تانية", otherPh:"اكتب اللي في دماغك…",
-  waMode:"طلبك هيتبعت بالإيميل. دوس «ابعت الطلب بالإيميل» وبرنامج الإيميل هيفتح والطلب مكتوب، وإنت تدوس إرسال. لو ما فتحش: دوس «انسخ الطلب كنص» وابعته على الإيميل اللي تحت.",
-  mineWa:"الطلبات اللي بتتبعت بالإيميل ما بتظهرش هنا. فريق الفيديو هيرد عليك بالإيميل.",
+  newOne:"طلب جديد", waFull:"ابعت الطلب بالإيميل",
   formMode:"لما تدوس «ابعت الطلب»، طلبك هيوصل لفريق الفيديو على طول.", formErr:"الطلب ما اتبعتش، ممكن تكون مشكلة في النت. جرّب تاني بعد شوية، أو ابعته بالإيميل:",
-  oldAnswers:"إجابات من نسخة قديمة من الاستمارة", reqErr:"محتاجين ده قبل ما نكمّل", openReq:"افتح الطلب من هنا:", notFound:"الطلب ده مش موجود، أو اتمسح.",
+  oldAnswers:"إجابات من نسخة قديمة من الاستمارة", reqErr:"محتاجين ده قبل ما نكمّل",
   mailSubject:ti=>`طلب فيديو جديد: ${ti}`, mailTo:"إيميل فريق الفيديو:", copyEmail:"انسخ الإيميل",
   pasteHere:"(الطلب طويل على الإيميل التلقائي. ارجع للصفحة، دوس «انسخ الطلب كنص»، والصقه هنا.)",
   pvTitle:"فيديوك لحد دلوقتي", pvUntitled:"فيديو لسه من غير اسم", pvFrames:"المقاس هيظهر هنا أول ما تختار هيتنشر فين",
@@ -402,7 +387,6 @@ const T = {
  en:{
   brand:"Video Brief", team:"Sherkety Motion Studio",
   foot:"<b>Sherkety Motion Studio</b> · Video, motion graphics and AI animation",
-  tabNew:"New video request", tabMine:"My requests", tabAll:"All requests",
   heroEyebrow:"New video request",
   heroTitle:"Tell us about your video.<br><em>We'll take it from there.</em>",
   heroText:"No video know-how needed. Pick from the examples, write in your own words, and leave anything you're unsure about to us. Questions appear based on your answers, so you only see what matters to you.",
@@ -415,26 +399,12 @@ const T = {
   missingReq:"Please complete these before sending:", missingSoft:"These are optional, but answering them now saves a lot of back and forth later:",
   edit:"Edit", empty:"Not answered", nothing:"No answers here yet.",
   copyText:"Copy request as text", copied:"Copied ✓", copyFail:"Copy didn't work. Select the text and copy it manually.",
-  action:"ACTION! 🎬", sentTitle:"Request received", sentText:"The video team will read it and reply with a first idea and draft script before production starts. You'll find the reply under “My requests”.",
+  action:"ACTION! 🎬", sentTitle:"Request received",
   sentTextForm:"We got your request. We'll review it and reply to the email or number you gave with a first idea before we start.",
-  goMine:"Go to my requests", newOne:"New request",
-  saveErr:"The request wasn't sent. Try again in a moment, or copy it as text and send it.", quotaErr:"Request storage is full. Please contact the video team.",
-  mineEmpty:"You haven't sent any requests yet. Once you do, they'll appear here with the video team's reply.",
-  allEmpty:"No requests yet. Share the link; the first one will show up here.",
-  loading:"Loading…", slow:"Data is taking a while. It may be the connection; it will appear once it's back.",
-  sentOn:"Sent", by:"From", answers:"Request details",
-  replyTitle:"Video team reply", rIdea:"The idea", rScript:"Draft script", rQuestions:"Questions for you", rNotes:"Notes", rFrames:"Scene outline",
-  approve:"Approve, go ahead", askChanges:"Request changes", changesPh:"Write what should change…", sendChanges:"Send changes", cancel:"Cancel",
-  approvedAt:"You approved", changesAt:"You asked for changes", refresh:"Refresh", statusLbl:"Status",
-  status:{new:"New",treatment:"Idea ready for your approval",changes:"Changes requested",production:"In production",delivered:"Delivered"},
-  langNote:"Language the request was written in",
-  waNotify:"Notify the video team by email", waHint:"Last step: press this to send the video team a short email saying your request arrived. If your email app doesn't open, copy the address and email from your own account.",
-  waMsg:(ti,n)=>`Hi, I just sent a new video request on the brief page.\nRequest: ${ti}\nFrom: ${n}`, waFull:"Send request by email",
   otherLabel:"Other", otherPh:"Write your own…",
-  waMode:"Your request will be sent by email. Press “Send request by email”; your email app opens with the request written in, and you press send. If it doesn't open, press “Copy request as text” and email it to the address below.",
-  mineWa:"Requests sent by email don't appear here. The video team will reply to you by email.",
+  newOne:"New request", waFull:"Send request by email",
   formMode:"When you press “Send request”, your request goes straight to the video team.", formErr:"The request wasn't sent; it may be a connection problem. Try again in a moment, or send it by email:",
-  oldAnswers:"Answers from an older version of the form", reqErr:"We need this before moving on", openReq:"Open the request here:", notFound:"This request doesn't exist, or was deleted.",
+  oldAnswers:"Answers from an older version of the form", reqErr:"We need this before moving on",
   mailSubject:ti=>`New video request: ${ti}`, mailTo:"Video team email:", copyEmail:"Copy email",
   pasteHere:"(The request is too long for an automatic email. Go back to the page, press “Copy request as text”, and paste it here.)",
   pvTitle:"Your video so far", pvUntitled:"Untitled video", pvFrames:"Frame sizes show up here once you pick where it's published",
@@ -633,11 +603,8 @@ const store = {
 const DRAFT = "vbrief-draft-v2";
 let lang = store.get("vbrief-lang")==="en"?"en":"ar";
 let A = {}; try{A = JSON.parse(store.get(DRAFT)||"{}")||{}}catch(e){A={}}
-let cur = "about", tab = "new", justSent = false, pvOpen = false;
+let cur = "about", justSent = false, pvOpen = false;
 let shown = new Set(), shownFor = "";
-let db = null, user = null, uid = null, isEditor = false, capReady = false, readOnly = false;
-let mine = [], mineState = "idle", mineTimer = null;
-let all = [], allState = "idle";
 const t = k => T[lang][k];
 const L = o => lang==="ar"?o.ar:o.en;
 const QL = (q,lg) => (lg||lang)==="ar"?q.ar:q.en;
@@ -648,15 +615,11 @@ const EMAIL = "ahmed.hassan@sherkety.net";
 const mailLink = (subject, body) => "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
 const mailBrief = ans => { const sub = t("mailSubject")(ans.title || ""); const u = mailLink(sub, briefShort(ans, lang)); return u.length > 1900 ? mailLink(sub, t("pasteHere")) : u; };
 const emailBox = () => `<div class="mailbox"><span>${t("mailTo")}</span><code class="addr">${EMAIL}</code><button type="button" class="btn small" data-act="copyEmail">${t("copyEmail")}</button></div>`;
-let lastSent = {title:"", name:"", id:""};
-const PAGE_URL = "https://claude.ai/artifact/HnzGqPbFCsME4Wzuxqn5Kf";
-// Outside Claude (the public GitHub page) requests go straight to Web3Forms, which emails them.
+// Requests go straight to Web3Forms, which emails them to the owner. The subject must keep
+// "طلب فيديو جديد" / "New video request": Power Automate saves emails into the requests folder by it.
 // The access key is public by design (Web3Forms docs); it only lets this form send to the owner's inbox.
-const STANDALONE = !(window.claude && typeof window.claude.use === "function");
 const FORM_ENDPOINT = "https://api.web3forms.com/submit";
 const FORM_KEY = "e4897567-6a4b-4974-9c6a-979dc0ccb9e7";
-let sentMode = "";
-let focusId = "", scrolledFor = "";
 let saveTimer = null, pvTimer = null;
 function saveDraft(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>store.set(DRAFT,JSON.stringify(A)),300);const s=$("#saved");if(s)s.textContent=t("draftSaved")}
 
@@ -818,7 +781,6 @@ function updateHelpers(){Object.values(QIDX).forEach(({q})=>{if(!q.help)return;c
 /* ---------- views ---------- */
 function render(){
  const v=$("#view");
- if(tab==="mine"||tab==="all"){v.innerHTML=tab==="mine"?mineHTML():allHTML();if(focusId){const f=document.querySelector(`.item[data-id="${focusId}"]`);if(f&&scrolledFor!==focusId){scrolledFor=focusId;f.scrollIntoView({block:"start"})}}return}
  if(justSent){v.innerHTML=sentHTML();return}
  const steps=vSteps(A);
  if(cur!=="review"&&!steps.some(s=>s.id===cur)) cur=steps[0].id;
@@ -842,7 +804,14 @@ function refresh(focusSel,popSel){
  if(focusSel){const el=document.querySelector(focusSel);if(el){el.focus({preventScroll:true});if(popSel!==false)el.classList.add("pop")}}
 }
 function heroHTML(){
- return `<section class="hero"><div><span class="eyebrow">${t("heroEyebrow")}</span><h1>${t("heroTitle")}</h1><p>${t("heroText")}</p><div class="facts"><span>${t("fSteps")(num(vSteps(A).length))}</span><span>${t("fMins")}</span><span>${t("fReq")}</span></div></div><div class="hero-art">${CLAP()}</div></section>`;
+ return `<section class="hero"><div><span class="eyebrow">${t("heroEyebrow")}</span><h1>${t("heroTitle")}</h1><p>${t("heroText")}</p><div class="facts"><span>${t("fSteps")(num(vSteps(A).length))}</span><span>${t("fMins")}</span><span>${t("fReq")}</span></div></div><div class="hero-art" aria-hidden="true"><div class="stickers">
+ <span class="stk ratio" data-depth="14"><i></i>9:16</span>
+ <span class="stk rec" data-depth="22">REC</span>
+ <span class="stk k4" data-depth="9">4K</span>
+ <span class="stk tc" data-depth="17"><b id="stk-tc">00:00</b></span>
+ <span class="stk cut" data-depth="20"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>CUT</span>
+ <span class="stk clapper" data-depth="26">🎬</span>
+</div></div></section>`;
 }
 function stepDone(s){return vQs(s,A).some(q=>answered(q,A))}
 function timelineInner(){
@@ -902,27 +871,18 @@ function sheetHTML(ans,withEdit){
 function reviewHTML(){
  const m=missing();
  const lst=a=>`<ul>${a.map(([q,s])=>`<li><button type="button" class="linkbtn" data-step="${s.id}" data-goto="${q.id}">${esc(QL(q))}</button></li>`).join("")}</ul>`;
- let notes="";
- const waMode=capReady&&!canSave();
- const formMode=waMode&&STANDALONE;
- if(formMode) notes+=`<div class="note info mb">✉️ ${t("formMode")}</div>`;
- else if(waMode) notes+=`<div class="note info mb" style="flex-direction:column">${t("waMode")}${emailBox()}</div>`;
+ let notes=`<div class="note info mb">✉️ ${t("formMode")}</div>`;
  if(m.req.length) notes+=`<div class="note warn mb"><div>${t("missingReq")}${lst(m.req)}</div></div>`;
  if(m.soft.length) notes+=`<div class="note info mb"><div>${t("missingSoft")}${lst(m.soft)}</div></div>`;
  const ready=!m.req.length;
- let sendBtn;
- if(formMode) sendBtn=`<button type="button" class="btn go" data-act="sendForm" ${ready?"":"disabled"}>${t("send")} <span class="arr">→</span></button>`;
- else if(waMode) sendBtn=ready?`<a class="btn go" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a>`:`<button type="button" class="btn go" disabled>${t("waFull")}</button>`;
- else sendBtn=`<button type="button" class="btn go" data-act="send" ${ready&&canSave()?"":"disabled"}>${t("send")}</button>`;
+ const sendBtn=`<button type="button" class="btn go" data-act="sendForm" ${ready?"":"disabled"}>${t("send")} <span class="arr">→</span></button>`;
  const steps=vSteps(A);
  return `<div class="step-top"><span class="eyebrow">${t("review")}</span><span class="tc">${tcode(steps.length+1,steps.length+1)}</span></div><h2>${t("reviewTitle")}</h2><p class="step-sub" style="margin-bottom:14px">${t("reviewSub")}</p>${notes}${sheetHTML(A,true)}
  <div id="send-err"></div>
  <div class="nav"><button type="button" class="btn" data-act="back"><span class="arr">←</span>${t("back")}</button><div class="row" style="margin:0"><button type="button" class="btn" data-act="copy">${t("copyText")}</button>${sendBtn}</div></div>`;
 }
 function sentHTML(){
- const head=`<div class="card sent">${CLAP(true)}<div class="action">${t("action")}</div><h2>${t("sentTitle")}</h2>`;
- if(sentMode==="form") return head+`<p>${t("sentTextForm")}</p><div class="row" style="justify-content:center"><button type="button" class="btn dark" data-act="newOne">${t("newOne")}</button></div></div>`;
- return head+`<p>${t("sentText")}</p><div class="note info" style="max-width:520px;margin:0 auto 8px;text-align:start">${t("waHint")}</div><div style="display:flex;justify-content:center;margin-bottom:6px">${emailBox()}</div><div class="row" style="justify-content:center"><a class="btn go" href="${esc(notifyMail())}" target="_blank" rel="noopener">${t("waNotify")}</a><button type="button" class="btn dark" data-act="goMine">${t("goMine")}</button><button type="button" class="btn" data-act="newOne">${t("newOne")}</button></div></div>`;
+ return `<div class="card sent">${CLAP(true)}<div class="action">${t("action")}</div><h2>${t("sentTitle")}</h2><p>${t("sentTextForm")}</p><div class="row" style="justify-content:center"><button type="button" class="btn dark" data-act="newOne">${t("newOne")}</button></div></div>`;
 }
 
 /* ---------- plain-text export ---------- */
@@ -940,91 +900,21 @@ function briefShort(ans,lg){
  });
  return out.join("\n");
 }
-function notifyMail(){
- const sub=t("mailSubject")(lastSent.title);
- const head=t("waMsg")(lastSent.title,lastSent.name)+(lastSent.id?"\n\n"+t("openReq")+"\n"+PAGE_URL+"#req-"+lastSent.id:"");
- const u=mailLink(sub,head+"\n\n"+briefShort(lastSent.ans||{},lang));
- return u.length>1900?mailLink(sub,head):u;
-}
-function canSave(){return !!(db&&uid&&!readOnly)}
 async function copyText(txt,btn){
  try{await navigator.clipboard.writeText(txt);const o=btn.textContent;btn.textContent=t("copied");setTimeout(()=>{btn.textContent=o},1600)}
  catch(e){const ta=document.createElement("textarea");ta.value=txt;ta.style.minHeight="240px";ta.readOnly=true;btn.closest(".nav,.row,.item")?.after(ta);ta.select();const n=document.createElement("div");n.className="note warn";n.style.marginTop="8px";n.textContent=t("copyFail");ta.after(n)}
 }
 
-/* ---------- my requests / all requests (Claude version) ---------- */
-function fmtDate(iso){try{return new Date(iso).toLocaleString(lang==="ar"?"ar-EG":"en-AU",{year:"numeric",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}catch(e){return iso||""}}
-function pill(s){s=s||"new";return `<span class="pill s-${esc(s)}">${esc((t("status")[s])||s)}</span>`}
-function replyHTML(r){
- if(!r)return "";
- const parts=[["idea",t("rIdea")],["frames",t("rFrames")],["script",t("rScript")],["questions",t("rQuestions")],["notes",t("rNotes")]]
-  .filter(([k])=>r[k]).map(([k,l])=>`<div><h4>${esc(l)}</h4><div class="body">${esc(r[k])}</div></div>`).join("");
- if(!parts)return "";
- return `<div class="reply"><h4 style="color:var(--brand)">${t("replyTitle")}${r.at?` · <span class="meta">${esc(fmtDate(r.at))}</span>`:""}</h4>${parts}</div>`;
-}
-function decisionHTML(d){
- if(!d||!d.state)return "";
- return `<div class="note ${d.state==="approved"?"ok":"warn"}" style="margin-top:12px"><div><b>${d.state==="approved"?t("approvedAt"):t("changesAt")}</b> · <span class="meta">${esc(fmtDate(d.at))}</span>${d.note?`<div style="white-space:pre-wrap;margin-top:4px">${esc(d.note)}</div>`:""}</div></div>`;
-}
-function mineHTML(){
- if(capReady&&!canSave()) return `<div class="emptybox">${t("mineWa")}</div>`;
- if(mineState==="loading"||!capReady) return `<div class="emptybox">${t("loading")}</div>`;
- const head=mineState==="slow"?`<div class="note warn mb">${t("slow")}</div>`:"";
- if(!mine.length) return head+`<div class="emptybox">${t("mineEmpty")}</div>`;
- return head+`<div class="list">${mine.map(it=>{
-  const d=it.data, a=d.answers||{};
-  const canDecide=d.reply&&(d.status==="treatment"||d.status==="questions");
-  return `<article class="item${it.id===focusId?" focus":""}" data-id="${esc(it.id)}"><div class="item-h"><div><h3>${esc(a.title||"—")}</h3><div class="meta">${t("sentOn")} ${esc(fmtDate(d.createdAt))}</div></div>${pill(d.status)}</div>
-  ${replyHTML(d.reply)}${decisionHTML(d.decision)}
-  ${canDecide?`<div class="row" data-decide="${esc(it.id)}"><button type="button" class="btn go small" data-act="approve">${t("approve")}</button><button type="button" class="btn small" data-act="changes">${t("askChanges")}</button></div>`:""}
-  <details class="more" ${it.id===focusId?"open":""}><summary>${t("answers")}</summary>${sheetHTML(a,false)}<div class="row"><button type="button" class="btn small" data-act="copyItem" data-src="mine">${t("copyText")}</button></div></details></article>`}).join("")}</div>`;
-}
-function allHTML(){
- if(!isEditor) return "";
- if(allState==="loading") return `<div class="emptybox">${t("loading")}</div>`;
- const head=`<div class="row mb" style="justify-content:flex-end;margin-top:0"><button type="button" class="btn small" data-act="refreshAll">${t("refresh")}</button></div>`;
- if(allState==="error") return head+`<div class="note warn">${t("slow")}</div>`;
- const nf=focusId&&!all.some(x=>x.id===focusId)?`<div class="note warn mb">${t("notFound")}</div>`:"";
- if(!all.length) return head+nf+`<div class="emptybox">${t("allEmpty")}</div>`;
- const sts=Object.keys(T.ar.status);
- return head+nf+`<div class="list">${all.map(it=>{
-  const d=it.data,a=d.answers||{};
-  return `<article class="item${it.id===focusId?" focus":""}" data-id="${esc(it.id)}" data-owner="${esc(it.owner)}"><div class="item-h"><div><h3>${esc(a.title||"—")}</h3><div class="meta">${t("by")} ${esc(a.name||"—")}${a.company?" · "+esc(a.company):""} · ${esc(fmtDate(d.createdAt))}</div></div>
-  <label class="meta">${t("statusLbl")} <select class="status" data-status="${esc(it.id)}">${sts.map(s=>`<option value="${s}" ${d.status===s?"selected":""}>${esc(t("status")[s])}</option>`).join("")}</select></label></div>
-  ${replyHTML(d.reply)}${decisionHTML(d.decision)}
-  <details class="more" ${it.id===focusId?"open":""}><summary>${t("answers")}</summary><p class="meta">${t("langNote")}: ${d.lang==="en"?"English":"عربي"}</p>${sheetHTML(a,false)}<div class="row"><button type="button" class="btn small" data-act="copyItem" data-src="all">${t("copyText")}</button></div></details></article>`}).join("")}</div>`;
-}
-async function loadAll(){
- if(!db||!isEditor)return;
- allState="loading"; if(tab==="all")render();
- try{
-  const parents=await db.collection("briefs").get();
-  const lists=await Promise.all(parents.docs.map(p=>db.collection(`briefs/${p.id}/items`).get().then(s=>s.docs.map(d=>({id:d.id,owner:p.id,data:d.data()})))));
-  all=lists.flat().sort((x,y)=>String(y.data.createdAt).localeCompare(String(x.data.createdAt)));
-  allState="ready";
- }catch(e){allState="error"}
- renderTabs(); if(tab==="all")render();
-}
-
-/* ---------- language & tabs ---------- */
+/* ---------- language ---------- */
 function applyLang(){
  const h=document.documentElement; h.lang=lang; h.dir=lang==="ar"?"rtl":"ltr";
  $("#lang-ar").setAttribute("aria-pressed",lang==="ar"); $("#lang-en").setAttribute("aria-pressed",lang==="en");
  $("#t-team").textContent=t("team"); $("#t-brand").textContent=t("brand"); $("#t-foot").innerHTML=t("foot");
  $("#t-mark").innerHTML=CLAP();
- renderTabs(); render();
+ render();
 }
 $("#lang-ar").onclick=()=>{lang="ar";store.set("vbrief-lang","ar");applyLang()};
 $("#lang-en").onclick=()=>{lang="en";store.set("vbrief-lang","en");applyLang()};
-function renderTabs(){
- const nav=$("#tabs");
- if(!capReady||(!canSave()&&!isEditor)){nav.hidden=true;nav.innerHTML="";return}
- nav.hidden=false;
- const items=[["new",t("tabNew")],["mine",t("tabMine"),mine.length]];
- if(isEditor) items.push(["all",t("tabAll"),all.length||""]);
- nav.innerHTML=items.map(([k,l,c])=>`<button role="tab" type="button" data-tab="${k}" aria-selected="${tab===k}">${esc(l)}${c?`<span class="count">${c}</span>`:""}</button>`).join("");
-}
-$("#tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;focusId="";if(tab==="new")justSent=false;if(tab==="all")loadAll();renderTabs();render();window.scrollTo(0,0)});
 
 /* ---------- linked answers ---------- */
 // When one answer implies another, fill it in so the client doesn't have to.
@@ -1130,40 +1020,11 @@ document.addEventListener("click",async e=>{
  else if(a==="rmExtra"){const l=arr(A.extra).slice();l.splice(+act.dataset.i,1);A.extra=l;saveDraft();refresh(null)}
  else if(a==="copy") copyText(briefText(A,lang),act);
  else if(a==="copyEmail") copyText(EMAIL,act);
- else if(a==="send") send(act);
  else if(a==="sendForm") sendForm(act);
- else if(a==="goMine"){tab="mine";justSent=false;renderTabs();render()}
  else if(a==="newOne"){justSent=false;cur="about";render();window.scrollTo(0,0)}
- else if(a==="refreshAll") loadAll();
- else if(a==="copyItem"){const item=act.closest(".item");const src=act.dataset.src==="all"?all:mine;const it=src.find(x=>x.id===item.dataset.id);if(it)copyText(briefText(it.data.answers||{},lang),act)}
- else if(a==="approve") decide(act.closest("[data-decide]").dataset.decide,"approved","");
- else if(a==="changes"){
-  const row=act.closest("[data-decide]");
-  row.innerHTML=`<div style="width:100%;display:flex;flex-direction:column;gap:8px"><textarea id="chg-${esc(row.dataset.decide)}" placeholder="${esc(t("changesPh"))}"></textarea><div class="row" style="margin:0"><button type="button" class="btn dark small" data-act="sendChanges">${t("sendChanges")}</button><button type="button" class="btn small" data-act="cancelChanges">${t("cancel")}</button></div></div>`;
-  row.querySelector("textarea").focus();
- }
- else if(a==="cancelChanges") render();
- else if(a==="sendChanges"){const row=act.closest("[data-decide]");const note=row.querySelector("textarea").value.trim();if(!note){row.querySelector("textarea").focus();return}decide(row.dataset.decide,"changes",note)}
-});
-document.addEventListener("change",async e=>{
- const sel=e.target.closest("[data-status]"); if(!sel||!db)return;
- const item=sel.closest(".item"); const it=all.find(x=>x.id===item.dataset.id); if(!it)return;
- sel.disabled=true;
- try{await db.doc(`briefs/${it.owner}/items/${it.id}`).update({status:sel.value,updatedAt:new Date().toISOString()});it.data={...it.data,status:sel.value}}catch(err){sel.value=it.data.status}
- sel.disabled=false;
-});
 
-/* ---------- writes ---------- */
-// Only answers to questions the client could see are sent; hidden branches are dropped.
-function cleanAnswers(){
- const out={};
- vSteps(A).forEach(s=>vQs(s,A).forEach(q=>{
-  if(!isEmpty(A[q.id]))out[q.id]=A[q.id];
-  if(q.other&&arr(A[q.id]).includes("other")&&A[q.id+"_other"])out[q.id+"_other"]=A[q.id+"_other"];
-  if(q.kind==="assets"){arr(A.assets).forEach(k=>{if(A["al_"+k])out["al_"+k]=A["al_"+k];if(A["an_"+k])out["an_"+k]=A["an_"+k]});const ex=arr(A.extra).filter(x=>x&&(x.name||x.link||x.note));if(ex.length)out.extra=ex}
- }));
- return out;
-}
+});
+/* ---------- send (Web3Forms emails the request) ---------- */
 async function sendForm(btn){
  btn.disabled=true; btn.textContent=t("sending");
  const payload={access_key:FORM_KEY,subject:t("mailSubject")(A.title||""),from_name:lang==="ar"?"بريف الفيديو":"Video Brief"};
@@ -1174,7 +1035,6 @@ async function sendForm(btn){
   const r=await fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)});
   const j=await r.json().catch(()=>({}));
   if(r.ok&&(j.success===true||String(j.success)==="true")){
-   lastSent={title:A.title||"",name:A.name||"",id:""}; sentMode="form";
    A={}; store.del(DRAFT); cur="about"; justSent=true; render(); window.scrollTo(0,0); return;
   }
   throw new Error(j.message||("HTTP "+r.status));
@@ -1184,58 +1044,28 @@ async function sendForm(btn){
   const box=$("#send-err"); if(box) box.innerHTML=`<div class="note warn" style="margin-top:14px;flex-direction:column;gap:10px"><span>${t("formErr")}</span>${emailBox()}<a class="btn go small" style="align-self:flex-start" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a></div>`;
  }
 }
-async function send(btn){
- if(!db||!uid)return;
- btn.disabled=true; btn.textContent=t("sending");
- const now=new Date().toISOString();
- const answers=cleanAnswers();
- try{
-  await db.doc(`briefs/${uid}`).set({name:answers.name||"",team:answers.company||"",lastAt:now});
-  const newId="r"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-  await db.collection(`briefs/${uid}/items`).doc(newId).set({createdAt:now,updatedAt:now,lang,status:"new",answers});
-  lastSent={title:answers.title||"",name:answers.name||"",id:newId,ans:answers}; sentMode="";
-  A={}; store.del(DRAFT); cur="about"; justSent=true; render(); window.scrollTo(0,0);
- }catch(err){
-  btn.disabled=false; btn.textContent=t("send");
-  const box=$("#send-err"); if(box) box.innerHTML=`<div class="note warn" style="margin-top:14px;flex-wrap:wrap"><span>${err&&err.code==="quota_exceeded"?t("quotaErr"):t("saveErr")}</span><a class="btn go small" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a></div>`;
- }
-}
-async function decide(id,state,note){
- if(!db||!uid)return;
- const now=new Date().toISOString();
- try{await db.doc(`briefs/${uid}/items/${id}`).update({decision:{state,note,at:now},status:state==="approved"?"production":"changes",updatedAt:now})}
- catch(err){const row=document.querySelector(`[data-decide="${id}"]`);if(row)row.insertAdjacentHTML("afterend",`<div class="note warn" style="margin-top:8px">${t("saveErr")}</div>`)}
-}
+/* ---------- hero stickers ---------- */
+const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let tilt = 0;
+document.addEventListener("mousemove",e=>{
+ if(calm||tilt)return;
+ tilt=requestAnimationFrame(()=>{
+  tilt=0; const hero=document.querySelector(".hero"); if(!hero)return;
+  const r=hero.getBoundingClientRect(); if(e.clientY<r.top-80||e.clientY>r.bottom+80){return}
+  const dx=(e.clientX-(r.left+r.width/2))/r.width, dy=(e.clientY-(r.top+r.height/2))/r.height;
+  hero.querySelectorAll(".stk").forEach(el=>{const d=+el.dataset.depth||10;el.style.setProperty("--mx",(-dx*d).toFixed(1)+"px");el.style.setProperty("--my",(-dy*d).toFixed(1)+"px")});
+ });
+});
+document.addEventListener("click",e=>{
+ const st=e.target.closest(".stk"); if(!st)return;
+ st.classList.remove("boop"); void st.offsetWidth; st.classList.add("boop");
+ st.addEventListener("animationend",()=>st.classList.remove("boop"),{once:true});
+});
+let tcSec=0;
+setInterval(()=>{const el=document.getElementById("stk-tc");if(!el||calm)return;tcSec=(tcSec+1)%60;el.textContent="00:"+String(tcSec).padStart(2,"0")},1000);
 
-/* ---------- capabilities ---------- */
-async function boot(){
- applyLang();
- if(!window.claude||typeof window.claude.use!=="function"){capReady=true;renderTabs();render();return}
- try{[db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")])}catch(e){db=null;user=null}
- if(user){try{uid=await user.id()}catch(e){uid=null}try{isEditor=!!(await user.canEdit())}catch(e){isEditor=false}try{readOnly=(await user.can("data.write"))===false}catch(e){readOnly=false}}
- capReady=true;
- if(db&&uid){
-  mineState="loading";
-  mineTimer=setTimeout(()=>{if(mineState==="loading"){mineState="slow";if(tab==="mine")render()}},10000);
-  db.collection(`briefs/${uid}/items`).orderBy("createdAt","desc").onSnapshot(snap=>{
-   mine=snap.docs.map(d=>({id:d.id,data:d.data()}));
-   if(!snap.metadata.fromCache){clearTimeout(mineTimer);mineState="ready"}else if(mineState==="loading")mineState="ready";
-   renderTabs(); if(tab==="mine")render();
-  },()=>{clearTimeout(mineTimer);mineState="slow";if(tab==="mine")render()});
- }
- if(isEditor&&db) loadAll();
- routeHash();
- renderTabs(); render();
-}
-function routeHash(){
- const h=(location.hash||"").slice(1);
- if(!h.startsWith("req-")) return;
- focusId=h.slice(4); justSent=false;
- tab=isEditor?"all":"mine";
- renderTabs(); render();
-}
-window.addEventListener("hashchange",routeHash);
-boot();
+/* ---------- start ---------- */
+applyLang();
 })();
 </script>
 

@@ -13,209 +13,327 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Readex+Pro:wght@300..700&display=swap">
 <style>
-/* Layout: a production slate — step rail on the side, one question card at a time, a brief sheet at the end. */
+/* Layout: a studio desk. A timeline of colour-labelled clips (one per step) on top, the current step as one card,
+   and a live "monitor" beside it that builds the video as the client answers. Each step keeps its clip colour. */
 :root{
-  --bg:#F6F7F9; --surface:#FFFFFF; --ink:#0D0F14; --muted:#5C6270; --line:#DADFE8;
-  --accent:#2B50C8; --accent-soft:#E8EDFB; --accent-ink:#FFFFFF; --mark:#3D63E0;
-  --warn:#9A5B00; --warn-soft:#FFF3DF; --ok:#2E7D32; --ok-soft:#E6F4E7;
-  --slate:#0D0F14; --slate-ink:#F3F5F9; --lime:#9DB4FF;
-  --f-lat:"Instrument Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  --f-ar:"IBM Plex Sans Arabic", "Geeza Pro", Tahoma, system-ui, sans-serif;
-  --r:10px;
+  --bg:#F5F4FA; --surface:#FFFFFF; --sunk:#F0EEF7; --ink:#1A1730; --muted:#67637F; --line:#E4E1EF;
+  --brand:#F2512F; --brand-ink:#FFFFFF; --brand-soft:#FFE9E3;
+  --sky:#2C86E8; --sky-soft:#E3EFFD; --coral:#F2512F; --coral-soft:#FFE9E3; --mint:#0C9A6F; --mint-soft:#DDF5EB;
+  --iris:#6A4FEA; --iris-soft:#ECE8FE; --rose:#DE3F86; --rose-soft:#FCE5EF; --sun:#F2A100; --sun-soft:#FFF1D2;
+  --on:#FFFFFF; --on-sun:#1A1730;
+  --warn:#A94E06; --warn-soft:#FFF0DE; --ok:#0B8257; --ok-soft:#DDF5EB;
+  --monitor:#15131F; --monitor-ink:#EFEDF8; --monitor-dim:#8E8AA8;
+  --shadow:0 1px 2px rgba(26,23,48,.04),0 10px 30px -14px rgba(26,23,48,.18);
+  --f-display:"Bricolage Grotesque","Alexandria","Readex Pro",system-ui,sans-serif;
+  --f-body:"Readex Pro",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  --r:14px;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0A0D0E; --surface:#121819; --ink:#EDF2F2; --muted:#95A3A5; --line:#253134;
-  --accent:#9DB4FF; --accent-soft:#18203A; --accent-ink:#0A0D14; --mark:#6F8FF5;
-  --warn:#F2B35B; --warn-soft:#2B2210; --ok:#7BC77F; --ok-soft:#13241A;
-  --slate:#000000; --slate-ink:#F3F6F6; color-scheme:dark;
+  --bg:#100F18; --surface:#1A1926; --sunk:#14131E; --ink:#F1EFFA; --muted:#A29EBB; --line:#2D2B40;
+  --brand:#FF7253; --brand-ink:#14121D; --brand-soft:#3A1F19;
+  --sky:#64B0FF; --sky-soft:#13263C; --coral:#FF7253; --coral-soft:#3A1F19; --mint:#3DD3A0; --mint-soft:#0F2D24;
+  --iris:#A08CFF; --iris-soft:#251F46; --rose:#FF7DB2; --rose-soft:#3A1729; --sun:#FFC23D; --sun-soft:#352A0E;
+  --on:#14121D; --on-sun:#14121D;
+  --warn:#FFB066; --warn-soft:#33220F; --ok:#5CD6A6; --ok-soft:#0F2D24;
+  --monitor:#0A0910; --monitor-ink:#EFEDF8; --monitor-dim:#7F7B98;
+  --shadow:0 1px 0 rgba(255,255,255,.03); color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#0A0D0E; --surface:#121819; --ink:#EDF2F2; --muted:#95A3A5; --line:#253134;
-  --accent:#9DB4FF; --accent-soft:#18203A; --accent-ink:#0A0D14; --mark:#6F8FF5;
-  --warn:#F2B35B; --warn-soft:#2B2210; --ok:#7BC77F; --ok-soft:#13241A;
-  --slate:#000000; --slate-ink:#F3F6F6; color-scheme:dark;
+  --bg:#100F18; --surface:#1A1926; --sunk:#14131E; --ink:#F1EFFA; --muted:#A29EBB; --line:#2D2B40;
+  --brand:#FF7253; --brand-ink:#14121D; --brand-soft:#3A1F19;
+  --sky:#64B0FF; --sky-soft:#13263C; --coral:#FF7253; --coral-soft:#3A1F19; --mint:#3DD3A0; --mint-soft:#0F2D24;
+  --iris:#A08CFF; --iris-soft:#251F46; --rose:#FF7DB2; --rose-soft:#3A1729; --sun:#FFC23D; --sun-soft:#352A0E;
+  --on:#14121D; --on-sun:#14121D;
+  --warn:#FFB066; --warn-soft:#33220F; --ok:#5CD6A6; --ok-soft:#0F2D24;
+  --monitor:#0A0910; --monitor-ink:#EFEDF8; --monitor-dim:#7F7B98;
+  --shadow:0 1px 0 rgba(255,255,255,.03); color-scheme:dark;
 }
+.tone-sky{--c:var(--sky);--cs:var(--sky-soft);--co:var(--on)}
+.tone-coral{--c:var(--coral);--cs:var(--coral-soft);--co:var(--on)}
+.tone-mint{--c:var(--mint);--cs:var(--mint-soft);--co:var(--on)}
+.tone-iris{--c:var(--iris);--cs:var(--iris-soft);--co:var(--on)}
+.tone-rose{--c:var(--rose);--cs:var(--rose-soft);--co:var(--on)}
+.tone-sun{--c:var(--sun);--cs:var(--sun-soft);--co:var(--on-sun)}
+.tone-brand{--c:var(--brand);--cs:var(--brand-soft);--co:var(--brand-ink)}
+
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-lat);font-size:15px;line-height:1.55;
-  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 48px}
-html[dir="rtl"] body{font-family:var(--f-ar)}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 40px}
 button,input,textarea,select{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wrap{max-width:1080px;margin:0 auto}
+:focus-visible{outline:2.5px solid var(--c, var(--brand));outline-offset:2px}
+.wrap{max-width:1140px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);letter-spacing:-.01em;text-wrap:balance}
+html[dir="rtl"] h1,html[dir="rtl"] h2,html[dir="rtl"] h3{letter-spacing:0}
 
-/* Top bar */
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px;flex-wrap:wrap}
-.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
-.brand b{font-weight:700;font-size:20px;letter-spacing:-.01em}
-.brand span{color:var(--muted);font-size:13px}
-.tools{display:flex;gap:8px;align-items:center}
-.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface)}
-.lang button{border:0;background:transparent;padding:5px 12px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}
+/* Header */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px 14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .mark{width:40px;height:40px;flex:none;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.brand .mark svg{width:28px;height:28px}
+.brand b{display:block;font-family:var(--f-display);font-size:18px;line-height:1.15;font-weight:800}
+.brand small{display:block;color:var(--muted);font-size:12.5px;letter-spacing:.02em}
+.lang{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.lang button{border:0;background:none;padding:6px 14px;border-radius:999px;cursor:pointer;font-size:13.5px;color:var(--muted);font-weight:500}
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.lang button:nth-child(1){font-family:var(--f-ar)} .lang button:nth-child(2){font-family:var(--f-lat)}
 
-.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto}
-.tabs button{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-.tabs .count{display:inline-block;min-width:20px;padding:0 6px;margin-inline-start:6px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:12px;text-align:center}
+/* Tabs (Claude version only) */
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 15px;cursor:pointer;font-weight:500;color:var(--muted);display:inline-flex;gap:8px;align-items:center}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs .count{font-size:12px;background:var(--brand);color:var(--brand-ink);border-radius:999px;padding:0 7px;min-width:20px;text-align:center}
 
-/* Intro slate */
-.slate{background:var(--slate);color:var(--slate-ink);border-radius:14px;padding:22px 24px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;margin-bottom:22px}
-.slate h1{margin:0 0 6px;font-size:clamp(22px,3.4vw,30px);line-height:1.2;text-wrap:balance;font-weight:700}
-.slate p{margin:0;color:#B9C4C5;max-width:62ch}
-.slate .clap{display:grid;grid-template-columns:repeat(3,auto);gap:4px 16px;font-size:12px;color:#9FB0B2;font-family:var(--f-lat);font-variant-numeric:tabular-nums;border-inline-start:1px solid #2A3538;padding-inline-start:18px}
-.slate .clap b{display:block;color:var(--lime);font-size:18px;font-weight:600}
-@media (max-width:640px){.slate{grid-template-columns:1fr}.slate .clap{border:0;padding:0}}
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px clamp(20px,4vw,40px);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero h1{font-size:clamp(28px,4.4vw,44px);line-height:1.12;margin:6px 0 10px;font-weight:800}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero p{color:var(--muted);margin:0;max-width:56ch;font-size:15.5px}
+.eyebrow{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+html[dir="rtl"] .eyebrow{letter-spacing:0;text-transform:none;font-size:13px}
+.facts{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.facts span{background:var(--sunk);border-radius:999px;padding:6px 13px;font-size:13.5px;color:var(--muted)}
+.facts b{color:var(--ink);font-family:var(--f-display);font-weight:800;margin-inline-end:4px}
+.hero-art svg{width:clamp(120px,16vw,170px);height:auto;display:block}
+.clap-arm{transform-origin:14px 36px;transform:rotate(-16deg);transition:transform .2s}
+.hero:hover .clap-arm{animation:clapOnce .7s ease}
+@keyframes clapOnce{0%{transform:rotate(-16deg)}45%{transform:rotate(0)}60%{transform:rotate(-5deg)}100%{transform:rotate(-16deg)}}
+@media (max-width:640px){.hero{grid-template-columns:1fr}.hero-art{display:none}}
 
-/* Wizard */
-.wiz{display:grid;grid-template-columns:230px minmax(0,1fr);gap:22px;align-items:start}
-@media (max-width:820px){.wiz{grid-template-columns:minmax(0,1fr)}}
-.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:2px}
-.rail button{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:center;text-align:start;border:0;background:none;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--muted)}
-.rail button .n{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-family:var(--f-lat);font-variant-numeric:tabular-nums;background:var(--surface)}
-.rail button.done .n{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
-.rail button[aria-current="step"]{background:var(--surface);color:var(--ink);font-weight:600}
-.rail button[aria-current="step"] .n{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-@media (max-width:820px){
-  .rail{position:static;flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
-  .rail button{grid-template-columns:26px;padding:4px}
-  .rail button .lbl{display:none}
-}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px clamp(18px,3vw,32px);min-width:0}
-.step-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap}
-.step-h h2{margin:0;font-size:22px;line-height:1.25;text-wrap:balance}
-.step-h .of{color:var(--muted);font-size:13px;font-family:var(--f-lat);font-variant-numeric:tabular-nums;letter-spacing:.04em}
-.step-sub{color:var(--muted);margin:0 0 22px;max-width:65ch}
+/* Timeline of steps */
+.tl{display:flex;gap:5px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:7px;margin-bottom:16px;box-shadow:var(--shadow)}
+.clip{flex:1 1 0;min-width:0;height:42px;border:0;border-radius:8px;background:var(--sunk);color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:7px;padding-inline:10px;font-size:13px;font-weight:600;position:relative;overflow:hidden;text-align:start;transition:background .2s,color .2s,flex-grow .3s}
+.clip::before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:4px;background:var(--c)}
+.clip .n{font-family:var(--f-display);font-weight:800;flex:none}
+.clip .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clip .ok{margin-inline-start:auto;flex:none;width:16px;height:16px;border-radius:50%;background:var(--c);display:grid;place-items:center}
+.clip .ok::after{content:"";width:6px;height:3px;border:2px solid var(--co);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.clip.done{background:var(--cs);color:var(--ink)}
+.clip[aria-current="step"]{background:var(--c);color:var(--co);flex-grow:1.6}
+.clip[aria-current="step"] .ok{background:var(--co)} .clip[aria-current="step"] .ok::after{border-color:var(--c)}
+.clip.rev{flex:0 0 auto}
+@media (max-width:720px){.clip:not([aria-current="step"]) .lbl,.clip:not([aria-current="step"]) .ok{display:none}.clip{justify-content:center;padding-inline:6px}.clip[aria-current="step"]{flex-grow:4;justify-content:flex-start}}
 
-.q{display:flex;flex-direction:column;gap:10px;padding-block:18px;border-top:1px solid var(--line)}
-.q:first-of-type{border-top:0;padding-top:4px}
-.q label.ql,.q .ql{font-weight:600;font-size:15px}
-.q .hint{color:var(--muted);font-size:13px;margin-top:-6px}
-.req{color:var(--accent);margin-inline-start:4px}
-input[type=text],input[type=date],textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:11px 13px;outline:none}
-input:focus,textarea:focus,select:focus{border-color:var(--accent);background:var(--surface)}
-textarea{min-height:96px;resize:vertical}
-.other-in{margin-top:2px}
-.multi-tag{color:var(--accent);font-weight:600}
-.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;margin-inline-start:8px;vertical-align:2px;line-height:1.6}
-.tag.req{background:var(--warn-soft);color:var(--warn)}
-.tag.opt{color:var(--muted);border:1px solid var(--line)}
+/* Studio: card + monitor */
+.studio{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:18px;align-items:start}
+@media (max-width:920px){.studio{grid-template-columns:minmax(0,1fr)}.pv{order:-1}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:26px clamp(18px,3.4vw,36px);min-width:0;box-shadow:var(--shadow)}
+.step-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.step-top .eyebrow{color:var(--c)}
+.tc{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12px;color:var(--muted);background:var(--sunk);border-radius:6px;padding:2px 8px;direction:ltr;font-variant-numeric:tabular-nums}
+.card h2{font-size:clamp(24px,3vw,30px);margin:6px 0 4px;font-weight:800;line-height:1.2}
+.step-sub{color:var(--muted);margin:0 0 6px;max-width:62ch}
+
+.q{display:flex;flex-direction:column;gap:10px;padding-block:20px;border-top:1px dashed var(--line);min-width:0}
+.q .ql{font-weight:600;font-size:15.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.q .hint{color:var(--muted);font-size:13.5px;margin-top:-6px}
+.q .multi{color:var(--muted);font-size:12.5px;margin-top:-6px;display:flex;align-items:center;gap:6px}
+.q .multi::before{content:"";width:12px;height:8px;border:1.5px solid currentColor;border-radius:3px;box-shadow:3px -3px 0 -1.5px var(--surface),3px -3px 0 0 currentColor;opacity:.8}
+.need{font-size:11.5px;font-weight:600;color:var(--c);background:var(--cs);padding:1px 9px;border-radius:999px}
+.q.sub{border-top:0;margin-inline-start:6px;padding:12px 0 14px;padding-inline-start:18px;border-inline-start:3px solid var(--cs);position:relative}
+.q.sub .ql{font-size:14.5px}
+.q.sub::before{content:"";position:absolute;inset-inline-start:-7.5px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:3px solid var(--c)}
+.q.enter{animation:rise .38s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+input[type=text],input[type=date],textarea{width:100%;background:var(--sunk);border:1.5px solid transparent;border-radius:12px;padding:11px 14px;outline:none;transition:border-color .15s,background .15s}
+input[type=text]:hover,textarea:hover{border-color:var(--line)}
+input[type=text]:focus,input[type=date]:focus,textarea:focus{border-color:var(--c);background:var(--surface)}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.75}
+textarea{min-height:100px;resize:vertical}
+textarea.tall{min-height:150px}
+input.ltr{direction:ltr;text-align:start}
+html[dir="rtl"] input.ltr{text-align:right}
 .q.invalid input,.q.invalid textarea{border-color:var(--warn)}
-.q .err{color:var(--warn);font-size:13px;font-weight:600}
-.item.focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.mailbox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.mailbox .addr{font-family:var(--f-lat);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px;user-select:all;direction:ltr}
-.three{display:grid;gap:8px}
-.three div{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:center}
-.three span{font-family:var(--f-lat);color:var(--muted);font-variant-numeric:tabular-nums;text-align:center}
+.err{color:var(--warn);font-size:13px;font-weight:600}
 
+.help{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.help:empty{display:none}
+.help.warn{color:var(--warn)} .help.good{color:var(--ok)}
+.help b{font-weight:600}
+.linkbtn{border:0;background:none;color:var(--c);font-weight:600;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+
+/* Chips */
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:999px;cursor:pointer;transition:border-color .15s,background .15s}
-.chip:hover{border-color:var(--muted)}
-.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
-.chip .tick{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none}
-.chip[aria-pressed="true"] .tick{background:var(--accent);border-color:var(--accent)}
-.chip[aria-pressed="true"] .tick::after{content:"";width:6px;height:3px;border:2px solid var(--accent-ink);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--surface);padding:8px 15px;border-radius:999px;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;font-size:14.5px}
+.chip:hover{border-color:var(--c)}
+.chip:active{transform:scale(.96)}
+.chip[aria-pressed="true"]{border-color:var(--c);background:var(--cs)}
+.chip .tick{width:17px;height:17px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none;transition:background .15s}
+.chip[aria-pressed="true"] .tick{background:var(--c);border-color:var(--c)}
+.chip[aria-pressed="true"] .tick::after{content:"";width:7px;height:3.5px;border:2px solid var(--co);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
 .chip.unsure{border-style:dashed}
-.chip .shape{display:inline-block;border:1.5px solid currentColor;border-radius:2px;opacity:.75}
-.chip .bar{display:inline-block;height:6px;border-radius:3px;background:currentColor;opacity:.45}
+.chip .shape{display:inline-block;border:1.5px solid currentColor;border-radius:2.5px;opacity:.7}
+.chip .bar{display:inline-block;height:6px;border-radius:3px;background:var(--c);opacity:.55}
+.chip .badge{font-size:11px;font-weight:600;background:var(--c);color:var(--co);border-radius:999px;padding:0 7px;line-height:1.7}
+.pop .tick{animation:pop .32s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{0%{transform:scale(.5)}100%{transform:scale(1)}}
+.other-in{margin-top:2px}
 
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
-.ocard{display:flex;flex-direction:column;gap:6px;text-align:start;border:1px solid var(--line);background:var(--surface);padding:12px;border-radius:12px;cursor:pointer;position:relative}
-.ocard:hover{border-color:var(--muted)}
-.ocard[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
-.ocard svg{width:100%;height:auto;aspect-ratio:5/3;border-radius:8px;background:var(--bg);color:var(--muted)}
-.ocard[aria-pressed="true"] svg{color:var(--ink)}
-.ocard svg .ac{fill:var(--mark)} .ocard svg .acs{stroke:var(--mark)}
-.ocard b{font-size:14px} .ocard small{color:var(--muted);font-size:12.5px;line-height:1.45}
-.ocard .tick{position:absolute;top:10px;inset-inline-end:10px;width:20px;height:20px;border-radius:50%;background:var(--accent);display:none;place-items:center}
+/* Option cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px}
+.ocard{display:flex;flex-direction:column;gap:5px;text-align:start;border:1.5px solid var(--line);background:var(--surface);padding:12px;border-radius:16px;cursor:pointer;position:relative;transition:border-color .15s,background .15s,transform .12s}
+.ocard:hover{border-color:var(--c);transform:translateY(-2px)}
+.ocard[aria-pressed="true"]{border-color:var(--c);background:var(--cs)}
+.ocard svg{width:100%;height:auto;aspect-ratio:5/3;border-radius:10px;background:var(--sunk);color:var(--muted);margin-bottom:4px}
+.ocard[aria-pressed="true"] svg{background:var(--surface);color:var(--ink)}
+.ocard svg .ac{fill:var(--c)}
+.ocard b{font-size:14.5px;font-weight:600} .ocard small{color:var(--muted);font-size:12.5px;line-height:1.45}
+.ocard .tick{position:absolute;top:10px;inset-inline-end:10px;width:22px;height:22px;border-radius:50%;background:var(--c);display:none;place-items:center}
 .ocard[aria-pressed="true"] .tick{display:grid}
-.ocard .tick::after{content:"";width:8px;height:4px;border:2px solid var(--accent-ink);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.ocard .tick::after{content:"";width:8px;height:4px;border:2px solid var(--co);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.ocard.unsure{border-style:dashed}
 
-.scale{display:grid;grid-template-columns:minmax(70px,1fr) auto minmax(70px,1fr) auto;gap:12px;align-items:center}
-.scale .end{font-size:13px;color:var(--muted)} .scale .end:nth-child(3){text-align:end}
-.dots{display:flex;gap:6px}
-.dots button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center}
-.dots button::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--line)}
-.dots button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
-.dots button[aria-pressed="true"]::after{background:var(--accent);width:12px;height:12px}
-.scale .na{font-size:12.5px;padding:6px 10px}
-@media (max-width:560px){.scale{grid-template-columns:1fr 1fr}.scale .dots{grid-column:1/-1;order:3;justify-content:center}.scale .na{grid-column:1/-1;order:4;justify-self:center}}
+/* Sizes per platform */
+.plats{display:flex;flex-direction:column;gap:2px;background:var(--sunk);border-radius:14px;padding:4px 14px}
+.plat{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center;padding-block:10px;border-top:1px dashed var(--line)}
+.plat:first-child{border-top:0}
+.plat > b{font-size:14px;font-weight:600}
+.plat .chip{background:var(--surface);font-size:13.5px;padding:6px 12px}
+.plat .chip[aria-pressed="true"]{background:var(--cs)}
+.plat .chip .r{direction:ltr;font-variant-numeric:tabular-nums;font-weight:600}
+@media (max-width:560px){.plat{grid-template-columns:1fr;gap:6px}}
 
-.nav{display:flex;justify-content:space-between;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap}
-.btn{border:1px solid var(--line);background:var(--surface);padding:10px 18px;border-radius:999px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+/* Hashtags */
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--sunk);border:1.5px solid transparent;border-radius:12px;padding:7px 8px;cursor:text}
+.tags:focus-within{border-color:var(--c);background:var(--surface)}
+.tagchip{display:inline-flex;align-items:center;gap:2px;background:var(--cs);border-radius:999px;padding:3px 4px 3px 11px;font-size:14px;direction:ltr}
+.tagchip button{border:0;background:none;cursor:pointer;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:var(--muted);font-size:15px;line-height:1}
+.tagchip button:hover{background:var(--surface);color:var(--ink)}
+.tags input{flex:1;min-width:150px;border:0!important;background:transparent!important;padding:5px 6px!important}
+
+/* Assets */
+.assets{display:flex;flex-direction:column;gap:8px}
+.asset{display:grid;grid-template-columns:150px minmax(0,1.4fr) minmax(0,1fr) auto;gap:8px;align-items:center;background:var(--sunk);border-radius:14px;padding:8px 8px 8px 12px}
+html[dir="rtl"] .asset{padding:8px 12px 8px 8px}
+.asset > b{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.asset > b::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.asset input[type=text]{background:var(--surface);padding:9px 12px}
+.asset .x{border:0;background:none;cursor:pointer;width:32px;height:32px;border-radius:50%;color:var(--muted);font-size:18px}
+.asset .x:hover{background:var(--surface);color:var(--ink)}
+.asset .spacer{width:32px}
+.addrow{align-self:flex-start;border:1.5px dashed var(--c);background:none;color:var(--c);border-radius:999px;padding:7px 15px;font-weight:600;cursor:pointer}
+.addrow:hover{background:var(--cs)}
+@media (max-width:640px){.asset{grid-template-columns:minmax(0,1fr) auto}.asset > b{grid-column:1}.asset .x,.asset .spacer{grid-column:2;grid-row:1}.asset input{grid-column:1/-1}}
+
+/* Nav */
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap}
+.btn{border:1.5px solid var(--line);background:var(--surface);padding:10px 20px;border-radius:999px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:transform .1s,filter .15s}
 .btn:hover{border-color:var(--muted)}
-.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.btn.go{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn.small{padding:6px 12px;font-size:13px}
+.btn:active{transform:scale(.97)}
+.btn.next{background:var(--c);color:var(--co);border-color:var(--c)}
+.btn.next:hover,.btn.go:hover{filter:brightness(1.06)}
+.btn.go{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.btn.dark{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.small{padding:6px 13px;font-size:13px}
 .arr{display:inline-block} html[dir="rtl"] .arr{transform:scaleX(-1)}
-.saved{font-size:12.5px;color:var(--muted);align-self:center}
+.saved{font-size:12.5px;color:var(--muted)}
 
-/* Brief sheet (review) */
-.sheet{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.sheet .sec{display:grid;grid-template-columns:170px minmax(0,1fr);gap:4px 18px;padding:14px 16px;border-top:1px solid var(--line)}
+/* Monitor (live preview) */
+.pv{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);min-width:0}
+.pv-toggle{display:none;width:100%;border:0;background:none;padding:12px 16px;cursor:pointer;align-items:center;gap:10px;font-weight:600;text-align:start}
+.pv-toggle .mini{display:flex;gap:4px;align-items:center;margin-inline-start:auto}
+.pv-toggle .mini i{display:block;border:1.5px solid var(--ink);border-radius:2px;opacity:.6}
+.pv-toggle .chev{transition:transform .2s}
+.pv.open .pv-toggle .chev{transform:rotate(180deg)}
+@media (max-width:920px){.pv{position:static}.pv-toggle{display:flex}.pv:not(.open) .pv-body{display:none}}
+.mon{background:var(--monitor);color:var(--monitor-ink);aspect-ratio:16/11;position:relative;display:grid;place-items:center;padding:30px 16px 38px;overflow:hidden}
+.mon .rec{position:absolute;top:11px;inset-inline-start:13px;font-size:11px;letter-spacing:.08em;display:flex;align-items:center;gap:6px;color:var(--monitor-dim);font-family:ui-monospace,"SF Mono",Menlo,monospace;direction:ltr}
+.mon .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand);animation:blink 1.6s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.mon .tcode{position:absolute;top:11px;inset-inline-end:13px;font-size:11px;color:var(--monitor-dim);font-family:ui-monospace,"SF Mono",Menlo,monospace;direction:ltr}
+.mon .ttl{position:absolute;bottom:11px;inset-inline:14px;font-family:var(--f-display);font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.mon .ttl.ph{color:var(--monitor-dim);font-weight:500}
+.frames{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:100%}
+.frames .fr{border:1.5px solid var(--monitor-ink);border-radius:4px;display:grid;place-items:center;font-size:10.5px;color:var(--monitor-ink);direction:ltr;font-variant-numeric:tabular-nums}
+.mon .empty{color:var(--monitor-dim);font-size:13px;text-align:center;max-width:24ch}
+.pv dl{margin:0;padding:6px 18px 4px;display:flex;flex-direction:column}
+.pv .row2{display:grid;grid-template-columns:74px minmax(0,1fr);gap:10px;padding-block:9px;border-top:1px dashed var(--line);font-size:13.5px}
+.pv .row2:first-child{border-top:0}
+.pv dt{color:var(--muted)}
+.pv dd{margin:0;overflow-wrap:anywhere}
+.pv dd.none{color:var(--muted);opacity:.6}
+.pv .dur{display:flex;align-items:center;gap:8px}
+.pv .dur i{display:block;height:6px;border-radius:3px;background:var(--brand)}
+.meter{padding:12px 18px 16px;border-top:1px solid var(--line)}
+.meter .track{height:8px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.meter .fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--iris),var(--rose),var(--brand),var(--sun));border-radius:99px;transition:width .4s ease}
+html[dir="rtl"] .meter .fill{background:linear-gradient(-90deg,var(--sky),var(--iris),var(--rose),var(--brand),var(--sun))}
+.meter .q2{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted);margin-top:7px}
+.meter .q2 b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* Review sheet */
+.sheet{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:14px}
+.sheet .sec{display:grid;grid-template-columns:150px minmax(0,1fr);gap:6px 18px;padding:16px;border-top:1px solid var(--line);position:relative}
 .sheet .sec:first-child{border-top:0}
-.sheet .sec h4{margin:0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
-html[dir="rtl"] .sheet .sec h4{letter-spacing:0;text-transform:none;font-size:13px}
-.sheet dl{margin:0;display:grid;grid-template-columns:minmax(110px,max-content) minmax(0,1fr);gap:6px 14px}
+.sheet .sec::before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:4px;background:var(--c)}
+.sheet .sec h4{margin:0 0 4px;font-size:14px;font-family:var(--f-display);font-weight:700}
+.sheet dl{margin:0;display:grid;grid-template-columns:minmax(110px,max-content) minmax(0,1fr);gap:7px 16px}
 .sheet dt{color:var(--muted);font-size:13.5px}
 .sheet dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
-.sheet .empty{color:var(--muted);font-style:italic}
-.sheet .edit{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:0;justify-self:start;font-weight:600}
-@media (max-width:620px){.sheet .sec{grid-template-columns:1fr}.sheet dl{grid-template-columns:1fr}.sheet dt{font-weight:600}}
-.frames{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-.frames .fr{border:1.5px solid var(--ink);border-radius:3px;display:grid;place-items:center;font-size:11px;font-family:var(--f-lat);color:var(--muted)}
+.sheet .edit{border:0;background:none;color:var(--c);cursor:pointer;font-size:13px;padding:0;font-weight:600}
+.sheet .nothing{color:var(--muted);font-size:13.5px}
+@media (max-width:620px){.sheet .sec{grid-template-columns:1fr}.sheet dl{grid-template-columns:1fr;gap:2px}.sheet dt{font-weight:600;margin-top:6px}}
+.sheet .frames{justify-content:flex-start}
+.sheet .frames .fr{border-color:var(--ink);color:var(--muted)}
 
-.note{border-radius:10px;padding:12px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.note{border-radius:14px;padding:12px 15px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
 .note.warn{background:var(--warn-soft);color:var(--warn)}
 .note.ok{background:var(--ok-soft);color:var(--ok)}
-.note.info{background:var(--accent-soft);color:var(--ink)}
+.note.info{background:var(--sunk);color:var(--ink)}
 .note ul{margin:4px 0 0;padding-inline-start:18px}
-.mb{margin-bottom:16px}
+.note .linkbtn{color:inherit}
+.mb{margin-bottom:12px}
+.mailbox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mailbox .addr{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px 9px;user-select:all;direction:ltr}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
 
-/* Lists of briefs */
+/* Sent */
+.sent{text-align:center;padding:36px 12px 26px}
+.sent svg{width:150px;height:auto;margin:0 auto 6px;display:block}
+.sent .clap-arm{animation:clapShut .8s .25s cubic-bezier(.5,0,.3,1.4) both}
+@keyframes clapShut{from{transform:rotate(-24deg)}to{transform:rotate(0)}}
+.sent .action{font-family:var(--f-display);font-weight:800;color:var(--brand);font-size:15px;letter-spacing:.12em;animation:rise .4s .9s both}
+html[dir="rtl"] .sent .action{letter-spacing:0;font-size:17px}
+.sent h2{margin:4px 0 8px}
+.sent p{color:var(--muted);max-width:48ch;margin:0 auto 10px}
+
+/* Lists (Claude version) */
 .list{display:flex;flex-direction:column;gap:12px}
-.item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;min-width:0}
+.item.focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
 .item-h{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
 .item-h h3{margin:0;font-size:17px}
 .meta{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
-.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:4px 11px;border-radius:999px;background:var(--sunk);white-space:nowrap}
 .pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
-.pill.s-new::before{background:var(--mark)} .pill.s-reading::before{background:var(--mark)}
-.pill.s-questions::before,.pill.s-changes::before{background:var(--warn)}
-.pill.s-treatment{border-color:var(--accent);background:var(--accent-soft)} .pill.s-treatment::before{background:var(--accent)}
-.pill.s-approved::before,.pill.s-production::before,.pill.s-delivered::before{background:var(--ok)}
-.reply{margin-top:14px;border-inline-start:3px solid var(--accent);padding:4px 0 4px 14px;display:flex;flex-direction:column;gap:10px}
-html[dir="rtl"] .reply{padding:4px 14px 4px 0}
+.pill.s-new::before{background:var(--sky)} .pill.s-changes::before{background:var(--warn)}
+.pill.s-treatment{background:var(--brand-soft)} .pill.s-treatment::before{background:var(--brand)}
+.pill.s-production::before,.pill.s-delivered::before{background:var(--ok)}
+.reply{margin-top:14px;border-inline-start:3px solid var(--brand);padding-block:4px;padding-inline:14px 0;display:flex;flex-direction:column;gap:10px}
 .reply h4{margin:0;font-size:13px;color:var(--muted);font-weight:600}
 .reply .body{white-space:pre-wrap;overflow-wrap:anywhere}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
-details.more{margin-top:12px} details.more summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14px}
-details.more .sheet{margin-top:12px}
-.emptybox{border:1px dashed var(--line);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
-.success{text-align:center;padding:30px 10px}
-.success h2{margin:0 0 8px}
-.success .big{width:56px;height:56px;border-radius:50%;background:var(--ok-soft);display:grid;place-items:center;margin:0 auto 14px}
-.success .big::after{content:"";width:20px;height:10px;border:3px solid var(--ok);border-top:0;border-right:0;transform:rotate(-45deg) translate(2px,-2px)}
-select.status{width:auto;padding:6px 10px;font-size:13px}
-@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+details.more{margin-top:12px} details.more summary{cursor:pointer;color:var(--brand);font-weight:600;font-size:14px}
+.emptybox{border:1.5px dashed var(--line);border-radius:16px;padding:30px;text-align:center;color:var(--muted)}
+select.status{width:auto;padding:6px 10px;font-size:13px;border-radius:10px;border:1px solid var(--line);background:var(--sunk)}
+
+.foot{color:var(--muted);font-size:12.5px;text-align:center;margin-top:26px}
+.foot b{color:var(--ink);font-weight:600}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 
 <div class="wrap">
   <header class="top">
-    <div class="brand"><b id="t-brand"></b><span id="t-team"></span></div>
-    <div class="tools">
-      <div class="lang" role="group" aria-label="Language">
-        <button type="button" id="lang-ar" aria-pressed="true">عربي</button>
-        <button type="button" id="lang-en" aria-pressed="false">English</button>
-      </div>
+    <div class="brand"><span class="mark" id="t-mark"></span><span><b id="t-brand"></b><small id="t-team"></small></span></div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="lang-ar" aria-pressed="true">عربي</button>
+      <button type="button" id="lang-en" aria-pressed="false">English</button>
     </div>
   </header>
   <nav class="tabs" role="tablist" id="tabs"></nav>
   <main id="view"></main>
+  <footer class="foot" id="t-foot"></footer>
 </div>
 
 <script>
@@ -225,114 +343,185 @@ select.status{width:auto;padding:6px 10px;font-size:13px}
 /* ---------- copy ---------- */
 const T = {
  ar:{
-  brand:"بريف الفيديو", team:"لأي نوع فيديو",
+  brand:"بريف الفيديو", team:"Sherkety Motion Studio",
+  foot:"<b>Sherkety Motion Studio</b> · فيديو، وموشن جرافيك، وأنيميشن بالذكاء الاصطناعي",
   tabNew:"طلب فيديو جديد", tabMine:"طلباتي", tabAll:"كل الطلبات",
-  heroTitle:"احكي لنا عن الفيديو اللي محتاجه",
-  heroText:"مش لازم تكون فاهم في الفيديو. جاوب بكلامك واختار من الأمثلة، واللي مش متأكد منه سيبه لنا.",
-  clapSteps:"خطوات", clapMins:"دقايق تقريبًا", clapReq:"أسئلة إجبارية",
-  stepOf:(a,b)=>`خطوة ${a} من ${b}`,
-  back:"رجوع", next:"التالي", review:"راجع الطلب", send:"ابعت الطلب", sending:"بيتبعت…",
-  draftSaved:"المسودة محفوظة على جهازك",
-  required:"لازم", unsure:"مش عارف، قرّروا إنتو", noPref:"مش فارقة",
-  reviewTitle:"راجع الطلب قبل ما تبعته", reviewSub:"ده ملخص كل اللي كتبته. لو في حاجة ناقصة أو محتاجة تتعدل، دوس «عدّل» جنبها.",
-  missingReq:"لازم تكمل دول قبل الإرسال:", missingSoft:"دول مش إجباريين، بس لو جاوبت عليهم هيوفروا علينا أسئلة كتير بعدين:",
-  edit:"عدّل", empty:"ما اتكتبش",
-  copyText:"انسخ الطلب كنص", copied:"اتنسخ", copyFail:"النسخ ما اشتغلش، حدّد النص وانسخه بإيدك",
-  sentTitle:"الطلب وصل", sentText:"فريق الفيديو هيقرا الطلب ويرد عليك بفكرة مبدئية وسكريبت قبل ما يبدأ التنفيذ. هتلاقي الرد في «طلباتي».",
+  heroEyebrow:"طلب فيديو جديد",
+  heroTitle:"احكيلنا عن فيديوك،<br><em>والباقي علينا.</em>",
+  heroText:"مش لازم تكون فاهم في الفيديو. اختار من الأمثلة، واكتب بكلامك، واللي مش متأكد منه سيبه لنا. الأسئلة بتظهر لك على حسب اختياراتك، فمش هتشوف غير اللي يخصّك.",
+  fSteps:n=>`<b>${n}</b> خطوات صغيرة`, fMins:"<b>٥</b> دقايق تقريبًا", fReq:"<b>٣</b> أسئلة بس مطلوبة",
+  stepOf:(a,b)=>`خطوة ${a} من ${b}`, hello:n=>`أهلًا ${n} 👋`,
+  back:"رجوع", next:"التالي", toReview:"راجع الطلب", review:"مراجعة", send:"ابعت الطلب", sending:"بيتبعت…",
+  draftSaved:"اتحفظ على جهازك",
+  needTag:"مطلوب", multiTag:"تقدر تختار أكتر من واحد",
+  reviewTitle:"آخر نظرة قبل ما تبعت", reviewSub:"ده ملخص طلبك. لو حاجة محتاجة تتظبط، دوس «عدّل» جنبها.",
+  missingReq:"فاضل دول قبل ما تبعت:", missingSoft:"دول مش مطلوبين، بس لو جاوبتهم هيوفّروا علينا أسئلة كتير بعدين:",
+  edit:"عدّل", empty:"ما اتكتبش", nothing:"لسه مفيش إجابات هنا.",
+  copyText:"انسخ الطلب كنص", copied:"اتنسخ ✓", copyFail:"النسخ ما اشتغلش، حدّد النص وانسخه بإيدك",
+  action:"أكشن! 🎬", sentTitle:"طلبك وصل", sentText:"فريق الفيديو هيقرا الطلب ويرد عليك بفكرة مبدئية وسكريبت قبل ما يبدأ التنفيذ. هتلاقي الرد في «طلباتي».",
+  sentTextForm:"وصلنا طلبك. هنراجعه ونرد عليك على الإيميل أو الرقم اللي كتبته بفكرة مبدئية قبل ما نبدأ.",
   goMine:"روح لطلباتي", newOne:"طلب جديد",
-  noDb:"الحفظ مش شغال في الفتحة دي. افتح اللينك وانت داخل بحساب الشركة على Claude. ولحد ما ده يتظبط، تقدر تنسخ الطلب كنص وتبعته بالإيميل.",
   saveErr:"الطلب ما اتبعتش. جرّب تاني بعد شوية، أو انسخه كنص وابعته.", quotaErr:"المساحة المتاحة للطلبات خلصت. كلّم فريق الفيديو.",
-  readOnly:"معاك صلاحية مشاهدة بس، فمش هتقدر تبعت طلب. اطلب من فريق الفيديو صلاحية Contributor.",
   mineEmpty:"لسه ما بعتّش أي طلب. أول ما تبعت طلب هيظهر هنا، ومعاه رد فريق الفيديو.",
-  allEmpty:"لسه مفيش طلبات. ابعت اللينك للشركة، وأول طلب يوصل هيظهر هنا.",
+  allEmpty:"لسه مفيش طلبات. ابعت اللينك، وأول طلب يوصل هيظهر هنا.",
   loading:"بيحمّل…", slow:"البيانات اتأخرت. ممكن تكون مشكلة في النت، وهتظهر أول ما الاتصال يرجع.",
   sentOn:"اتبعت", by:"من", answers:"تفاصيل الطلب",
   replyTitle:"رد فريق الفيديو", rIdea:"الفكرة", rScript:"السكريبت المبدئي", rQuestions:"أسئلة محتاجين إجابتها", rNotes:"ملاحظات", rFrames:"شكل المشاهد",
   approve:"موافق، ابدأوا", askChanges:"عايز تعديل", changesPh:"اكتب إيه اللي عايز يتغير…", sendChanges:"ابعت التعديل", cancel:"إلغاء",
-  yourDecision:"ردّك", approvedAt:"وافقت", changesAt:"طلبت تعديل",
-  refresh:"حدّث", statusLbl:"الحالة",
+  approvedAt:"وافقت", changesAt:"طلبت تعديل", refresh:"حدّث", statusLbl:"الحالة",
   status:{new:"جديد",treatment:"الفكرة جاهزة لموافقتك",changes:"طلب تعديل",production:"في التنفيذ",delivered:"اتسلّم"},
-  secs:{about:"عنك وعن الطلب",goal:"الفكرة والهدف",audience:"الجمهور",message:"الرسالة",format:"النشر والمقاس",look:"الشكل والإحساس",sound:"الصوت",materials:"المواد",timing:"المواعيد والموافقة"},
   langNote:"اللغة اللي اتكتب بيها الطلب",
   waNotify:"بلّغ فريق الفيديو بالإيميل", waHint:"خطوة أخيرة: دوس الزرار ده عشان تبعت إيميل قصير لفريق الفيديو إن طلبك وصل. لو برنامج الإيميل ما فتحش، انسخ العنوان وابعت من إيميلك.",
   waMsg:(ti,n)=>`أهلًا، بعتّ طلب فيديو جديد في صفحة البريف.\nالطلب: ${ti}\nمن: ${n}`, waFull:"ابعت الطلب بالإيميل",
-  otherLabel:"حاجة تانية", otherPh:"اكتب اللي في دماغك…", multiTag:"تقدر تختار أكتر من واحد",
+  otherLabel:"حاجة تانية", otherPh:"اكتب اللي في دماغك…",
   waMode:"طلبك هيتبعت بالإيميل. دوس «ابعت الطلب بالإيميل» وبرنامج الإيميل هيفتح والطلب مكتوب، وإنت تدوس إرسال. لو ما فتحش: دوس «انسخ الطلب كنص» وابعته على الإيميل اللي تحت.",
   mineWa:"الطلبات اللي بتتبعت بالإيميل ما بتظهرش هنا. فريق الفيديو هيرد عليك بالإيميل.",
-  formMode:"لما تدوس «ابعت الطلب»، طلبك هيوصل لفريق الفيديو على طول.", formErr:"الطلب ما اتبعتش، ممكن تكون مشكلة في النت. جرّب تاني بعد شوية، أو ابعته بالإيميل:", sentTextForm:"وصلنا طلبك. فريق الفيديو هيراجعه ويرد عليك على الإيميل أو الرقم اللي كتبته.",
-  oldAnswers:"إجابات من نسخة قديمة من الاستمارة", tagReq:"إجباري", tagOpt:"اختياري", reqErr:"لازم تكتب ده قبل ما تكمل", reqLegend:"الأسئلة اللي عليها «إجباري» لازم تتجاوب. الباقي اختياري، جاوب اللي تعرفه.", openReq:"افتح الطلب من هنا:", notFound:"الطلب ده مش موجود، أو اتمسح.",
+  formMode:"لما تدوس «ابعت الطلب»، طلبك هيوصل لفريق الفيديو على طول.", formErr:"الطلب ما اتبعتش، ممكن تكون مشكلة في النت. جرّب تاني بعد شوية، أو ابعته بالإيميل:",
+  oldAnswers:"إجابات من نسخة قديمة من الاستمارة", reqErr:"محتاجين ده قبل ما نكمّل", openReq:"افتح الطلب من هنا:", notFound:"الطلب ده مش موجود، أو اتمسح.",
   mailSubject:ti=>`طلب فيديو جديد: ${ti}`, mailTo:"إيميل فريق الفيديو:", copyEmail:"انسخ الإيميل",
-  pasteHere:"(الطلب طويل على الإيميل التلقائي. ارجع للصفحة، دوس «انسخ الطلب كنص»، والصقه هنا.)"
+  pasteHere:"(الطلب طويل على الإيميل التلقائي. ارجع للصفحة، دوس «انسخ الطلب كنص»، والصقه هنا.)",
+  pvTitle:"فيديوك لحد دلوقتي", pvUntitled:"فيديو لسه من غير اسم", pvFrames:"المقاس هيظهر هنا أول ما تختار هيتنشر فين",
+  pvType:"النوع", pvLen:"الطول", pvStyle:"الستايل", pvVoice:"الصوت", pvWhere:"فين", pvWhen:"المعاد",
+  pvVo:"تعليق صوتي", pvNoVo:"من غير تعليق صوتي",
+  quips:["الكاميرا لسه بتسخّن","بداية حلوة، كمّل","الفيديو بدأ يبان","خلاص تقريبًا، فاضل لمسة"],
+  pct:p=>`${p}٪`,
+  suggested:"مقترح", durAuto:"اخترنا لك الطول المناسب للمنصات دي، وتقدر تغيّره.",
+  scriptTime:s=>`السكريبت ده حوالي <b>${s} ثانية</b> لو اتقرا على مهل.`,
+  scriptLong:r=>`أطول من الطول اللي اخترته (${r}). ممكن نختصره، أو نطوّل الفيديو.`,
+  scriptFits:"مناسب للطول اللي اخترته 👌",
+  capCount:n=>`${n} حرف`, capTip:"أول سطر هو اللي بيظهر قبل «المزيد»، فخلّيه أهم حاجة.", capX:"على إكس الكابشن لازم يبقى أقل من ٢٨٠ حرف.",
+  tagPh:"اكتب الهاشتاج ودوس Enter", tagRm:"شيل",
+  linkPh:"لينك درايف أو وان درايف أو WeTransfer", notePh:"ملاحظة (اختياري)", namePh:"اسم المادة", addAsset:"+ ضيف مادة تانية", rmRow:"شيل",
+  linkTip:"اتأكد إن اللينكات مفتوحة لأي حد معاه اللينك.",
+  typo:s=>`قصدك <button type="button" class="linkbtn" data-act="fixMail" data-v="${s}">${s}</button>؟`,
+  dateSoon:"المعاد ده قريب قوي. هنحاول، بس اكتب لنا في الملاحظات لو مستعجل.",
+  datePast:"التاريخ ده عدّى. اختار تاريخ جاي.",
+  hotFor:"مهم للستايل اللي اخترته",
+  pvOpen:"فيديوك لحد دلوقتي"
  },
  en:{
-  brand:"Video Brief", team:"For any kind of video",
+  brand:"Video Brief", team:"Sherkety Motion Studio",
+  foot:"<b>Sherkety Motion Studio</b> · Video, motion graphics and AI animation",
   tabNew:"New video request", tabMine:"My requests", tabAll:"All requests",
-  heroTitle:"Tell us about the video you need",
-  heroText:"No video know-how needed. Answer in your own words, pick from the examples, and leave anything you're unsure about to us.",
-  clapSteps:"steps", clapMins:"minutes, roughly", clapReq:"required questions",
-  stepOf:(a,b)=>`Step ${a} of ${b}`,
-  back:"Back", next:"Next", review:"Review request", send:"Send request", sending:"Sending…",
-  draftSaved:"Draft saved on this device",
-  required:"required", unsure:"Not sure, your call", noPref:"No preference",
-  reviewTitle:"Review before you send", reviewSub:"This is everything you wrote. If something is missing or wrong, press “Edit” next to it.",
+  heroEyebrow:"New video request",
+  heroTitle:"Tell us about your video.<br><em>We'll take it from there.</em>",
+  heroText:"No video know-how needed. Pick from the examples, write in your own words, and leave anything you're unsure about to us. Questions appear based on your answers, so you only see what matters to you.",
+  fSteps:n=>`<b>${n}</b> short steps`, fMins:"<b>5</b> minutes, roughly", fReq:"<b>3</b> required questions",
+  stepOf:(a,b)=>`Step ${a} of ${b}`, hello:n=>`Hi ${n} 👋`,
+  back:"Back", next:"Next", toReview:"Review request", review:"Review", send:"Send request", sending:"Sending…",
+  draftSaved:"Saved on this device",
+  needTag:"Required", multiTag:"Pick as many as you like",
+  reviewTitle:"One last look before you send", reviewSub:"Here's your brief. If something needs fixing, press “Edit” next to it.",
   missingReq:"Please complete these before sending:", missingSoft:"These are optional, but answering them now saves a lot of back and forth later:",
-  edit:"Edit", empty:"Not answered",
-  copyText:"Copy request as text", copied:"Copied", copyFail:"Copy didn't work. Select the text and copy it manually.",
-  sentTitle:"Request received", sentText:"The video team will read it and reply with a first idea and draft script before production starts. You'll find the reply under “My requests”.",
+  edit:"Edit", empty:"Not answered", nothing:"No answers here yet.",
+  copyText:"Copy request as text", copied:"Copied ✓", copyFail:"Copy didn't work. Select the text and copy it manually.",
+  action:"ACTION! 🎬", sentTitle:"Request received", sentText:"The video team will read it and reply with a first idea and draft script before production starts. You'll find the reply under “My requests”.",
+  sentTextForm:"We got your request. We'll review it and reply to the email or number you gave with a first idea before we start.",
   goMine:"Go to my requests", newOne:"New request",
-  noDb:"Saving isn't available in this view. Open the link while signed in to Claude with your company account. Meanwhile you can copy the request as text and send it by email.",
   saveErr:"The request wasn't sent. Try again in a moment, or copy it as text and send it.", quotaErr:"Request storage is full. Please contact the video team.",
-  readOnly:"You have view-only access, so you can't send a request. Ask the video team for Contributor access.",
   mineEmpty:"You haven't sent any requests yet. Once you do, they'll appear here with the video team's reply.",
-  allEmpty:"No requests yet. Share the link with the company; the first one will show up here.",
+  allEmpty:"No requests yet. Share the link; the first one will show up here.",
   loading:"Loading…", slow:"Data is taking a while. It may be the connection; it will appear once it's back.",
   sentOn:"Sent", by:"From", answers:"Request details",
   replyTitle:"Video team reply", rIdea:"The idea", rScript:"Draft script", rQuestions:"Questions for you", rNotes:"Notes", rFrames:"Scene outline",
   approve:"Approve, go ahead", askChanges:"Request changes", changesPh:"Write what should change…", sendChanges:"Send changes", cancel:"Cancel",
-  yourDecision:"Your response", approvedAt:"You approved", changesAt:"You asked for changes",
-  refresh:"Refresh", statusLbl:"Status",
+  approvedAt:"You approved", changesAt:"You asked for changes", refresh:"Refresh", statusLbl:"Status",
   status:{new:"New",treatment:"Idea ready for your approval",changes:"Changes requested",production:"In production",delivered:"Delivered"},
-  secs:{about:"About you and the request",goal:"Idea and goal",audience:"Audience",message:"Message",format:"Where and what size",look:"Look and feel",sound:"Sound",materials:"Materials",timing:"Deadline and approval"},
   langNote:"Language the request was written in",
   waNotify:"Notify the video team by email", waHint:"Last step: press this to send the video team a short email saying your request arrived. If your email app doesn't open, copy the address and email from your own account.",
   waMsg:(ti,n)=>`Hi, I just sent a new video request on the brief page.\nRequest: ${ti}\nFrom: ${n}`, waFull:"Send request by email",
-  otherLabel:"Other", otherPh:"Write your own…", multiTag:"Pick as many as you like",
+  otherLabel:"Other", otherPh:"Write your own…",
   waMode:"Your request will be sent by email. Press “Send request by email”; your email app opens with the request written in, and you press send. If it doesn't open, press “Copy request as text” and email it to the address below.",
   mineWa:"Requests sent by email don't appear here. The video team will reply to you by email.",
-  formMode:"When you press “Send request”, your request goes straight to the video team.", formErr:"The request wasn't sent; it may be a connection problem. Try again in a moment, or send it by email:", sentTextForm:"We got your request. The video team will review it and reply to the email or number you gave.",
-  oldAnswers:"Answers from an older version of the form", tagReq:"Required", tagOpt:"Optional", reqErr:"Please fill this in before continuing", reqLegend:"Questions marked “Required” must be answered. The rest are optional; answer what you know.", openReq:"Open the request here:", notFound:"This request doesn't exist, or was deleted.",
+  formMode:"When you press “Send request”, your request goes straight to the video team.", formErr:"The request wasn't sent; it may be a connection problem. Try again in a moment, or send it by email:",
+  oldAnswers:"Answers from an older version of the form", reqErr:"We need this before moving on", openReq:"Open the request here:", notFound:"This request doesn't exist, or was deleted.",
   mailSubject:ti=>`New video request: ${ti}`, mailTo:"Video team email:", copyEmail:"Copy email",
-  pasteHere:"(The request is too long for an automatic email. Go back to the page, press “Copy request as text”, and paste it here.)"
+  pasteHere:"(The request is too long for an automatic email. Go back to the page, press “Copy request as text”, and paste it here.)",
+  pvTitle:"Your video so far", pvUntitled:"Untitled video", pvFrames:"Frame sizes show up here once you pick where it's published",
+  pvType:"Type", pvLen:"Length", pvStyle:"Style", pvVoice:"Sound", pvWhere:"Where", pvWhen:"Due",
+  pvVo:"Voice-over", pvNoVo:"No voice-over",
+  quips:["Camera's warming up","Nice start, keep going","The video is taking shape","Almost there, one last touch"],
+  pct:p=>`${p}%`,
+  suggested:"Suggested", durAuto:"We picked the usual length for these platforms. Change it if you like.",
+  scriptTime:s=>`This script runs about <b>${s} seconds</b> read at an easy pace.`,
+  scriptLong:r=>`That's longer than the length you picked (${r}). We can trim it, or make the video longer.`,
+  scriptFits:"Fits the length you picked 👌",
+  capCount:n=>`${n} characters`, capTip:"The first line is what shows before “more”, so lead with the key point.", capX:"On X, captions need to stay under 280 characters.",
+  tagPh:"Type a hashtag and press Enter", tagRm:"Remove",
+  linkPh:"Google Drive, OneDrive or WeTransfer link", notePh:"Note (optional)", namePh:"What is it?", addAsset:"+ Add another item", rmRow:"Remove",
+  linkTip:"Make sure anyone with the link can open it.",
+  typo:s=>`Did you mean <button type="button" class="linkbtn" data-act="fixMail" data-v="${s}">${s}</button>?`,
+  dateSoon:"That's very soon. We'll try, but tell us in the notes if it's urgent.",
+  datePast:"That date has passed. Pick an upcoming one.",
+  hotFor:"Useful for the style you picked",
+  pvOpen:"Your video so far"
  }
 };
 
-/* ---------- mini illustrations for style cards ---------- */
+/* ---------- illustrations ---------- */
+const CLAP = (big)=>`<svg viewBox="0 0 120 100" aria-hidden="true">
+ <rect x="12" y="38" width="98" height="56" rx="7" style="fill:var(--ink)"/>
+ <g style="opacity:.9">${["sky","iris","rose","coral","sun","mint"].map((c,i)=>`<path d="M${20+i*15} 39 h10 l-6 11 h-10 z" style="fill:var(--${c})"/>`).join("")}</g>
+ <rect x="22" y="60" width="44" height="5" rx="2.5" style="fill:var(--surface);opacity:.55"/>
+ <rect x="22" y="72" width="66" height="5" rx="2.5" style="fill:var(--surface);opacity:.3"/>
+ <rect x="22" y="82" width="30" height="5" rx="2.5" style="fill:var(--surface);opacity:.3"/>
+ <g class="clap-arm"><rect x="12" y="22" width="98" height="13" rx="4" style="fill:var(--ink)"/>${["sky","iris","rose","coral","sun","mint"].map((c,i)=>`<path d="M${20+i*15} 23 h10 l-6 11 h-10 z" style="fill:var(--${c})"/>`).join("")}</g>
+ <circle cx="14" cy="36" r="3.4" style="fill:var(--surface)"/>
+</svg>`;
 const SVG = {
  ui_cursor:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="14" y="10" width="72" height="42" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="20" y="17" width="20" height="4" rx="2" fill="currentColor" opacity=".5"/><rect x="20" y="26" width="28" height="20" rx="2" fill="currentColor" opacity=".18"/><rect x="52" y="26" width="28" height="9" rx="2" class="ac"/><rect x="52" y="38" width="28" height="8" rx="2" fill="currentColor" opacity=".18"/><path d="M62 30 L62 44 L65.5 40.5 L68.5 47 L71 46 L68 39.5 L73 39.5 Z" fill="currentColor"/></svg>',
- kinetic:'<svg viewBox="0 0 100 60" aria-hidden="true"><text x="50" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="currentColor" font-family="Instrument Sans, sans-serif">BIG</text><text x="50" y="47" text-anchor="middle" font-size="12" font-weight="700" class="ac" font-family="Instrument Sans, sans-serif">IDEA.</text><rect x="22" y="12" width="12" height="2" fill="currentColor" opacity=".35"/><rect x="66" y="51" width="12" height="2" fill="currentColor" opacity=".35"/></svg>',
+ kinetic:'<svg viewBox="0 0 100 60" aria-hidden="true"><text x="50" y="30" text-anchor="middle" font-size="17" font-weight="800" fill="currentColor" font-family="Bricolage Grotesque, sans-serif">BIG</text><text x="50" y="47" text-anchor="middle" font-size="12" font-weight="800" class="ac" font-family="Bricolage Grotesque, sans-serif">IDEA.</text><rect x="22" y="12" width="12" height="2" fill="currentColor" opacity=".35"/><rect x="66" y="51" width="12" height="2" fill="currentColor" opacity=".35"/></svg>',
  abstract3d:'<svg viewBox="0 0 100 60" aria-hidden="true"><path d="M40 18 L54 11 L68 18 L68 34 L54 41 L40 34 Z" fill="currentColor" opacity=".18"/><path d="M40 18 L54 25 L68 18 M54 25 L54 41" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M40 18 L54 11 L68 18 L68 34 L54 41 L40 34 Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="28" cy="40" r="7" class="ac"/><circle cx="76" cy="44" r="4" fill="currentColor" opacity=".45"/></svg>',
  live_ui:'<svg viewBox="0 0 100 60" aria-hidden="true"><circle cx="38" cy="26" r="9" fill="currentColor" opacity=".45"/><path d="M20 56 C22 42 30 38 38 38 C46 38 54 42 56 56 Z" fill="currentColor" opacity=".45"/><rect x="58" y="12" width="30" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="62" y="17" width="14" height="3" rx="1.5" class="ac"/><rect x="62" y="22" width="20" height="2" rx="1" fill="currentColor" opacity=".4"/><rect x="62" y="33" width="24" height="12" rx="3" class="ac" opacity=".85"/></svg>',
  illustration:'<svg viewBox="0 0 100 60" aria-hidden="true"><circle cx="40" cy="26" r="12" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="36" cy="24" r="1.6" fill="currentColor"/><circle cx="44" cy="24" r="1.6" fill="currentColor"/><path d="M35 30 Q40 34 45 30" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M26 56 Q40 40 54 56" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M64 18 L80 18 L80 30 L70 30 L65 35 L66 30 L64 30 Z" class="ac"/></svg>',
  motion2d:'<svg viewBox="0 0 100 60" aria-hidden="true"><circle cx="30" cy="34" r="10" class="ac"/><rect x="46" y="22" width="18" height="18" rx="3" fill="currentColor" opacity=".45" transform="rotate(15 55 31)"/><path d="M70 42 L80 22 L90 42 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14 48 Q30 40 46 48 T78 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="2 3"/></svg>',
+ ai:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="22" y="12" width="56" height="36" rx="4" fill="currentColor" opacity=".16"/><path d="M50 18 L53 27 L62 30 L53 33 L50 42 L47 33 L38 30 L47 27 Z" class="ac"/><path d="M68 14 L69.5 18.5 L74 20 L69.5 21.5 L68 26 L66.5 21.5 L62 20 L66.5 18.5 Z" fill="currentColor" opacity=".6"/><circle cx="31" cy="40" r="2" fill="currentColor" opacity=".6"/></svg>',
  photos:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="22" y="14" width="40" height="30" rx="2" fill="currentColor" opacity=".2" transform="rotate(-8 42 29)"/><rect x="38" y="16" width="42" height="32" rx="2" style="fill:var(--surface)" stroke="currentColor" stroke-width="1.3"/><path d="M42 44 L54 32 L62 40 L68 35 L76 44 Z" fill="currentColor" opacity=".45"/><circle cx="70" cy="24" r="3" class="ac"/></svg>',
  footage:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="18" y="12" width="64" height="38" rx="3" fill="currentColor" opacity=".18"/><path d="M18 40 L36 26 L50 36 L62 28 L82 42 L82 50 L18 50 Z" fill="currentColor" opacity=".35"/><circle cx="70" cy="22" r="4" class="ac"/><rect x="18" y="12" width="64" height="38" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
  talking:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="18" y="10" width="64" height="42" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="50" cy="27" r="8" fill="currentColor" opacity=".45"/><path d="M34 52 C36 41 43 38 50 38 C57 38 64 41 66 52 Z" fill="currentColor" opacity=".45"/><rect x="22" y="44" width="22" height="5" rx="1" class="ac"/></svg>',
  other:'<svg viewBox="0 0 100 60" aria-hidden="true"><path d="M34 44 L36 36 L62 10 L70 18 L44 44 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M58 14 L66 22" stroke="currentColor" stroke-width="1.5"/><rect x="30" y="48" width="40" height="2" rx="1" class="ac"/></svg>',
- unsure:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="22" y="10" width="56" height="40" rx="6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="3 3"/><text x="50" y="38" text-anchor="middle" font-size="22" font-weight="700" class="ac" font-family="Instrument Sans, sans-serif">?</text></svg>'
+ unsure:'<svg viewBox="0 0 100 60" aria-hidden="true"><rect x="22" y="10" width="56" height="40" rx="6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="3 3"/><text x="50" y="38" text-anchor="middle" font-size="22" font-weight="800" class="ac" font-family="Bricolage Grotesque, sans-serif">?</text></svg>'
 };
+
+/* ---------- platforms and their frame sizes ---------- */
+// [ratio, ar, en, picked by default]
+const PLAT = {
+ facebook:[["9x16","ريلز وستوري","Reels & Stories",1],["4x5","بوست في الفيد","Feed post",1],["1x1","مربع","Square",0],["16x9","فيديو عرضي","Landscape",0]],
+ instagram:[["9x16","ريلز وستوري","Reels & Stories",1],["4x5","بوست في الفيد","Feed post",1],["1x1","مربع","Square",0]],
+ tiktok:[["9x16","فيديو تيك توك","TikTok video",1]],
+ youtube:[["16x9","فيديو عادي","Standard video",1],["9x16","شورتس","Shorts",0]],
+ linkedin:[["1x1","مربع","Square",1],["4x5","طولي","Vertical",0],["16x9","عرضي","Landscape",0]],
+ snapchat:[["9x16","سناب وستوري","Snaps & Stories",1]],
+ x:[["16x9","عرضي","Landscape",1],["1x1","مربع","Square",0]],
+ whatsapp:[["9x16","الحالة (ستوري)","Status",1],["1x1","في الشات","In chat",0]],
+ website:[["16x9","عرضي","Landscape",1],["9x16","للموبايل","Mobile",0]],
+ tv:[["16x9","شاشة التليفزيون","TV screen",1]]
+};
+const SOCIAL = ["facebook","instagram","tiktok","youtube","linkedin","snapchat","x","whatsapp"];
+const SHORTFORM = ["facebook","instagram","tiktok","snapchat","whatsapp"];
+const DUR_MAX = {"6-15":15,"15-30":30,"30-60":60,"60-90":90,"90+":180};
+
+/* ---------- helpers on answers ---------- */
+const arr = v => Array.isArray(v)?v:(v?[v]:[]);
+const has = (a,id,k) => arr(a[id]).includes(k);
+const onlyLogo = a => arr(a.type).length===1 && a.type[0]==="logo";
+const hasSocial = a => arr(a.platforms).some(p=>SOCIAL.includes(p));
+const notLogo = a => !onlyLogo(a);
+const durSuggest = a => { const p=arr(a.platforms); if(p.some(x=>SHORTFORM.includes(x))) return "15-30"; if(p.some(x=>PLAT[x])) return "30-60"; return ""; };
 
 /* ---------- questions ---------- */
 // option: [key, ar, en, descAr, descEn]
 const U = ["unsure","مش عارف، قرّروا إنتو","Not sure, your call"];
+const UC = ["unsure","مش عارف، قرّروا إنتو","Not sure, your call","هنقترح الأنسب","We'll suggest what fits"];
 const STEPS = [
- {id:"about", ar:{t:"عنك",s:"عشان نعرف نرجع لك لو عندنا سؤال."}, en:{t:"About you",s:"So we know who to come back to."},
+ {id:"about", tone:"sky", ar:{t:"عنك",s:"نتعرّف الأول، عشان نعرف نرجع لك."}, en:{t:"About you",s:"A quick intro, so we know who to come back to."},
   q:[
-   {id:"name",type:"text",req:1,ar:"اسمك",en:"Your name"},
-   {id:"contact",type:"text",soft:1,ar:"إيميلك أو رقمك",en:"Your email or phone",hintAr:"عشان نرد عليك.",hintEn:"So we can reply to you."},
+   {id:"name",type:"text",req:1,ar:"اسمك",en:"Your name",phAr:"مثلًا: سارة",phEn:"e.g. Sara"},
+   {id:"contact",type:"text",soft:1,ltr:1,help:"contact",ar:"إيميلك أو رقمك",en:"Your email or phone",hintAr:"عشان نبعت لك الفكرة والسكريبت قبل ما نبدأ.",hintEn:"So we can send you the idea and script before we start."},
    {id:"company",type:"text",ar:"الشركة أو البراند",en:"Company or brand"},
-   {id:"title",type:"text",req:1,ar:"اسم قصير للطلب",en:"A short name for this request",phAr:"مثلًا: إعلان افتتاح الفرع الجديد",phEn:"e.g. New branch opening ad"}
+   {id:"title",type:"text",req:1,ar:"سمّي الطلب باسم قصير",en:"Give this request a short name",phAr:"مثلًا: إعلان افتتاح الفرع الجديد",phEn:"e.g. New branch opening ad"}
   ]},
- {id:"idea", ar:{t:"الفكرة",s:"احكيها بكلامك، زي ما بتحكيها لزميلك."}, en:{t:"The idea",s:"In your own words, like telling a colleague."},
+ {id:"idea", tone:"coral", ar:{t:"الفكرة",s:"احكيها بكلامك، زي ما بتحكيها لصاحبك."}, en:{t:"The idea",s:"In your own words, like telling a friend."},
   q:[
    {id:"type",type:"cards",multi:1,other:1,ar:"نوع الفيديو",en:"Type of video",opts:[
      ["ad","إعلان","Ad","لمنتج أو خدمة أو عرض","For a product, service or offer"],
@@ -345,27 +534,40 @@ const STEPS = [
      ["tutorial","شرح خطوة بخطوة","How-to","إزاي تعمل حاجة","How to do something"],
      ["logo","لوجو متحرك","Logo animation","أو فاصل ومقدمة قصيرة","Or a short intro / bumper"],
      ["occasion","مناسبة أو تهنئة","Occasion","رمضان، العيد، اليوم الوطني…","Ramadan, Eid, national day…"]]},
-   {id:"idea",type:"textarea",req:1,ar:"الفكرة",en:"The idea",hintAr:"الفيديو عن إيه؟ وليه دلوقتي؟",hintEn:"What is it about? Why now?"},
-   {id:"oneline",type:"text",soft:1,ar:"لو المشاهد هيفتكر جملة واحدة، تبقى إيه؟",en:"If viewers remember one sentence, what is it?",phAr:"مثلًا: أسرع توصيل في المدينة",phEn:"e.g. The fastest delivery in town"},
-   {id:"action",type:"multi",other:1,ar:"بعد ما يتفرج، المفروض يعمل إيه؟",en:"After watching, what should they do?",opts:[
+   {id:"offer",type:"text",sub:1,parent:"type",when:a=>has(a,"type","ad"),ar:"فيه عرض أو سعر هيظهر؟",en:"Is there an offer or price to show?",phAr:"مثلًا: خصم ٢٠٪ لحد آخر الشهر",phEn:"e.g. 20% off until the end of the month"},
+   {id:"event_info",type:"text",sub:1,parent:"type",when:a=>has(a,"type","event"),ar:"الفعالية إيه، وفين، وإمتى؟",en:"Which event, where and when?",phAr:"مثلًا: معرض Cityscape، القاهرة، ١٢ ديسمبر",phEn:"e.g. Cityscape expo, Cairo, 12 December"},
+   {id:"speaker",type:"text",sub:1,parent:"type",when:a=>has(a,"type","testimonial"),ar:"مين اللي هيتكلم؟",en:"Who will be speaking?",phAr:"مثلًا: عميل، أو المدير، أو موظف",phEn:"e.g. a customer, the CEO, an employee"},
+   {id:"occasion_name",type:"text",sub:1,parent:"type",when:a=>has(a,"type","occasion"),ar:"أنهي مناسبة؟",en:"Which occasion?",phAr:"مثلًا: رمضان، العيد، اليوم الوطني",phEn:"e.g. Ramadan, Eid, national day"},
+   {id:"idea",type:"textarea",req:1,ar:"الفكرة",en:"The idea",hintAr:"الفيديو عن إيه؟ وليه دلوقتي؟ اكتب زي ما تيجي.",hintEn:"What is it about? Why now? Write it however it comes."},
+   {id:"oneline",type:"text",soft:1,when:notLogo,ar:"لو المشاهد هيفتكر جملة واحدة، تبقى إيه؟",en:"If viewers remember one sentence, what is it?",phAr:"مثلًا: أسرع توصيل في المدينة",phEn:"e.g. The fastest delivery in town"},
+   {id:"action",type:"multi",other:1,when:notLogo,ar:"بعد ما يتفرج، المفروض يعمل إيه؟",en:"After watching, what should they do?",opts:[
      ["buy","يشتري أو يطلب","Buy or order"],["contact","يكلّمنا","Get in touch"],["visit","يزورنا أو يدخل الموقع","Visit us or the website"],
      ["understand","يفهم الفكرة","Understand it"],["remember","يفتكر الاسم","Remember the name"],["share","يشيّر الفيديو","Share the video"],U]},
+   {id:"cta_link",type:"text",sub:1,parent:"action",ltr:1,when:a=>["buy","contact","visit"].some(k=>has(a,"action",k)),ar:"اللينك أو الرقم اللي هيظهر في آخر الفيديو",en:"The link or number to show at the end",phAr:"مثلًا: www.example.com أو 01000000000",phEn:"e.g. www.example.com or a phone number"},
    {id:"must",type:"textarea",ar:"حاجات لازم تظهر، أو ممنوع تظهر",en:"Anything that must, or must not, appear",hintAr:"أرقام، لينك، عرض، أسماء ممنوع تتذكر…",hintEn:"Numbers, a link, an offer, names to avoid…"}
   ]},
- {id:"audience", ar:{t:"لمين وفين",s:"مين هيتفرج، وهيتنشر فين."}, en:{t:"Who and where",s:"Who will watch, and where it goes."},
+ {id:"audience", tone:"mint", ar:{t:"لمين وفين",s:"هيتنشر فين ولمين. ومن هنا هنعرف المقاس والطول."}, en:{t:"Who and where",s:"Where it goes and who watches. This sets the size and length."},
   q:[
-   {id:"who",type:"multi",other:1,ar:"مين هيتفرج؟",en:"Who will watch?",opts:[
-     ["public","الناس عمومًا","General public"],["new","عملاء جدد","New customers"],["current","عملاء حاليين","Current customers"],["partners","شركاء أو مستثمرين","Partners or investors"],["internal","فريق الشركة","Our own team"],U]},
-   {id:"market",type:"multi",other:1,ar:"في أنهي بلد؟",en:"Which country?",opts:[
-     ["eg","مصر","Egypt"],["gulf","الخليج","Gulf"],["arab","الوطن العربي","Arab region"],["west","أمريكا وأوروبا","US and Europe"],["global","عالمي","Global"],U]},
-   {id:"vlang",type:"multi",other:1,ar:"لغة الفيديو",en:"Video language",opts:[["ar","عربي","Arabic"],["en","إنجليزي","English"],U]},
-   {id:"platforms",type:"multi",other:1,soft:1,ar:"هيتنشر فين؟",en:"Where will it be published?",hintAr:"على أساسها هنختار المقاس.",hintEn:"We'll pick the frame size from this.",opts:[
-     ["reels","إنستجرام وتيك توك","Instagram / TikTok"],["facebook","فيسبوك","Facebook"],["youtube","يوتيوب","YouTube"],["linkedin","لينكدإن","LinkedIn"],["website","الموقع","Website"],
-     ["ads","إعلانات مدفوعة","Paid ads"],["tv","تليفزيون","TV"],["screen","شاشة في معرض أو محل","Screen at an event or store"],["whatsapp","واتساب","WhatsApp"],U]},
+   {id:"platforms",type:"multi",other:1,soft:1,ar:"هيتنشر فين؟",en:"Where will it be published?",hintAr:"اختار المنصات، ومقاساتها هتظهر لك تحت على طول.",hintEn:"Pick the platforms and their frame sizes appear right below.",opts:[
+     ["facebook","فيسبوك","Facebook"],["instagram","إنستجرام","Instagram"],["tiktok","تيك توك","TikTok"],["youtube","يوتيوب","YouTube"],["linkedin","لينكدإن","LinkedIn"],
+     ["snapchat","سناب شات","Snapchat"],["x","إكس (تويتر)","X (Twitter)"],["whatsapp","واتساب","WhatsApp"],["website","الموقع","Website"],["tv","تليفزيون","TV"],
+     ["screen","شاشة في معرض أو محل","Screen at an event or store"],U]},
+   {id:"sizes",type:"sizes",sub:1,parent:"platforms",when:a=>arr(a.platforms).some(p=>PLAT[p]),ar:"المقاسات",en:"Frame sizes",hintAr:"علّمنا لك الأشهر لكل منصة. شيل أو زوّد براحتك.",hintEn:"We ticked the usual ones for each platform. Add or remove as you like."},
+   {id:"screen_size",type:"text",sub:1,parent:"platforms",when:a=>has(a,"platforms","screen"),ar:"مقاس الشاشة",en:"Screen size",phAr:"مثلًا: ١٩٢٠×١٠٨٠، أو شاشة طولية، أو ٣×٢ متر",phEn:"e.g. 1920×1080, a vertical screen, or 3×2 m"},
+   {id:"screen_sound",type:"chips",sub:1,parent:"platforms",when:a=>has(a,"platforms","screen"),ar:"الشاشة فيها صوت؟",en:"Does the screen play sound?",opts:[["yes","أيوه","Yes"],["no","لأ، صورة بس","No, picture only"],U]},
+   {id:"sponsored",type:"chips",when:hasSocial,ar:"هيتعمل له إعلان ممول (Sponsored)؟",en:"Will it run as a paid ad?",opts:[["yes","أيوه","Yes"],["no","لأ","No"],U]},
+   {id:"cutdowns",type:"multi",sub:1,parent:"sponsored",when:a=>a.sponsored==="yes",ar:"محتاج نسخ أقصر من نفس الفيديو؟",en:"Need shorter versions of the same video?",hintAr:"الإعلانات الممولة بتشتغل أحسن بنسخ قصيرة.",hintEn:"Paid ads often perform better with short cut-downs.",opts:[["6","نسخة ٦ ثواني","6-second version"],["15","نسخة ١٥ ثانية","15-second version"],["30","نسخة ٣٠ ثانية","30-second version"],["none","لأ، نسخة واحدة كفاية","No, one version is enough"],U]},
    {id:"duration",type:"chips",kind:"duration",ar:"الطول",en:"Length",opts:[
-     ["6-15","أقل من ١٥ ثانية","Under 15 sec"],["15-30","١٥ لـ ٣٠ ثانية","15–30 sec"],["30-60","لحد دقيقة","Up to 1 min"],["60-90","دقيقة لدقيقة ونص","1–1.5 min"],["90+","أطول","Longer"],U]}
+     ["6-15","أقل من ١٥ ثانية","Under 15 sec"],["15-30","١٥ لـ ٣٠ ثانية","15–30 sec"],["30-60","لحد دقيقة","Up to 1 min"],["60-90","دقيقة لدقيقة ونص","1–1.5 min"],["90+","أطول","Longer"],U]},
+   {id:"who",type:"multi",other:1,when:notLogo,ar:"مين هيتفرج؟",en:"Who will watch?",opts:[
+     ["public","الناس عمومًا","General public"],["new","عملاء جدد","New customers"],["current","عملاء حاليين","Current customers"],["partners","شركاء أو مستثمرين","Partners or investors"],["internal","فريق الشركة","Our own team"],U]},
+   {id:"market",type:"multi",other:1,when:notLogo,ar:"في أنهي بلد؟",en:"Which country?",opts:[
+     ["eg","مصر","Egypt"],["gulf","الخليج","Gulf"],["arab","الوطن العربي","Arab region"],["west","أمريكا وأوروبا","US and Europe"],["global","عالمي","Global"],U]},
+   {id:"vlang",type:"multi",other:1,when:notLogo,ar:"لغة الفيديو",en:"Video language",opts:[["ar","عربي","Arabic"],["en","إنجليزي","English"],U]},
+   {id:"bilingual",type:"chips",sub:1,parent:"vlang",when:a=>has(a,"vlang","ar")&&has(a,"vlang","en"),ar:"عربي وإنجليزي: إزاي؟",en:"Arabic and English: how?",opts:[
+     ["two","فيديوهين منفصلين","Two separate videos"],["subs","فيديو واحد وترجمة مكتوبة","One video with subtitles"],["mixed","فيديو واحد فيه اللغتين","One video mixing both"],U]}
   ]},
- {id:"look", ar:{t:"الشكل والصوت",s:"اختار الأقرب للي في خيالك."}, en:{t:"Look and sound",s:"Pick what's closest to what you imagine."},
+ {id:"look", tone:"iris", ar:{t:"الشكل والصوت",s:"اختار الأقرب للي في خيالك. مفيش إجابة غلط هنا."}, en:{t:"Look and sound",s:"Pick what's closest to what you imagine. No wrong answers."},
   q:[
    {id:"style",type:"cards",multi:1,svg:1,other:1,ar:"الستايل",en:"Style",opts:[
      ["footage","تصوير ومونتاج","Filmed","مشاهد حقيقية","Real scenes"],
@@ -374,33 +576,53 @@ const STEPS = [
      ["motion2d","موشن جرافيك","Motion graphics","أشكال وأيقونات بتتحرك","Animated shapes and icons"],
      ["kinetic","كلام متحرك","Kinetic text","الكلام نفسه هو البطل","The words are the hero"],
      ["illustration","رسوم وشخصيات","Characters","شخصيات مرسومة بتحكي","Drawn characters tell it"],
+     ["ai","مشاهد بالذكاء الاصطناعي","AI-generated scenes","مشاهد وصور متولّدة بالـ AI","Scenes and images made with AI"],
      ["abstract3d","3D","3D","مجسمات وإحساس فخم","3D objects, premium feel"],
      ["ui_cursor","شاشات تطبيق أو موقع","App screens","للتطبيقات والمواقع","For apps and websites"],
      ["photos","صور متحركة","Animated photos","صور بحركة كاميرا","Photos with camera moves"],
-     ["unsure","مش عارف، قرّروا إنتو","Not sure, your call","هنقترح الأنسب","We'll suggest what fits"]]},
+     UC]},
    {id:"mood",type:"multi",other:1,ar:"الإحساس",en:"Feel",opts:[
      ["calm","هادي","Calm"],["energetic","سريع وفيه طاقة","Fast, energetic"],["premium","فخم","Premium"],["fun","مرح","Fun"],["serious","جاد","Serious"],["emotional","مؤثر","Emotional"],U]},
-   {id:"vo",type:"chips",ar:"فيه حد بيتكلم في الفيديو (تعليق صوتي)؟",en:"Voice-over?",opts:[["yes","أيوه","Yes"],["no","لأ، موسيقى بس","No, music only"],U]},
-   {id:"voice",type:"multi",other:1,ar:"لو أيوه: صوت مين؟",en:"If yes: what voice?",opts:[
-     ["male","راجل","Male"],["female","ست","Female"],["egy","مصري","Egyptian"],["gulf","خليجي","Gulf"],["msa","فصحى","Classical Arabic"],["english","إنجليزي","English"]]},
-   {id:"refs",type:"textarea",ar:"لينكات فيديوهات عاجباك",en:"Links to videos you like",hintAr:"حط اللينك، واكتب جنبه إيه اللي عاجبك فيه.",hintEn:"Paste the link and note what you like about it.",phAr:"مثلًا: youtube.com/… عاجبني السرعة والألوان",phEn:"e.g. youtube.com/… I like the pace and colours"},
-   {id:"dislike",type:"textarea",ar:"لينكات فيديوهات مش عاجباك",en:"Links to videos you don't like",hintAr:"حط اللينك، واكتب جنبه إيه اللي مضايقك فيه، عشان نبعد عنه.",hintEn:"Paste the link and note what bothers you, so we avoid it.",phAr:"مثلًا: instagram.com/… الموسيقى عالية والكلام كتير",phEn:"e.g. instagram.com/… music too loud, too much text"}
+   {id:"vo",type:"chips",when:notLogo,ar:"فيه تعليق صوتي (حد بيتكلم على الفيديو)؟",en:"Voice-over (someone narrating)?",opts:[["yes","أيوه","Yes"],["no","لأ","No"],U]},
+   {id:"vo_gender",type:"chips",sub:1,parent:"vo",when:a=>a.vo==="yes",ar:"صوت مين؟",en:"Whose voice?",opts:[["male","راجل","Male"],["female","ست","Female"],["both","الاتنين (راجل وست)","Both (male and female)"],U]},
+   {id:"vo_lang",type:"multi",sub:1,parent:"vo",other:1,when:a=>a.vo==="yes",ar:"لغة التعليق",en:"Voice-over language",opts:[["ar","عربي","Arabic"],["en","إنجليزي","English"]]},
+   {id:"vo_dialect",type:"multi",sub:1,parent:"vo_lang",other:1,when:a=>has(a,"vo_lang","ar"),ar:"اللهجة",en:"Dialect",opts:[["egy","مصري","Egyptian"],["gulf","خليجي","Gulf"],["levant","شامي","Levantine"],["msa","فصحى","Classical Arabic"],U]},
+   {id:"vo_tone",type:"multi",sub:1,parent:"vo",when:a=>a.vo==="yes",ar:"نبرة الصوت",en:"Tone of voice",opts:[["warm","دافي وودود","Warm and friendly"],["energetic","حماسي","Energetic"],["formal","رسمي","Formal"],["calm","هادي","Calm"],["story","بيحكي حكاية","Storyteller"],U]},
+   {id:"vo_script",type:"chips",sub:1,parent:"vo",when:a=>a.vo==="yes",ar:"السكريبت (الكلام اللي هيتقال)",en:"The script (what will be said)",opts:[["have","عندي سكريبت جاهز","I have a ready script"],["ideas","عندي نقط وأفكار بس","I have points and ideas"],["write","اكتبوه إنتو","You write it"]]},
+   {id:"vo_text",type:"textarea",sub:1,parent:"vo_script",tall:1,help:"script",when:a=>a.vo_script==="have"||a.vo_script==="ideas",ar:"السكريبت أو النقط",en:"Script or points",hintAr:"الصقه هنا، وهنقولك مدته تقريبًا.",hintEn:"Paste it here and we'll estimate how long it runs.",phAr:"اكتب الكلام زي ما هيتقال…",phEn:"Write it the way it will be spoken…"},
+   {id:"subs",type:"chips",sub:1,parent:"vo",when:a=>a.vo==="yes",ar:"الكلام يظهر مكتوب على الشاشة كمان (Subtitles)؟",en:"Show the words on screen too (subtitles)?",hintAr:"ناس كتير بتتفرج على السوشيال من غير صوت.",hintEn:"Lots of people watch social videos with the sound off.",opts:[["yes","أيوه","Yes"],["no","لأ","No"],U]},
+   {id:"onscreen",type:"chips",sub:1,parent:"vo",when:a=>a.vo==="no",ar:"فيه كلام مكتوب هيظهر على الشاشة؟",en:"Any text shown on screen?",opts:[["yes","أيوه","Yes"],["no","لأ، صورة وموسيقى بس","No, just picture and music"],U]},
+   {id:"onscreen_text",type:"textarea",sub:1,parent:"onscreen",when:a=>a.onscreen==="yes",ar:"الكلام اللي هيظهر",en:"The on-screen text",hintAr:"لو جاهز اكتبه، ولو لأ اكتب الفكرة بس.",hintEn:"Write it if you have it, or just the gist."},
+   {id:"music",type:"chips",ar:"الموسيقى",en:"Music",opts:[["suggest","اقترحوا إنتو","You pick it"],["have","عندي موسيقى معيّنة","I have a specific track"],["none","من غير موسيقى","No music"]]},
+   {id:"music_link",type:"text",sub:1,parent:"music",ltr:1,when:a=>a.music==="have",ar:"لينك الموسيقى أو اسمها",en:"Link or name of the track",phAr:"لينك يوتيوب أو ساوند كلاود أو اسم الأغنية",phEn:"YouTube or SoundCloud link, or the track name"},
+   {id:"refs",type:"textarea",ar:"فيديوهات عاجباك",en:"Videos you like",hintAr:"حط اللينك، واكتب جنبه إيه اللي عاجبك فيه.",hintEn:"Paste the link and note what you like about it.",phAr:"مثلًا: youtube.com/… عاجبني السرعة والألوان",phEn:"e.g. youtube.com/… I like the pace and colours"},
+   {id:"dislike",type:"textarea",ar:"فيديوهات مش عاجباك",en:"Videos you don't like",hintAr:"عشان نبعد عن اللي مضايقك.",hintEn:"So we steer clear of what bothers you.",phAr:"مثلًا: instagram.com/… الموسيقى عالية والكلام كتير",phEn:"e.g. instagram.com/… music too loud, too much text"}
   ]},
- {id:"delivery", ar:{t:"المواد والمعاد",s:"اللي عندك، ومحتاجه إمتى."}, en:{t:"Materials and deadline",s:"What you have, and when you need it."},
+ {id:"post", tone:"rose", when:a=>hasSocial(a)&&notLogo(a), ar:{t:"البوست",s:"الكلام اللي هينزل مع الفيديو. لو جهّزته من دلوقتي، الفيديو ينزل أول ما يخلص."}, en:{t:"The post",s:"The words that go out with the video. Ready now means it can go live the moment it's done."},
+  q:[
+   {id:"caption_who",type:"chips",ar:"الكابشن (الكلام اللي تحت الفيديو)",en:"Caption (the text under the video)",opts:[["mine","هكتبه أنا","I'll write it"],["write","اكتبوه إنتو","You write it"],["none","مش محتاج","Not needed"]]},
+   {id:"caption",type:"textarea",sub:1,parent:"caption_who",tall:1,help:"caption",when:a=>a.caption_who==="mine",ar:"الكابشن",en:"Caption text",phAr:"اكتب الكابشن زي ما هينزل…",phEn:"Write it exactly as it should be posted…"},
+   {id:"hashtags",type:"tags",when:a=>a.caption_who!=="none",ar:"الهاشتاجات",en:"Hashtags",hintAr:"اكتب كل هاشتاج ودوس Enter. مش لازم تكتب #.",hintEn:"Type each one and press Enter. No need for the #."},
+   {id:"mentions",type:"text",ltr:1,when:a=>a.caption_who!=="none",ar:"حسابات نعمل لها منشن",en:"Accounts to tag",phAr:"مثلًا: ‎@sherkety",phEn:"e.g. @brandname"}
+  ]},
+ {id:"delivery", tone:"sun", ar:{t:"المواد والمعاد",s:"اللي عندك يساعدنا، ومحتاجه إمتى."}, en:{t:"Materials and deadline",s:"What you have, and when you need it."},
   q:[
    {id:"shoot",type:"chips",ar:"محتاج تصوير؟",en:"Does it need filming?",opts:[
-     ["need","أيوه، محتاجين نصوّر","Yes, it needs a shoot"],["have","المادة متصورة وجاهزة","Footage is ready"],["nofilm","لأ، جرافيك أو صور بس","No, graphics or photos only"],U]},
-   {id:"have",type:"multi",other:1,ar:"عندك إيه يساعدنا؟",en:"What do you have?",opts:[
-     ["logo","اللوجو","Logo"],["brand_guide","ألوان وخطوط البراند","Brand colours and fonts"],["footage","فيديوهات","Footage"],["photos","صور","Photos"],["script","سكريبت جاهز","A ready script"],["music","موسيقى معينة","Specific music"],["none","مفيش حاجة","Nothing yet"]]},
-   {id:"links",type:"textarea",ar:"لينكات المواد",en:"Links to materials",hintAr:"جوجل درايف، وان درايف، فيجما… واتأكد إن اللينك مفتوح.",hintEn:"Google Drive, OneDrive, Figma… make sure we can open it."},
-   {id:"deadline",type:"date",soft:1,ar:"محتاجه إمتى؟",en:"When do you need it?"},
-   {id:"event",type:"text",ar:"مرتبط بحدث أو مناسبة؟",en:"Tied to an event or occasion?",phAr:"مثلًا: معرض، افتتاح، رمضان",phEn:"e.g. an expo, an opening, Ramadan"},
-   {id:"approver",type:"text",soft:1,ar:"مين هيوافق في الآخر؟",en:"Who gives final approval?",hintAr:"شخص واحد لو أمكن.",hintEn:"One person if possible."},
-   {id:"notes",type:"textarea",ar:"أي حاجة تانية",en:"Anything else"}
+     ["need","أيوه، محتاجين نصوّر","Yes, it needs a shoot"],["have","المادة متصوّرة وجاهزة","Footage is ready"],["nofilm","لأ، جرافيك أو صور بس","No, graphics or photos only"],U]},
+   {id:"shoot_place",type:"text",sub:1,parent:"shoot",when:a=>a.shoot==="need",ar:"التصوير هيبقى فين؟",en:"Where will the shoot be?",phAr:"مثلًا: الفرع الجديد في التجمع، أو استوديو",phEn:"e.g. the new branch, or a studio"},
+   {id:"shoot_people",type:"text",sub:1,parent:"shoot",when:a=>a.shoot==="need",ar:"مين هيظهر في التصوير؟",en:"Who will appear on camera?",phAr:"مثلًا: موظفين، عملاء، منتجات بس",phEn:"e.g. staff, customers, products only"},
+   {id:"assets",type:"multi",kind:"assets",ar:"عندك إيه يساعدنا؟",en:"What do you have for us?",hintAr:"كل حاجة تختارها هيظهر لها مكان تحط فيه اللينك.",hintEn:"Each one you pick gets its own space for a link.",opts:[
+     ["logo","اللوجو","Logo"],["brand","ألوان وخطوط البراند","Brand colours and fonts"],["photos","صور","Photos"],["footage","فيديوهات","Videos"],
+     ["data","داتا وأرقام","Data and figures"],["app","شاشات التطبيق أو الموقع","App or website screens"],["docs","بريزنتيشن أو ملف شرح","A deck or a document"],["none","مفيش حاجة لسه","Nothing yet"]]},
+   {id:"deadline",type:"chips",ar:"محتاجه إمتى؟",en:"When do you need it?",soft:1,opts:[
+     ["week","خلال أسبوع","Within a week"],["2weeks","خلال أسبوعين","Within two weeks"],["month","خلال شهر","Within a month"],["date","في تاريخ معيّن","On a specific date"],["flex","مش مستعجل","No rush"]]},
+   {id:"deadline_date",type:"date",sub:1,parent:"deadline",help:"date",when:a=>a.deadline==="date",ar:"التاريخ",en:"The date"},
+   {id:"event",type:"text",when:a=>!has(a,"type","event")&&!has(a,"type","occasion"),ar:"مرتبط بحدث أو مناسبة؟",en:"Tied to an event or occasion?",phAr:"مثلًا: معرض، افتتاح، رمضان",phEn:"e.g. an expo, an opening, Ramadan"},
+   {id:"approver",type:"text",soft:1,ar:"مين هيوافق في الآخر؟",en:"Who gives final approval?",hintAr:"شخص واحد لو أمكن، عشان التعديلات ما تتلخبطش.",hintEn:"One person if possible, so feedback doesn't get tangled."},
+   {id:"notes",type:"textarea",ar:"أي حاجة تانية في دماغك",en:"Anything else on your mind"}
   ]}
 ];
-const REVIEW = STEPS.length; // index of review step
-const QIDX = {}; STEPS.forEach((s,si)=>s.q.forEach(q=>QIDX[q.id]={q,si}));
+const QIDX = {}; STEPS.forEach(s=>s.q.forEach(q=>QIDX[q.id]={q,s}));
 
 /* ---------- state ---------- */
 const store = {
@@ -408,16 +630,20 @@ const store = {
  set(k,v){try{localStorage.setItem(k,v)}catch(e){}},
  del(k){try{localStorage.removeItem(k)}catch(e){}}
 };
+const DRAFT = "vbrief-draft-v2";
 let lang = store.get("vbrief-lang")==="en"?"en":"ar";
-let A = {}; try{A = JSON.parse(store.get("vbrief-draft")||"{}")||{}}catch(e){A={}}
-let step = 0, tab = "new", justSent = false;
+let A = {}; try{A = JSON.parse(store.get(DRAFT)||"{}")||{}}catch(e){A={}}
+let cur = "about", tab = "new", justSent = false, pvOpen = false;
+let shown = new Set(), shownFor = "";
 let db = null, user = null, uid = null, isEditor = false, capReady = false, readOnly = false;
-let mine = [], mineState = "idle", mineUnsub = null, mineTimer = null;
+let mine = [], mineState = "idle", mineTimer = null;
 let all = [], allState = "idle";
 const t = k => T[lang][k];
 const L = o => lang==="ar"?o.ar:o.en;
+const QL = (q,lg) => (lg||lang)==="ar"?q.ar:q.en;
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $ = s => document.querySelector(s);
+const num = n => lang==="ar"?Number(n).toLocaleString("ar-EG"):String(n);
 const EMAIL = "ahmed.hassan@sherkety.net";
 const mailLink = (subject, body) => "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
 const mailBrief = ans => { const sub = t("mailSubject")(ans.title || ""); const u = mailLink(sub, briefShort(ans, lang)); return u.length > 1900 ? mailLink(sub, t("pasteHere")) : u; };
@@ -431,44 +657,55 @@ const FORM_ENDPOINT = "https://api.web3forms.com/submit";
 const FORM_KEY = "e4897567-6a4b-4974-9c6a-979dc0ccb9e7";
 let sentMode = "";
 let focusId = "", scrolledFor = "";
-let saveTimer=null;
-function saveDraft(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>store.set("vbrief-draft",JSON.stringify(A)),300)}
+let saveTimer = null, pvTimer = null;
+function saveDraft(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>store.set(DRAFT,JSON.stringify(A)),300);const s=$("#saved");if(s)s.textContent=t("draftSaved")}
 
-/* ---------- language ---------- */
-function applyLang(){
- const h=document.documentElement; h.lang=lang; h.dir=lang==="ar"?"rtl":"ltr";
- $("#lang-ar").setAttribute("aria-pressed",lang==="ar"); $("#lang-en").setAttribute("aria-pressed",lang==="en");
- $("#t-team").textContent=t("team"); $("#t-brand").textContent=t("brand");
- renderTabs(); render();
+/* ---------- visibility ---------- */
+function qVisible(q,ans){
+ if(q.when&&!q.when(ans))return false;
+ if(q.parent){const p=QIDX[q.parent];if(p&&!qVisible(p.q,ans))return false}
+ return true;
 }
-$("#lang-ar").onclick=()=>{lang="ar";store.set("vbrief-lang","ar");applyLang()};
-$("#lang-en").onclick=()=>{lang="en";store.set("vbrief-lang","en");applyLang()};
+const vSteps = ans => STEPS.filter(s=>!s.when||s.when(ans));
+const vQs = (s,ans) => s.q.filter(q=>qVisible(q,ans));
+const stepById = id => STEPS.find(s=>s.id===id);
 
-/* ---------- tabs ---------- */
-function renderTabs(){
- const nav=$("#tabs");
- if(capReady&&!canSave()&&!isEditor){nav.hidden=true;nav.innerHTML="";return}
- nav.hidden=false;
- const items=[["new",t("tabNew")],["mine",t("tabMine"),mine.length]];
- if(isEditor) items.push(["all",t("tabAll"),all.length||""]);
- $("#tabs").innerHTML=items.map(([k,l,c])=>`<button role="tab" type="button" data-tab="${k}" aria-selected="${tab===k}">${esc(l)}${c?`<span class="count">${c}</span>`:""}</button>`).join("");
-}
-$("#tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;focusId="";if(tab==="new")justSent=false;if(tab==="all")loadAll();renderTabs();render();window.scrollTo(0,0)});
-
-/* ---------- labels ---------- */
-function optLabel(q,key){const o=(q.opts||[]).find(o=>o[0]===key);if(!o)return key;return lang==="ar"?o[1]:o[2]}
-function valueText(q,v,langOverride,ans){
- const lg=langOverride||lang; ans=ans||A;
- const ol=k=>{if(k==="other"){const x=ans[q.id+"_other"];return T[lg].otherLabel+(x?": "+x:"")}const o=(q.opts||[]).find(o=>o[0]===k);return o?(lg==="ar"?o[1]:o[2]):k};
- if(v==null||v===""||(Array.isArray(v)&&!v.filter(Boolean).length))return "";
- if(q.type==="multi"||(q.type==="cards"&&q.multi))return (Array.isArray(v)?v:[v]).map(ol).join(lg==="ar"?"، ":", ");
- if(q.type==="chips"||q.type==="cards")return Array.isArray(v)?v.map(ol).join(lg==="ar"?"، ":", "):ol(v);
- if(q.type==="three")return v.filter(Boolean).map((x,i)=>`${i+1}. ${x}`).join("\n");
- if(q.type==="scale"){if(!v)return "";const l=lg==="ar"?q.l[0]:q.l[1],r=lg==="ar"?q.r[0]:q.r[1];return `${v}/5  (1 = ${l}, 5 = ${r})`}
+/* ---------- labels and values ---------- */
+function optOf(q,k){return (q.opts||[]).find(o=>o[0]===k)}
+function platName(p,lg){const o=optOf(QIDX.platforms.q,p);return o?(lg==="ar"?o[1]:o[2]):p}
+function sizeName(p,k,lg){const s=(PLAT[p]||[]).find(x=>x[0]===k);return s?(lg==="ar"?s[1]:s[2]):""}
+const ratio = k => k.replace("x",":");
+function uniqueSizes(ans){const out=[];const sz=ans.sizes||{};arr(ans.platforms).forEach(p=>arr(sz[p]).forEach(k=>{if(!out.includes(k))out.push(k)}));return out}
+function valueText(q,v,lg,ans){
+ lg=lg||lang; ans=ans||A; const sep=lg==="ar"?"، ":", ";
+ const ol=k=>{if(k==="other"){const x=ans[q.id+"_other"];return T[lg].otherLabel+(x?": "+x:"")}const o=optOf(q,k);return o?(lg==="ar"?o[1]:o[2]):k};
+ if(q.type==="sizes"){
+  const sz=v||{};
+  return arr(ans.platforms).filter(p=>arr(sz[p]).length).map(p=>platName(p,lg)+": "+arr(sz[p]).map(k=>ratio(k)+" ("+sizeName(p,k,lg)+")").join(sep)).join("\n");
+ }
+ if(q.type==="tags") return arr(v).map(x=>"#"+x).join(" ");
+ if(q.kind==="assets"){
+  const lines=[];
+  arr(v).forEach(k=>{
+   if(k==="none"){lines.push(ol(k));return}
+   const link=(ans["al_"+k]||"").trim(), note=(ans["an_"+k]||"").trim();
+   lines.push("• "+ol(k)+(link?" — "+link:"")+(note?" ("+note+")":""));
+  });
+  arr(ans.extra).forEach(x=>{if(!x)return;const nm=(x.name||"").trim(),lk=(x.link||"").trim(),nt=(x.note||"").trim();if(nm||lk||nt)lines.push("• "+(nm||T[lg].otherLabel)+(lk?" — "+lk:"")+(nt?" ("+nt+")":""))});
+  return lines.join("\n");
+ }
+ if(isEmpty(v))return "";
+ if(q.type==="multi"||q.type==="cards"||q.type==="chips")return arr(v).map(ol).join(sep);
  if(q.type==="date"){try{return new Date(v+"T00:00:00").toLocaleDateString(lg==="ar"?"ar-EG":"en-AU",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}catch(e){return v}}
- return String(v);
+ return String(v).trim();
 }
-function isEmpty(v){return v==null||v===""||(Array.isArray(v)&&!v.filter(Boolean).length)}
+function isEmpty(v){
+ if(v==null||v==="")return true;
+ if(Array.isArray(v))return !v.filter(Boolean).length;
+ if(typeof v==="object")return !Object.values(v).some(x=>!isEmpty(x));
+ return !String(v).trim();
+}
+const answered = (q,ans) => !!valueText(q,ans[q.id],null,ans);
 
 /* ---------- field renderers ---------- */
 function withOther(q){
@@ -478,113 +715,231 @@ function withOther(q){
  if(ui>=0) list.splice(ui,0,o); else list.push(o);
  return list;
 }
+function chipHTML(q,o,on,multi,extra){
+ let deco="";
+ if(q.kind==="duration"&&o[0]!=="unsure"){const sec={"6-15":15,"15-30":30,"30-60":60,"60-90":90,"90+":120}[o[0]];deco=`<span class="bar" style="width:${Math.round(sec/120*40)+6}px"></span>`}
+ return `<button type="button" class="chip${o[0]==="unsure"?" unsure":""}" data-opt="${q.id}" data-k="${esc(o[0])}" data-m="${multi?1:0}" aria-pressed="${on}"><span class="tick"></span>${deco}${esc(lang==="ar"?o[1]:o[2])}${extra||""}</button>`;
+}
 function fieldHTML(q){
- const lab=lang==="ar"?q.ar:q.en, hint=lang==="ar"?q.hintAr:q.hintEn, ph=lang==="ar"?q.phAr:q.phEn;
+ const lab=QL(q), hint=lang==="ar"?q.hintAr:q.hintEn, ph=lang==="ar"?q.phAr:q.phEn;
  const v=A[q.id];
- const isMulti=q.type==="multi"||(q.type==="cards"&&q.multi);
+ const multi=q.type==="multi"||(q.type==="cards"&&q.multi);
  const opts=withOther(q);
- const otherOn=Array.isArray(v)?v.includes("other"):v==="other";
+ const otherOn=arr(v).includes("other");
  const otherIn=q.other?`<input type="text" class="other-in" id="f-${q.id}_other" data-f="${q.id}_other" value="${esc(A[q.id+"_other"]||"")}" placeholder="${esc(t("otherPh"))}" aria-label="${esc(lab)}: ${esc(t("otherLabel"))}" ${otherOn?"":"hidden"}>`:"";
- const head=`<${q.type==="text"||q.type==="textarea"||q.type==="date"?`label class="ql" for="f-${q.id}"`:'div class="ql"'}>${esc(lab)}<span class="tag ${q.req?"req":"opt"}">${q.req?t("tagReq"):t("tagOpt")}</span></${q.type==="text"||q.type==="textarea"||q.type==="date"?"label":"div"}>${isMulti?`<div class="hint multi-tag">${t("multiTag")}</div>`:""}${hint?`<div class="hint">${esc(hint)}</div>`:""}`;
+ const isLabel=q.type==="text"||q.type==="textarea"||q.type==="date";
+ const tagNeed=q.req?`<span class="need">${t("needTag")}</span>`:"";
+ const head=`<${isLabel?`label class="ql" for="f-${q.id}"`:'div class="ql"'}>${esc(lab)}${tagNeed}</${isLabel?"label":"div"}>${hint?`<div class="hint">${esc(hint)}</div>`:""}${multi?`<div class="multi">${t("multiTag")}</div>`:""}`;
  let body="";
- if(q.type==="text") body=`<input type="text" id="f-${q.id}" data-f="${q.id}" value="${esc(v||"")}" placeholder="${esc(ph||"")}" autocomplete="off">`;
- else if(q.type==="textarea") body=`<textarea id="f-${q.id}" data-f="${q.id}" placeholder="${esc(ph||"")}">${esc(v||"")}</textarea>`;
- else if(q.type==="date") body=`<input type="date" id="f-${q.id}" data-f="${q.id}" value="${esc(v||"")}" style="max-width:260px">`;
- else if(q.type==="three"){const a=Array.isArray(v)?v:["","",""];body=`<div class="three">${[0,1,2].map(i=>`<div><span>${i+1}</span><input type="text" id="f-${q.id}-${i}" data-f="${q.id}" data-i="${i}" value="${esc(a[i]||"")}" aria-label="${esc(lab)} ${i+1}"></div>`).join("")}</div>`}
+ const dir=q.ltr?' dir="auto"':"";
+ if(q.type==="text") body=`<input type="text" id="f-${q.id}" data-f="${q.id}" value="${esc(v||"")}" placeholder="${esc(ph||"")}" autocomplete="off"${dir}>`;
+ else if(q.type==="textarea") body=`<textarea id="f-${q.id}" data-f="${q.id}" placeholder="${esc(ph||"")}"${q.tall?' class="tall"':""}>${esc(v||"")}</textarea>`;
+ else if(q.type==="date") body=`<input type="date" id="f-${q.id}" data-f="${q.id}" value="${esc(v||"")}" style="max-width:240px">`;
  else if(q.type==="chips"||q.type==="multi"){
-  const multi=q.type==="multi";
+  const sug=q.kind==="duration"?durSuggest(A):"";
+  const hot=q.kind==="assets"&&has(A,"style","ui_cursor")?"app":"";
   body=`<div class="chips" role="group" aria-label="${esc(lab)}">${opts.map(o=>{
-   const on=multi?(Array.isArray(v)&&v.includes(o[0])):v===o[0];
-   let deco="";
-   if(q.kind==="aspect"&&o[0]!=="unsure"){const [w,h]=o[0].split("x").map(Number);const s=16/Math.max(w,h);deco=`<span class="shape" style="width:${Math.round(w*s)}px;height:${Math.round(h*s)}px"></span>`}
-   if(q.kind==="duration"&&o[0]!=="unsure"){const sec={"6-15":15,"15-30":30,"30-60":60,"60-90":90,"90+":120}[o[0]];deco=`<span class="bar" style="width:${Math.round(sec/120*44)+6}px"></span>`}
-   return `<button type="button" class="chip${o[0]==="unsure"?" unsure":""}" data-opt="${q.id}" data-k="${o[0]}" data-m="${multi?1:0}" aria-pressed="${on}"><span class="tick"></span>${deco}${esc(lang==="ar"?o[1]:o[2])}</button>`}).join("")}</div>${otherIn}`;
+   const on=multi?arr(v).includes(o[0]):v===o[0];
+   const badge=(sug&&o[0]===sug)?`<span class="badge">${t("suggested")}</span>`:(hot&&o[0]===hot)?`<span class="badge" title="${esc(t("hotFor"))}">★</span>`:"";
+   return chipHTML(q,o,on,multi,badge)}).join("")}</div>${otherIn}`;
+  if(q.kind==="duration"&&sug&&A._durAuto===sug&&v===sug) body+=`<div class="help">${t("durAuto")}</div>`;
+  if(q.kind==="assets") body+=assetsHTML();
  }
  else if(q.type==="cards"){
-  const multi=!!q.multi;
   body=`<div class="cards" role="group" aria-label="${esc(lab)}">${opts.map(o=>{
-   const on=multi?(Array.isArray(v)&&v.includes(o[0])):v===o[0];
-   return `<button type="button" class="ocard" data-opt="${q.id}" data-k="${o[0]}" data-m="${multi?1:0}" aria-pressed="${on}"><span class="tick"></span>${q.svg?SVG[o[0]]||"":""}<b>${esc(lang==="ar"?o[1]:o[2])}</b><small>${esc(lang==="ar"?o[3]:o[4])}</small></button>`}).join("")}</div>${otherIn}`;
+   const on=multi?arr(v).includes(o[0]):v===o[0];
+   return `<button type="button" class="ocard${o[0]==="unsure"?" unsure":""}" data-opt="${q.id}" data-k="${esc(o[0])}" data-m="${multi?1:0}" aria-pressed="${on}"><span class="tick"></span>${q.svg?SVG[o[0]]||"":""}<b>${esc(lang==="ar"?o[1]:o[2])}</b><small>${esc(lang==="ar"?o[3]:o[4])}</small></button>`}).join("")}</div>${otherIn}`;
  }
- else if(q.type==="scale"){
-  body=`<div class="scale"><span class="end">${esc(lang==="ar"?q.l[0]:q.l[1])}</span><div class="dots" role="group" aria-label="${esc(lab)}">${[1,2,3,4,5].map(n=>`<button type="button" data-scale="${q.id}" data-n="${n}" aria-pressed="${v===n}" aria-label="${n} / 5"></button>`).join("")}</div><span class="end">${esc(lang==="ar"?q.r[0]:q.r[1])}</span><button type="button" class="chip na" data-scale="${q.id}" data-n="0" aria-pressed="${!v}"><span class="tick"></span>${t("noPref")}</button></div>`;
- }
- return `<div class="q" data-q="${q.id}">${head}${body}${q.req?`<div class="err" hidden>${t("reqErr")}</div>`:""}</div>`;
+ else if(q.type==="sizes") body=sizesHTML();
+ else if(q.type==="tags") body=tagsHTML(q);
+ const help=q.help?`<div class="help" id="help-${q.id}">${helpHTML(q)}</div>`:"";
+ const enter=shown.size&&!shown.has(q.id)?" enter":"";
+ return `<div class="q${q.sub?" sub":""}${enter}" data-q="${q.id}">${head}${body}${help}${q.req?`<div class="err" hidden>${t("reqErr")}</div>`:""}</div>`;
 }
+function sizesHTML(){
+ const sz=A.sizes||{};
+ return `<div class="plats">${arr(A.platforms).filter(p=>PLAT[p]).map(p=>`<div class="plat"><b>${esc(platName(p,lang))}</b><div class="chips" role="group" aria-label="${esc(platName(p,lang))}">${PLAT[p].map(s=>{
+  const [w,h]=s[0].split("x").map(Number);const k=16/Math.max(w,h);
+  return `<button type="button" class="chip" data-size="${p}" data-k="${s[0]}" aria-pressed="${arr(sz[p]).includes(s[0])}"><span class="tick"></span><span class="shape" style="width:${Math.round(w*k)}px;height:${Math.round(h*k)}px"></span><span class="r">${ratio(s[0])}</span> ${esc(lang==="ar"?s[1]:s[2])}</button>`}).join("")}</div></div>`).join("")}</div>`;
+}
+function tagsHTML(q){
+ return `<div class="tags" data-tagbox="${q.id}">${arr(A[q.id]).map((x,i)=>`<span class="tagchip">#${esc(x)}<button type="button" data-tagrm="${i}" aria-label="${esc(t("tagRm"))} #${esc(x)}">×</button></span>`).join("")}<input type="text" id="f-${q.id}" class="tag-in" dir="auto" placeholder="${esc(t("tagPh"))}" aria-label="${esc(QL(q))}" autocomplete="off"></div>`;
+}
+function assetsHTML(){
+ const picked=arr(A.assets).filter(k=>k!=="none"&&k!=="other");
+ const q=QIDX.assets.q;
+ const rows=picked.map(k=>`<div class="asset"><b>${esc(lang==="ar"?optOf(q,k)[1]:optOf(q,k)[2])}</b><input type="text" id="f-al_${k}" data-f="al_${k}" value="${esc(A["al_"+k]||"")}" placeholder="${esc(t("linkPh"))}" dir="ltr" aria-label="${esc(optOf(q,k)[lang==="ar"?1:2])}: link"><input type="text" id="f-an_${k}" data-f="an_${k}" value="${esc(A["an_"+k]||"")}" placeholder="${esc(t("notePh"))}" aria-label="${esc(t("notePh"))}"><span class="spacer"></span></div>`).join("");
+ const extras=arr(A.extra).map((x,i)=>`<div class="asset"><input type="text" id="f-xn-${i}" data-x="${i}" data-xf="name" value="${esc(x.name||"")}" placeholder="${esc(t("namePh"))}" aria-label="${esc(t("namePh"))}"><input type="text" id="f-xl-${i}" data-x="${i}" data-xf="link" value="${esc(x.link||"")}" placeholder="${esc(t("linkPh"))}" dir="ltr" aria-label="link"><input type="text" id="f-xt-${i}" data-x="${i}" data-xf="note" value="${esc(x.note||"")}" placeholder="${esc(t("notePh"))}" aria-label="${esc(t("notePh"))}"><button type="button" class="x" data-act="rmExtra" data-i="${i}" aria-label="${esc(t("rmRow"))}">×</button></div>`).join("");
+ const tip=(picked.length||arr(A.extra).length)?`<div class="help">🔗 ${t("linkTip")}</div>`:"";
+ return `<div class="assets">${rows}${extras}${tip}<button type="button" class="addrow" data-act="addExtra">${t("addAsset")}</button></div>`;
+}
+
+/* ---------- live helpers under fields ---------- */
+const TYPO = {"gmial.com":"gmail.com","gamil.com":"gmail.com","gmai.com":"gmail.com","gmail.co":"gmail.com","gmal.com":"gmail.com","gmail.cm":"gmail.com","hotmial.com":"hotmail.com","hotmai.com":"hotmail.com","yaho.com":"yahoo.com","yahooo.com":"yahoo.com","outlok.com":"outlook.com","outllok.com":"outlook.com","iclod.com":"icloud.com"};
+function mailFix(v){
+ const m=/^([^@\s]+)@([^@\s]+)$/.exec((v||"").trim()); if(!m)return "";
+ let d=m[2].toLowerCase(), fixed=TYPO[d]||d;
+ fixed=fixed.replace(/\.(con|cmo|ocm|comm|om|vom|xom)$/,".com");
+ return fixed!==d?m[1]+"@"+fixed:"";
+}
+function scriptSecs(txt){
+ const s=(txt||"").trim(); if(!s)return 0;
+ const words=s.split(/\s+/).length; const ar=/[؀-ۿ]/.test(s);
+ return Math.max(1,Math.round(words/(ar?2.2:2.5)));
+}
+function helpHTML(q){
+ const v=A[q.id]||"";
+ if(q.help==="contact"){const f=mailFix(v);return f?`<span class="warn" style="color:var(--warn)">${t("typo")(esc(f))}</span>`:""}
+ if(q.help==="script"){
+  const s=scriptSecs(v); if(!s)return "";
+  const max=DUR_MAX[A.duration]; const dq=QIDX.duration.q;
+  let out=`⏱ <span>${t("scriptTime")(num(s))}</span>`;
+  if(max&&A.duration!=="90+"){out+=s>max+3?` <span style="color:var(--warn)">${t("scriptLong")(esc(valueText(dq,A.duration)))}</span>`:` <span style="color:var(--ok)">${t("scriptFits")}</span>`}
+  return out;
+ }
+ if(q.help==="caption"){
+  const n=[...v].length; if(!n)return `💡 ${t("capTip")}`;
+  let out=`<b>${t("capCount")(num(n))}</b> · <span>${t("capTip")}</span>`;
+  if(has(A,"platforms","x")&&n>280) out+=` <span style="color:var(--warn)">${t("capX")}</span>`;
+  return out;
+ }
+ if(q.help==="date"){
+  if(!v)return "";
+  const d=new Date(v+"T00:00:00"), today=new Date(); today.setHours(0,0,0,0);
+  const days=Math.round((d-today)/864e5);
+  if(days<0)return `<span style="color:var(--warn)">${t("datePast")}</span>`;
+  if(days<4)return `<span style="color:var(--warn)">⚡ ${t("dateSoon")}</span>`;
+  return "";
+ }
+ return "";
+}
+function updateHelpers(){Object.values(QIDX).forEach(({q})=>{if(!q.help)return;const el=document.getElementById("help-"+q.id);if(el)el.innerHTML=helpHTML(q)})}
 
 /* ---------- views ---------- */
 function render(){
  const v=$("#view");
  if(tab==="mine"||tab==="all"){v.innerHTML=tab==="mine"?mineHTML():allHTML();if(focusId){const f=document.querySelector(`.item[data-id="${focusId}"]`);if(f&&scrolledFor!==focusId){scrolledFor=focusId;f.scrollIntoView({block:"start"})}}return}
- if(justSent&&sentMode==="form"){v.innerHTML=`<div class="card success"><div class="big"></div><h2>${t("sentTitle")}</h2><p class="step-sub" style="margin-inline:auto">${t("sentTextForm")}</p><div class="row" style="justify-content:center"><button type="button" class="btn" data-act="newOne">${t("newOne")}</button></div></div>`;return}
- if(justSent){v.innerHTML=`<div class="card success"><div class="big"></div><h2>${t("sentTitle")}</h2><p class="step-sub" style="margin-inline:auto">${t("sentText")}</p><div class="note info" style="max-width:520px;margin:0 auto 6px;text-align:start">${t("waHint")}</div><div style="display:flex;justify-content:center;margin-bottom:6px">${emailBox()}</div><div class="row" style="justify-content:center"><a class="btn go" href="${esc(notifyMail())}" target="_blank" rel="noopener">${t("waNotify")}</a><button type="button" class="btn primary" data-act="goMine">${t("goMine")}</button><button type="button" class="btn" data-act="newOne">${t("newOne")}</button></div></div>`;return}
- v.innerHTML=heroHTML()+`<div class="wiz">${railHTML()}<section class="card" aria-live="polite">${step===REVIEW?reviewHTML():stepHTML()}</section></div>`;
+ if(justSent){v.innerHTML=sentHTML();return}
+ const steps=vSteps(A);
+ if(cur!=="review"&&!steps.some(s=>s.id===cur)) cur=steps[0].id;
+ shown=new Set(); shownFor="";
+ v.innerHTML=(cur===steps[0].id?heroHTML():"")+`<nav class="tl" id="tl" aria-label="Steps">${timelineInner()}</nav><div class="studio"><section class="card tone-${toneOf(cur)}" id="card" aria-live="polite">${cardInner()}</section><aside class="pv${pvOpen?" open":""}" id="pv">${pvInner()}</aside></div>`;
+}
+const toneOf = id => id==="review"?"brand":(stepById(id)||{}).tone||"brand";
+function cardInner(){
+ const html=cur==="review"?reviewHTML():stepHTML();
+ if(cur!=="review"){shown=new Set(vQs(stepById(cur),A).map(q=>q.id));shownFor=cur}
+ return html;
+}
+// Re-render the open step after an answer changes, keeping focus where it was.
+function refresh(focusSel,popSel){
+ const card=$("#card"); if(!card){render();return}
+ card.className="card tone-"+toneOf(cur);
+ if(shownFor!==cur)shown=new Set();
+ card.innerHTML=cur==="review"?reviewHTML():stepHTML();
+ if(cur!=="review"){shown=new Set(vQs(stepById(cur),A).map(q=>q.id));shownFor=cur}
+ $("#tl").innerHTML=timelineInner(); $("#pv").innerHTML=pvInner();
+ if(focusSel){const el=document.querySelector(focusSel);if(el){el.focus({preventScroll:true});if(popSel!==false)el.classList.add("pop")}}
 }
 function heroHTML(){
- const reqCount=STEPS.reduce((n,s)=>n+s.q.filter(q=>q.req).length,0);
- return `<section class="slate"><div><h1>${t("heroTitle")}</h1><p>${t("heroText")}</p></div><div class="clap"><div><b>${STEPS.length}</b>${t("clapSteps")}</div><div><b>5</b>${t("clapMins")}</div><div><b>${reqCount}</b>${t("clapReq")}</div></div></section>`;
+ return `<section class="hero"><div><span class="eyebrow">${t("heroEyebrow")}</span><h1>${t("heroTitle")}</h1><p>${t("heroText")}</p><div class="facts"><span>${t("fSteps")(num(vSteps(A).length))}</span><span>${t("fMins")}</span><span>${t("fReq")}</span></div></div><div class="hero-art">${CLAP()}</div></section>`;
 }
-function stepDone(s){return s.q.some(q=>!isEmpty(A[q.id]))}
-function railHTML(){
- return `<nav class="rail" aria-label="Steps">${STEPS.map((s,i)=>`<button type="button" data-step="${i}" class="${stepDone(s)?"done":""}" ${i===step?'aria-current="step"':""}><span class="n">${i+1}</span><span class="lbl">${esc(L(s).t)}</span></button>`).join("")}<button type="button" data-step="${REVIEW}" ${step===REVIEW?'aria-current="step"':""}><span class="n">✓</span><span class="lbl">${t("review")}</span></button></nav>`;
+function stepDone(s){return vQs(s,A).some(q=>answered(q,A))}
+function timelineInner(){
+ const steps=vSteps(A);
+ return steps.map((s,i)=>`<button type="button" class="clip tone-${s.tone}${stepDone(s)?" done":""}" data-step="${s.id}" ${s.id===cur?'aria-current="step"':""} title="${esc(L(s).t)}"><span class="n">${num(i+1)}</span><span class="lbl">${esc(L(s).t)}</span>${stepDone(s)?'<span class="ok"></span>':""}</button>`).join("")
+  +`<button type="button" class="clip rev tone-brand" data-step="review" ${cur==="review"?'aria-current="step"':""} title="${esc(t("review"))}"><span class="n">✓</span><span class="lbl">${t("review")}</span></button>`;
 }
+function tcode(i,n){const p=x=>String(x).padStart(2,"0");return `00:${p(i)}:00 / 00:${p(n)}:00`}
 function stepHTML(){
- const s=STEPS[step];
- return `<div class="step-h"><h2>${esc(L(s).t)}</h2><span class="of">${t("stepOf")(step+1,STEPS.length)}</span></div><p class="step-sub">${esc(L(s).s)}</p>${s.q.some(q=>q.req)?`<div class="note info mb">${t("reqLegend")}</div>`:""}${s.q.map(fieldHTML).join("")}
- <div class="nav"><button type="button" class="btn" data-act="back" ${step===0?"disabled":""}><span class="arr">←</span>${t("back")}</button><span class="saved" id="saved"></span><button type="button" class="btn primary" data-act="next">${step===STEPS.length-1?t("review"):t("next")}<span class="arr">→</span></button></div>`;
+ const steps=vSteps(A); const s=stepById(cur); const i=steps.indexOf(s);
+ const first=(A.name||"").trim().split(/\s+/)[0];
+ const eyebrow=(i===1&&first?t("hello")(esc(first))+" · ":"")+t("stepOf")(num(i+1),num(steps.length));
+ const last=i===steps.length-1;
+ return `<div class="step-top"><span class="eyebrow">${eyebrow}</span><span class="tc">${tcode(i+1,steps.length)}</span></div><h2>${esc(L(s).t)}</h2><p class="step-sub">${esc(L(s).s)}</p>${vQs(s,A).map(fieldHTML).join("")}
+ <div class="nav"><button type="button" class="btn" data-act="back" ${i===0?"disabled":""}><span class="arr">←</span>${t("back")}</button><span class="saved" id="saved"></span><button type="button" class="btn next" data-act="next">${last?t("toReview"):t("next")}<span class="arr">→</span></button></div>`;
 }
+
+/* ---------- monitor (live preview) ---------- */
+function pvInner(){
+ const fr=uniqueSizes(A);
+ const frames=fr.length?`<div class="frames">${fr.map(k=>{const [w,h]=k.split("x").map(Number);const sc=(fr.length>3?58:76)/Math.max(w,h);return `<div class="fr" style="width:${Math.round(w*sc)}px;height:${Math.round(h*sc)}px">${ratio(k)}</div>`}).join("")}</div>`:`<div class="empty">${t("pvFrames")}</div>`;
+ const row=(lab,html)=>`<div class="row2"><dt>${lab}</dt><dd${html?"":' class="none"'}>${html||"—"}</dd></div>`;
+ const vt=id=>esc(valueText(QIDX[id].q,A[id]));
+ let voice="";
+ if(A.vo==="yes"){const bits=[valueText(QIDX.vo_gender.q,A.vo_gender),qVisible(QIDX.vo_dialect.q,A)?valueText(QIDX.vo_dialect.q,A.vo_dialect):""].filter(Boolean);voice=t("pvVo")+(bits.length?" · "+bits.join(" · "):"")}
+ else if(A.vo==="no") voice=t("pvNoVo");
+ const dur=A.duration&&A.duration!=="unsure"?`<span class="dur"><i style="width:${Math.round(({"6-15":15,"15-30":30,"30-60":60,"60-90":90,"90+":120}[A.duration])/120*60)+8}px"></i>${vt("duration")}</span>`:vt("duration");
+ const when=A.deadline==="date"&&A.deadline_date?esc(valueText(QIDX.deadline_date.q,A.deadline_date)):vt("deadline");
+ // progress over every visible question
+ let tot=0,done=0; vSteps(A).forEach(s=>vQs(s,A).forEach(q=>{tot++;if(answered(q,A))done++}));
+ const p=tot?Math.round(done/tot*100):0; const quip=t("quips")[p<15?0:p<45?1:p<80?2:3];
+ const mini=fr.slice(0,4).map(k=>{const [w,h]=k.split("x").map(Number);const sc=14/Math.max(w,h);return `<i style="width:${Math.round(w*sc)}px;height:${Math.round(h*sc)}px"></i>`}).join("");
+ return `<button type="button" class="pv-toggle" data-act="pv" aria-expanded="${pvOpen}"><span>${t("pvOpen")} · ${t("pct")(num(p))}</span><span class="mini">${mini}</span><span class="chev">▾</span></button>
+ <div class="pv-body"><div class="mon"><span class="rec">REC</span><span class="tcode">${esc(A.duration&&A.duration!=="unsure"?A.duration.replace("-","–")+"s":"--:--")}</span>${frames}<div class="ttl${A.title?"":" ph"}">${esc(A.title||t("pvUntitled"))}</div></div>
+ <dl>${row(t("pvType"),vt("type"))}${row(t("pvLen"),dur)}${row(t("pvStyle"),vt("style"))}${row(t("pvVoice"),esc(voice))}${row(t("pvWhere"),vt("platforms"))}${row(t("pvWhen"),when)}</dl>
+ <div class="meter"><div class="track"><div class="fill" style="width:${Math.max(p,3)}%"></div></div><div class="q2"><span>${quip}</span><b>${t("pct")(num(p))}</b></div></div></div>`;
+}
+function schedulePv(){clearTimeout(pvTimer);pvTimer=setTimeout(()=>{const pv=$("#pv");if(pv)pv.innerHTML=pvInner();const tl=$("#tl");if(tl)tl.innerHTML=timelineInner()},250)}
+
+/* ---------- review ---------- */
 function missing(){
  const req=[],soft=[];
- STEPS.forEach((s,si)=>s.q.forEach(q=>{if(isEmpty(A[q.id])){if(q.req)req.push([q,si]);else if(q.soft)soft.push([q,si])}}));
+ vSteps(A).forEach(s=>vQs(s,A).forEach(q=>{if(!answered(q,A)){if(q.req)req.push([q,s]);else if(q.soft)soft.push([q,s])}}));
  return {req,soft};
 }
 function sheetHTML(ans,withEdit){
- const known=new Set();STEPS.forEach(s=>s.q.forEach(q=>{known.add(q.id);known.add(q.id+"_other")}));
- const extra=Object.keys(ans||{}).filter(k=>!known.has(k)&&!isEmpty(ans[k]));
- const extraHTML=extra.length?`<div class="sec"><div><h4>${t("oldAnswers")}</h4></div><dl>${extra.map(k=>`<dt>${esc(k)}</dt><dd>${esc(Array.isArray(ans[k])?ans[k].filter(Boolean).join(", "):String(ans[k]))}</dd>`).join("")}</dl></div>`:"";
- return `<div class="sheet">${STEPS.map((s,si)=>{
-  const rows=s.q.map(q=>{const txt=valueText(q,ans[q.id],null,ans);return `<dt>${esc(lang==="ar"?q.ar:q.en)}</dt><dd>${txt?esc(txt):`<span class="empty">${t("empty")}</span>`}</dd>`}).join("");
-  let extra="";
-  if(s.id==="format"&&Array.isArray(ans.aspect)){const fr=ans.aspect.filter(k=>k!=="unsure");if(fr.length)extra=`<dt></dt><dd><div class="frames">${fr.map(k=>{const [w,h]=k.split("x").map(Number);const sc=54/Math.max(w,h);return `<div class="fr" style="width:${Math.round(w*sc)}px;height:${Math.round(h*sc)}px">${w}:${h}</div>`}).join("")}</div></dd>`}
-  return `<div class="sec"><div><h4>${esc(L(s).t)}</h4>${withEdit?`<button type="button" class="edit" data-step="${si}">${t("edit")}</button>`:""}</div><dl>${rows}${extra}</dl></div>`}).join("")}${extraHTML}</div>`;
+ const known=new Set(["extra","sizes","_durAuto"]);STEPS.forEach(s=>s.q.forEach(q=>{known.add(q.id);known.add(q.id+"_other")}));
+ const extra=Object.keys(ans||{}).filter(k=>!known.has(k)&&!/^a[ln]_/.test(k)&&!isEmpty(ans[k]));
+ const extraHTML=extra.length?`<div class="sec tone-brand"><div><h4>${t("oldAnswers")}</h4></div><dl>${extra.map(k=>`<dt>${esc(k)}</dt><dd>${esc(Array.isArray(ans[k])?ans[k].filter(Boolean).join(", "):typeof ans[k]==="object"?JSON.stringify(ans[k]):String(ans[k]))}</dd>`).join("")}</dl></div>`:"";
+ return `<div class="sheet">${vSteps(ans).map(s=>{
+  const rows=vQs(s,ans).filter(q=>q.id!=="sizes").map(q=>{const txt=valueText(q,ans[q.id],null,ans);if(!txt)return "";return `<dt>${esc(QL(q))}</dt><dd>${esc(txt)}</dd>`}).join("");
+  let frames="";
+  if(s.id==="audience"){const fr=uniqueSizes(ans);if(fr.length)frames=`<dt>${esc(QL(QIDX.sizes.q))}</dt><dd>${esc(valueText(QIDX.sizes.q,ans.sizes,null,ans))}<div class="frames" style="margin-top:8px">${fr.map(k=>{const [w,h]=k.split("x").map(Number);const sc=44/Math.max(w,h);return `<div class="fr" style="width:${Math.round(w*sc)}px;height:${Math.round(h*sc)}px">${ratio(k)}</div>`}).join("")}</div></dd>`}
+  const body=rows+frames;
+  return `<div class="sec tone-${s.tone}"><div><h4>${esc(L(s).t)}</h4>${withEdit?`<button type="button" class="edit" data-step="${s.id}">${t("edit")}</button>`:""}</div>${body?`<dl>${body}</dl>`:`<div class="nothing">${t("nothing")}</div>`}</div>`}).join("")}${extraHTML}</div>`;
 }
 function reviewHTML(){
  const m=missing();
- const lst=arr=>`<ul>${arr.map(([q,si])=>`<li><button type="button" class="edit" style="color:inherit;text-decoration:underline" data-step="${si}">${esc(lang==="ar"?q.ar:q.en)}</button></li>`).join("")}</ul>`;
+ const lst=a=>`<ul>${a.map(([q,s])=>`<li><button type="button" class="linkbtn" data-step="${s.id}" data-goto="${q.id}">${esc(QL(q))}</button></li>`).join("")}</ul>`;
  let notes="";
  const waMode=capReady&&!canSave();
  const formMode=waMode&&STANDALONE;
- if(formMode) notes+=`<div class="note info mb">${t("formMode")}</div>`;
+ if(formMode) notes+=`<div class="note info mb">✉️ ${t("formMode")}</div>`;
  else if(waMode) notes+=`<div class="note info mb" style="flex-direction:column">${t("waMode")}${emailBox()}</div>`;
  if(m.req.length) notes+=`<div class="note warn mb"><div>${t("missingReq")}${lst(m.req)}</div></div>`;
  if(m.soft.length) notes+=`<div class="note info mb"><div>${t("missingSoft")}${lst(m.soft)}</div></div>`;
  const ready=!m.req.length;
  let sendBtn;
- if(formMode) sendBtn=`<button type="button" class="btn go" data-act="sendForm" ${ready?"":"disabled"}>${t("send")}</button>`;
+ if(formMode) sendBtn=`<button type="button" class="btn go" data-act="sendForm" ${ready?"":"disabled"}>${t("send")} <span class="arr">→</span></button>`;
  else if(waMode) sendBtn=ready?`<a class="btn go" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a>`:`<button type="button" class="btn go" disabled>${t("waFull")}</button>`;
  else sendBtn=`<button type="button" class="btn go" data-act="send" ${ready&&canSave()?"":"disabled"}>${t("send")}</button>`;
- return `<div class="step-h"><h2>${t("reviewTitle")}</h2></div><p class="step-sub">${t("reviewSub")}</p>${notes}${sheetHTML(A,true)}
+ const steps=vSteps(A);
+ return `<div class="step-top"><span class="eyebrow">${t("review")}</span><span class="tc">${tcode(steps.length+1,steps.length+1)}</span></div><h2>${t("reviewTitle")}</h2><p class="step-sub" style="margin-bottom:14px">${t("reviewSub")}</p>${notes}${sheetHTML(A,true)}
  <div id="send-err"></div>
  <div class="nav"><button type="button" class="btn" data-act="back"><span class="arr">←</span>${t("back")}</button><div class="row" style="margin:0"><button type="button" class="btn" data-act="copy">${t("copyText")}</button>${sendBtn}</div></div>`;
+}
+function sentHTML(){
+ const head=`<div class="card sent">${CLAP(true)}<div class="action">${t("action")}</div><h2>${t("sentTitle")}</h2>`;
+ if(sentMode==="form") return head+`<p>${t("sentTextForm")}</p><div class="row" style="justify-content:center"><button type="button" class="btn dark" data-act="newOne">${t("newOne")}</button></div></div>`;
+ return head+`<p>${t("sentText")}</p><div class="note info" style="max-width:520px;margin:0 auto 8px;text-align:start">${t("waHint")}</div><div style="display:flex;justify-content:center;margin-bottom:6px">${emailBox()}</div><div class="row" style="justify-content:center"><a class="btn go" href="${esc(notifyMail())}" target="_blank" rel="noopener">${t("waNotify")}</a><button type="button" class="btn dark" data-act="goMine">${t("goMine")}</button><button type="button" class="btn" data-act="newOne">${t("newOne")}</button></div></div>`;
 }
 
 /* ---------- plain-text export ---------- */
 function briefText(ans,lg){
- const TT=T[lg]; const out=[];
- out.push((lg==="ar"?"طلب فيديو: ":"Video request: ")+(ans.title||""));
- STEPS.forEach(s=>{out.push("");out.push("— "+(lg==="ar"?s.ar.t:s.en.t)+" —");s.q.forEach(q=>{const v=valueText(q,ans[q.id],lg,ans);out.push((lg==="ar"?q.ar:q.en)+": "+(v||TT.empty))})});
+ const out=[(lg==="ar"?"طلب فيديو: ":"Video request: ")+(ans.title||"")];
+ vSteps(ans).forEach(s=>{out.push("");out.push("— "+(lg==="ar"?s.ar.t:s.en.t)+" —");vQs(s,ans).forEach(q=>{const v=valueText(q,ans[q.id],lg,ans);out.push(QL(q,lg)+": "+(v||T[lg].empty))})});
  return out.join("\n");
 }
 // Compact version for email: only answered questions.
 function briefShort(ans,lg){
  const out=[(lg==="ar"?"طلب فيديو جديد: ":"New video request: ")+(ans.title||"")];
- STEPS.forEach(s=>{
-  const rows=s.q.filter(q=>q.id!=="title").map(q=>{const v=valueText(q,ans[q.id],lg,ans);return v?`• ${lg==="ar"?q.ar:q.en}: ${v}`:""}).filter(Boolean);
+ vSteps(ans).forEach(s=>{
+  const rows=vQs(s,ans).filter(q=>q.id!=="title").map(q=>{const v=valueText(q,ans[q.id],lg,ans);return v?`• ${QL(q,lg)}: ${v}`:""}).filter(Boolean);
   if(rows.length){out.push("");out.push("■ "+(lg==="ar"?s.ar.t:s.en.t));out.push(...rows)}
  });
  return out.join("\n");
 }
-// Alert email after saving: notice + link to the request + the whole request (short notice + link if too long).
 function notifyMail(){
  const sub=t("mailSubject")(lastSent.title);
  const head=t("waMsg")(lastSent.title,lastSent.name)+(lastSent.id?"\n\n"+t("openReq")+"\n"+PAGE_URL+"#req-"+lastSent.id:"");
@@ -597,7 +952,7 @@ async function copyText(txt,btn){
  catch(e){const ta=document.createElement("textarea");ta.value=txt;ta.style.minHeight="240px";ta.readOnly=true;btn.closest(".nav,.row,.item")?.after(ta);ta.select();const n=document.createElement("div");n.className="note warn";n.style.marginTop="8px";n.textContent=t("copyFail");ta.after(n)}
 }
 
-/* ---------- my requests ---------- */
+/* ---------- my requests / all requests (Claude version) ---------- */
 function fmtDate(iso){try{return new Date(iso).toLocaleString(lang==="ar"?"ar-EG":"en-AU",{year:"numeric",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}catch(e){return iso||""}}
 function pill(s){s=s||"new";return `<span class="pill s-${esc(s)}">${esc((t("status")[s])||s)}</span>`}
 function replyHTML(r){
@@ -605,7 +960,7 @@ function replyHTML(r){
  const parts=[["idea",t("rIdea")],["frames",t("rFrames")],["script",t("rScript")],["questions",t("rQuestions")],["notes",t("rNotes")]]
   .filter(([k])=>r[k]).map(([k,l])=>`<div><h4>${esc(l)}</h4><div class="body">${esc(r[k])}</div></div>`).join("");
  if(!parts)return "";
- return `<div class="reply"><h4 style="color:var(--accent)">${t("replyTitle")}${r.at?` · <span class="meta">${esc(fmtDate(r.at))}</span>`:""}</h4>${parts}</div>`;
+ return `<div class="reply"><h4 style="color:var(--brand)">${t("replyTitle")}${r.at?` · <span class="meta">${esc(fmtDate(r.at))}</span>`:""}</h4>${parts}</div>`;
 }
 function decisionHTML(d){
  if(!d||!d.state)return "";
@@ -614,7 +969,7 @@ function decisionHTML(d){
 function mineHTML(){
  if(capReady&&!canSave()) return `<div class="emptybox">${t("mineWa")}</div>`;
  if(mineState==="loading"||!capReady) return `<div class="emptybox">${t("loading")}</div>`;
- let head=mineState==="slow"?`<div class="note warn mb">${t("slow")}</div>`:"";
+ const head=mineState==="slow"?`<div class="note warn mb">${t("slow")}</div>`:"";
  if(!mine.length) return head+`<div class="emptybox">${t("mineEmpty")}</div>`;
  return head+`<div class="list">${mine.map(it=>{
   const d=it.data, a=d.answers||{};
@@ -624,8 +979,6 @@ function mineHTML(){
   ${canDecide?`<div class="row" data-decide="${esc(it.id)}"><button type="button" class="btn go small" data-act="approve">${t("approve")}</button><button type="button" class="btn small" data-act="changes">${t("askChanges")}</button></div>`:""}
   <details class="more" ${it.id===focusId?"open":""}><summary>${t("answers")}</summary>${sheetHTML(a,false)}<div class="row"><button type="button" class="btn small" data-act="copyItem" data-src="mine">${t("copyText")}</button></div></details></article>`}).join("")}</div>`;
 }
-
-/* ---------- all requests (editors) ---------- */
 function allHTML(){
  if(!isEditor) return "";
  if(allState==="loading") return `<div class="emptybox">${t("loading")}</div>`;
@@ -636,7 +989,7 @@ function allHTML(){
  const sts=Object.keys(T.ar.status);
  return head+nf+`<div class="list">${all.map(it=>{
   const d=it.data,a=d.answers||{};
-  return `<article class="item${it.id===focusId?" focus":""}" data-id="${esc(it.id)}" data-owner="${esc(it.owner)}"><div class="item-h"><div><h3>${esc(a.title||"—")}</h3><div class="meta">${t("by")} ${esc(a.name||"—")}${a.team?" · "+esc(a.team):""} · ${esc(fmtDate(d.createdAt))}</div></div>
+  return `<article class="item${it.id===focusId?" focus":""}" data-id="${esc(it.id)}" data-owner="${esc(it.owner)}"><div class="item-h"><div><h3>${esc(a.title||"—")}</h3><div class="meta">${t("by")} ${esc(a.name||"—")}${a.company?" · "+esc(a.company):""} · ${esc(fmtDate(d.createdAt))}</div></div>
   <label class="meta">${t("statusLbl")} <select class="status" data-status="${esc(it.id)}">${sts.map(s=>`<option value="${s}" ${d.status===s?"selected":""}>${esc(t("status")[s])}</option>`).join("")}</select></label></div>
   ${replyHTML(d.reply)}${decisionHTML(d.decision)}
   <details class="more" ${it.id===focusId?"open":""}><summary>${t("answers")}</summary><p class="meta">${t("langNote")}: ${d.lang==="en"?"English":"عربي"}</p>${sheetHTML(a,false)}<div class="row"><button type="button" class="btn small" data-act="copyItem" data-src="all">${t("copyText")}</button></div></details></article>`}).join("")}</div>`;
@@ -653,65 +1006,140 @@ async function loadAll(){
  renderTabs(); if(tab==="all")render();
 }
 
+/* ---------- language & tabs ---------- */
+function applyLang(){
+ const h=document.documentElement; h.lang=lang; h.dir=lang==="ar"?"rtl":"ltr";
+ $("#lang-ar").setAttribute("aria-pressed",lang==="ar"); $("#lang-en").setAttribute("aria-pressed",lang==="en");
+ $("#t-team").textContent=t("team"); $("#t-brand").textContent=t("brand"); $("#t-foot").innerHTML=t("foot");
+ $("#t-mark").innerHTML=CLAP();
+ renderTabs(); render();
+}
+$("#lang-ar").onclick=()=>{lang="ar";store.set("vbrief-lang","ar");applyLang()};
+$("#lang-en").onclick=()=>{lang="en";store.set("vbrief-lang","en");applyLang()};
+function renderTabs(){
+ const nav=$("#tabs");
+ if(!capReady||(!canSave()&&!isEditor)){nav.hidden=true;nav.innerHTML="";return}
+ nav.hidden=false;
+ const items=[["new",t("tabNew")],["mine",t("tabMine"),mine.length]];
+ if(isEditor) items.push(["all",t("tabAll"),all.length||""]);
+ nav.innerHTML=items.map(([k,l,c])=>`<button role="tab" type="button" data-tab="${k}" aria-selected="${tab===k}">${esc(l)}${c?`<span class="count">${c}</span>`:""}</button>`).join("");
+}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;tab=b.dataset.tab;focusId="";if(tab==="new")justSent=false;if(tab==="all")loadAll();renderTabs();render();window.scrollTo(0,0)});
+
+/* ---------- linked answers ---------- */
+// When one answer implies another, fill it in so the client doesn't have to.
+function linkAnswers(id,k){
+ if(id==="platforms"){
+  const sz=Object.assign({},A.sizes||{});
+  Object.keys(PLAT).forEach(p=>{if(has(A,"platforms",p)){if(!sz[p])sz[p]=PLAT[p].filter(s=>s[3]).map(s=>s[0])}else delete sz[p]});
+  A.sizes=sz;
+  const sug=durSuggest(A);
+  if(sug&&(!A.duration||A.duration===A._durAuto)){A.duration=sug;A._durAuto=sug}
+  if(!sug&&A._durAuto&&A.duration===A._durAuto){A.duration="";A._durAuto=""}
+ }
+ if(id==="duration") A._durAuto="";
+ if(id==="vo"&&A.vo==="yes"&&isEmpty(A.vo_lang)){const l=arr(A.vlang).filter(x=>x==="ar"||x==="en");if(l.length)A.vo_lang=l}
+ if(id==="shoot"&&A.shoot==="have"&&!has(A,"assets","footage")){A.assets=arr(A.assets).filter(x=>x!=="none").concat("footage")}
+}
+function goStep(id){
+ cur=id; shown=new Set(); shownFor="";
+ const card=$("#card");
+ if(!card||(cur!=="review"&&id===vSteps(A)[0].id)!==!!$(".hero")){render()}
+ else{card.className="card tone-"+toneOf(cur);card.innerHTML=cardInner();$("#tl").innerHTML=timelineInner();$("#pv").innerHTML=pvInner()}
+ const top=$("#tl")||$("#card"); if(top) top.scrollIntoView({block:"start",behavior:"smooth"});
+}
+
 /* ---------- events ---------- */
 document.addEventListener("input",e=>{
+ const x=e.target.closest("[data-x]");
+ if(x){const i=+x.dataset.x;const ex=arr(A.extra).slice();ex[i]=Object.assign({},ex[i],{[x.dataset.xf]:x.value});A.extra=ex;saveDraft();schedulePv();return}
  const el=e.target.closest("[data-f]"); if(!el)return;
  const id=el.dataset.f;
- if(el.dataset.i!=null){const a=Array.isArray(A[id])?A[id].slice():["","",""];a[+el.dataset.i]=el.value;A[id]=a}
- else A[id]=el.value;
+ A[id]=el.value;
  const qb=el.closest(".q.invalid"); if(qb&&el.value.trim()){qb.classList.remove("invalid");const er=qb.querySelector(".err");if(er)er.hidden=true}
- saveDraft(); const s=$("#saved"); if(s) s.textContent=t("draftSaved");
- const rb=document.querySelector(`.rail [data-step="${step}"]`); if(rb) rb.classList.toggle("done",stepDone(STEPS[step]));
+ saveDraft(); updateHelpers(); schedulePv();
+});
+function tagsChanged(id,focus){
+ const box=document.querySelector(`[data-tagbox="${id}"]`); if(box) box.outerHTML=tagsHTML(QIDX[id].q);
+ if(focus) document.getElementById("f-"+id)?.focus({preventScroll:true});
+ schedulePv();
+}
+function addTag(box,raw){
+ const id=box.dataset.tagbox;
+ const parts=String(raw||"").split(/[\s,،#]+/).map(s=>s.trim()).filter(Boolean);
+ if(!parts.length)return false;
+ const list=arr(A[id]).slice(); parts.forEach(p=>{if(!list.includes(p))list.push(p)}); A[id]=list; saveDraft();
+ return true;
+}
+document.addEventListener("keydown",e=>{
+ const inp=e.target.closest(".tag-in"); if(!inp)return;
+ const box=inp.closest("[data-tagbox]");
+ if(e.key==="Enter"||e.key===","||e.key==="،"||(e.key===" "&&inp.value.trim())){e.preventDefault();if(addTag(box,inp.value))tagsChanged(box.dataset.tagbox,true)}
+ else if(e.key==="Backspace"&&!inp.value&&arr(A[box.dataset.tagbox]).length){A[box.dataset.tagbox]=arr(A[box.dataset.tagbox]).slice(0,-1);saveDraft();tagsChanged(box.dataset.tagbox,true)}
+});
+document.addEventListener("focusout",e=>{
+ const inp=e.target.closest&&e.target.closest(".tag-in"); if(!inp||!inp.value.trim())return;
+ const box=inp.closest("[data-tagbox]"); if(addTag(box,inp.value)){const id=box.dataset.tagbox;setTimeout(()=>tagsChanged(id,false),0)}
+});
+document.addEventListener("paste",e=>{
+ const inp=e.target.closest&&e.target.closest(".tag-in"); if(!inp)return;
+ const txt=(e.clipboardData||window.clipboardData)?.getData("text")||""; if(!/[\s,#]/.test(txt))return;
+ e.preventDefault(); const box=inp.closest("[data-tagbox]"); if(addTag(box,inp.value+" "+txt))tagsChanged(box.dataset.tagbox,true)
 });
 document.addEventListener("click",async e=>{
+ const tb=e.target.closest("[data-tagbox]");
+ const rm=e.target.closest("[data-tagrm]");
+ if(rm){const box=rm.closest("[data-tagbox]");const id=box.dataset.tagbox;const l=arr(A[id]).slice();l.splice(+rm.dataset.tagrm,1);A[id]=l;saveDraft();tagsChanged(id,true);return}
+ if(tb&&e.target===tb){tb.querySelector("input")?.focus();return}
  const opt=e.target.closest("[data-opt]");
  if(opt){
   const id=opt.dataset.opt,k=opt.dataset.k,multi=opt.dataset.m==="1";
-  const group=opt.parentElement;
   if(multi){
-   let a=Array.isArray(A[id])?A[id].slice():[];
+   let a=arr(A[id]).slice();
    const exclusive=k==="unsure"||k==="none";
    if(a.includes(k))a=a.filter(x=>x!==k);
    else{ if(exclusive)a=[k]; else a=a.filter(x=>x!=="unsure"&&x!=="none").concat(k); }
    A[id]=a;
-   group.querySelectorAll("[data-opt]").forEach(b=>b.setAttribute("aria-pressed",a.includes(b.dataset.k)));
-  }else{
-   A[id]=A[id]===k?"":k;
-   group.querySelectorAll("[data-opt]").forEach(b=>b.setAttribute("aria-pressed",A[id]===b.dataset.k));
-  }
-  const oi=document.getElementById("f-"+id+"_other");
-  if(oi){const on=Array.isArray(A[id])?A[id].includes("other"):A[id]==="other";oi.hidden=!on;if(on&&k==="other")oi.focus()}
-  saveDraft(); const s=$("#saved"); if(s) s.textContent=t("draftSaved");
-  const rb=document.querySelector(`.rail [data-step="${step}"]`); if(rb) rb.classList.toggle("done",stepDone(STEPS[step]));
+  }else A[id]=A[id]===k?"":k;
+  linkAnswers(id,k);
+  saveDraft();
+  refresh(`[data-opt="${id}"][data-k="${k}"]`);
+  if(k==="other"&&arr(A[id]).includes("other"))document.getElementById("f-"+id+"_other")?.focus();
   return;
  }
- const sc=e.target.closest("[data-scale]");
- if(sc){
-  const id=sc.dataset.scale,n=+sc.dataset.n; A[id]=(n===0||A[id]===n)?0:n;
-  sc.closest(".scale").querySelectorAll("[data-scale]").forEach(b=>{const bn=+b.dataset.n;b.setAttribute("aria-pressed",bn===0?!A[id]:A[id]===bn)});
-  saveDraft(); return;
+ const sz=e.target.closest("[data-size]");
+ if(sz){
+  const p=sz.dataset.size,k=sz.dataset.k; const s=Object.assign({},A.sizes||{}); let l=arr(s[p]).slice();
+  l=l.includes(k)?l.filter(x=>x!==k):l.concat(k); s[p]=l; A.sizes=s; saveDraft();
+  refresh(`[data-size="${p}"][data-k="${k}"]`); return;
  }
  const st=e.target.closest("[data-step]");
- if(st){step=+st.dataset.step;render();$(".card")?.scrollIntoView({block:"start",behavior:"smooth"});return}
+ if(st){goStep(st.dataset.step);const g=st.dataset.goto;if(g)setTimeout(()=>document.getElementById("f-"+g)?.focus({preventScroll:false}),350);return}
  const act=e.target.closest("[data-act]"); if(!act)return;
  const a=act.dataset.act;
+ const steps=vSteps(A), i=steps.findIndex(s=>s.id===cur);
  if(a==="next"){
-  const miss=(STEPS[step]?.q||[]).filter(q=>q.req&&isEmpty(A[q.id]));
+  const miss=vQs(stepById(cur),A).filter(q=>q.req&&!answered(q,A));
   if(miss.length){miss.forEach(q=>{const box=document.querySelector(`.q[data-q="${q.id}"]`);if(box){box.classList.add("invalid");const er=box.querySelector(".err");if(er)er.hidden=false}});document.getElementById("f-"+miss[0].id)?.focus();return}
-  step=Math.min(REVIEW,step+1);render();$(".card")?.scrollIntoView({block:"start",behavior:"smooth"})}
- else if(a==="back"){step=Math.max(0,step-1);render();$(".card")?.scrollIntoView({block:"start",behavior:"smooth"})}
+  goStep(i<steps.length-1?steps[i+1].id:"review");
+ }
+ else if(a==="back"){goStep(cur==="review"?steps[steps.length-1].id:steps[Math.max(0,i-1)].id)}
+ else if(a==="pv"){pvOpen=!pvOpen;$("#pv").classList.toggle("open",pvOpen);act.setAttribute("aria-expanded",pvOpen)}
+ else if(a==="fixMail"){A.contact=act.dataset.v;saveDraft();const f=$("#f-contact");if(f)f.value=A.contact;updateHelpers()}
+ else if(a==="addExtra"){A.extra=arr(A.extra).concat({name:"",link:"",note:""});saveDraft();refresh("#f-xn-"+(A.extra.length-1),false)}
+ else if(a==="rmExtra"){const l=arr(A.extra).slice();l.splice(+act.dataset.i,1);A.extra=l;saveDraft();refresh(null)}
  else if(a==="copy") copyText(briefText(A,lang),act);
  else if(a==="copyEmail") copyText(EMAIL,act);
  else if(a==="send") send(act);
  else if(a==="sendForm") sendForm(act);
  else if(a==="goMine"){tab="mine";justSent=false;renderTabs();render()}
- else if(a==="newOne"){justSent=false;step=0;render()}
+ else if(a==="newOne"){justSent=false;cur="about";render();window.scrollTo(0,0)}
  else if(a==="refreshAll") loadAll();
  else if(a==="copyItem"){const item=act.closest(".item");const src=act.dataset.src==="all"?all:mine;const it=src.find(x=>x.id===item.dataset.id);if(it)copyText(briefText(it.data.answers||{},lang),act)}
  else if(a==="approve") decide(act.closest("[data-decide]").dataset.decide,"approved","");
  else if(a==="changes"){
   const row=act.closest("[data-decide]");
-  row.innerHTML=`<div style="width:100%;display:flex;flex-direction:column;gap:8px"><textarea id="chg-${esc(row.dataset.decide)}" placeholder="${esc(t("changesPh"))}"></textarea><div class="row" style="margin:0"><button type="button" class="btn primary small" data-act="sendChanges">${t("sendChanges")}</button><button type="button" class="btn small" data-act="cancelChanges">${t("cancel")}</button></div></div>`;
+  row.innerHTML=`<div style="width:100%;display:flex;flex-direction:column;gap:8px"><textarea id="chg-${esc(row.dataset.decide)}" placeholder="${esc(t("changesPh"))}"></textarea><div class="row" style="margin:0"><button type="button" class="btn dark small" data-act="sendChanges">${t("sendChanges")}</button><button type="button" class="btn small" data-act="cancelChanges">${t("cancel")}</button></div></div>`;
   row.querySelector("textarea").focus();
  }
  else if(a==="cancelChanges") render();
@@ -726,18 +1154,28 @@ document.addEventListener("change",async e=>{
 });
 
 /* ---------- writes ---------- */
+// Only answers to questions the client could see are sent; hidden branches are dropped.
+function cleanAnswers(){
+ const out={};
+ vSteps(A).forEach(s=>vQs(s,A).forEach(q=>{
+  if(!isEmpty(A[q.id]))out[q.id]=A[q.id];
+  if(q.other&&arr(A[q.id]).includes("other")&&A[q.id+"_other"])out[q.id+"_other"]=A[q.id+"_other"];
+  if(q.kind==="assets"){arr(A.assets).forEach(k=>{if(A["al_"+k])out["al_"+k]=A["al_"+k];if(A["an_"+k])out["an_"+k]=A["an_"+k]});const ex=arr(A.extra).filter(x=>x&&(x.name||x.link||x.note));if(ex.length)out.extra=ex}
+ }));
+ return out;
+}
 async function sendForm(btn){
  btn.disabled=true; btn.textContent=t("sending");
  const payload={access_key:FORM_KEY,subject:t("mailSubject")(A.title||""),from_name:lang==="ar"?"بريف الفيديو":"Video Brief"};
  const c=(A.contact||"").trim(); if(/^\S+@\S+\.\S+$/.test(c)) payload.replyto=c;
  payload[lang==="ar"?"لغة الطلب":"Request language"]=lang==="ar"?"عربي":"English";
- STEPS.forEach(s=>s.q.forEach(q=>{const v=valueText(q,A[q.id],lang,A);if(v)payload[L(s).t+" | "+(lang==="ar"?q.ar:q.en)]=v}));
+ vSteps(A).forEach(s=>vQs(s,A).forEach(q=>{const v=valueText(q,A[q.id],lang,A);if(v)payload[L(s).t+" | "+QL(q)]=v}));
  try{
   const r=await fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)});
   const j=await r.json().catch(()=>({}));
   if(r.ok&&(j.success===true||String(j.success)==="true")){
    lastSent={title:A.title||"",name:A.name||"",id:""}; sentMode="form";
-   A={}; store.del("vbrief-draft"); step=0; justSent=true; render(); window.scrollTo(0,0); return;
+   A={}; store.del(DRAFT); cur="about"; justSent=true; render(); window.scrollTo(0,0); return;
   }
   throw new Error(j.message||("HTTP "+r.status));
  }catch(e){
@@ -750,13 +1188,13 @@ async function send(btn){
  if(!db||!uid)return;
  btn.disabled=true; btn.textContent=t("sending");
  const now=new Date().toISOString();
- const answers=JSON.parse(JSON.stringify(A));
+ const answers=cleanAnswers();
  try{
-  await db.doc(`briefs/${uid}`).set({name:answers.name||"",team:answers.team||"",lastAt:now});
+  await db.doc(`briefs/${uid}`).set({name:answers.name||"",team:answers.company||"",lastAt:now});
   const newId="r"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
   await db.collection(`briefs/${uid}/items`).doc(newId).set({createdAt:now,updatedAt:now,lang,status:"new",answers});
   lastSent={title:answers.title||"",name:answers.name||"",id:newId,ans:answers}; sentMode="";
-  A={}; store.del("vbrief-draft"); step=0; justSent=true; render(); window.scrollTo(0,0);
+  A={}; store.del(DRAFT); cur="about"; justSent=true; render(); window.scrollTo(0,0);
  }catch(err){
   btn.disabled=false; btn.textContent=t("send");
   const box=$("#send-err"); if(box) box.innerHTML=`<div class="note warn" style="margin-top:14px;flex-wrap:wrap"><span>${err&&err.code==="quota_exceeded"?t("quotaErr"):t("saveErr")}</span><a class="btn go small" href="${esc(mailBrief(A))}" target="_blank" rel="noopener">${t("waFull")}</a></div>`;
@@ -779,7 +1217,7 @@ async function boot(){
  if(db&&uid){
   mineState="loading";
   mineTimer=setTimeout(()=>{if(mineState==="loading"){mineState="slow";if(tab==="mine")render()}},10000);
-  mineUnsub=db.collection(`briefs/${uid}/items`).orderBy("createdAt","desc").onSnapshot(snap=>{
+  db.collection(`briefs/${uid}/items`).orderBy("createdAt","desc").onSnapshot(snap=>{
    mine=snap.docs.map(d=>({id:d.id,data:d.data()}));
    if(!snap.metadata.fromCache){clearTimeout(mineTimer);mineState="ready"}else if(mineState==="loading")mineState="ready";
    renderTabs(); if(tab==="mine")render();
